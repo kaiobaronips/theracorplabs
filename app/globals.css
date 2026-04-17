@@ -1,0 +1,183 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'sofia-pro';
+  src: url('/css/fonts/SofiaProRegular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'sofia-pro';
+  src: url('/css/fonts/sofia-pro-bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── CSS Custom Properties ─────────────────────────────── */
+:root {
+  --tc-white: #ffffff;
+  --tc-off-white: #fafbfc;
+  --tc-gray-50: #f4f5f7;
+  --tc-gray-100: #e8eaed;
+  --tc-gray-200: #d1d5db;
+  --tc-gray-500: #374151;
+  --tc-gray-900: #1a1a1a;
+  --tc-teal: #00d4aa;
+  --tc-teal-dark: #00a88a;
+  --tc-cyan: #7bead6;
+}
+
+/* ── Base reset ─────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--tc-off-white);
+  color: var(--tc-gray-900);
+  font-family: 'sofia-pro', SofiaProWeb, Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Component classes ──────────────────────────────────── */
+@layer components {
+  /* Accessibility — skip link */
+  .tc-skip-link {
+    @apply absolute left-2 z-[1000] rounded-tc-sm bg-tc-teal px-4 py-2 text-[#032920] no-underline;
+    top: -40px;
+  }
+
+  .tc-skip-link:focus {
+    top: 8px;
+  }
+
+  /* Section label — all-caps eyebrow text */
+  .tc-section-label {
+    @apply text-xs font-semibold uppercase tracking-[0.12em] text-tc-teal-dark;
+  }
+
+  /* Section title */
+  .tc-section-title {
+    @apply text-balance text-3xl font-bold leading-tight tracking-[-0.02em] text-tc-gray-900 md:text-4xl;
+  }
+
+  /* Section description */
+  .tc-section-desc {
+    @apply max-w-[62ch] text-pretty text-base text-tc-gray-500;
+  }
+
+  /* Hero gradient background */
+  .tc-hero {
+    background: linear-gradient(180deg, #f0fdf9 0%, #f7fbfa 45%, #fafbfc 100%);
+  }
+
+  /* Orb element */
+  .tc-orb {
+    @apply relative aspect-square rounded-tc-full shadow-tc-orb;
+    width: min(360px, 74vw);
+    background: radial-gradient(circle at 30% 30%, var(--tc-cyan), var(--tc-teal));
+  }
+
+  .tc-orb::after {
+    content: '';
+    @apply absolute rounded-tc-full;
+    inset: 10%;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+  }
+
+  /* Primary button */
+  .tc-btn-primary {
+    @apply inline-flex min-h-[48px] items-center justify-center rounded-tc-sm border-0 bg-tc-teal px-[22px] text-[0.95rem] font-bold no-underline transition-[background-color,color] duration-tc ease-tc;
+    color: #043328;
+  }
+
+  .tc-btn-primary:hover {
+    @apply bg-tc-teal-dark;
+    color: #eafff9;
+  }
+
+  /* Secondary button (outline) */
+  .tc-btn-secondary {
+    @apply inline-flex min-h-[48px] items-center justify-center rounded-tc-sm border border-tc-gray-200 bg-white px-[22px] text-[0.95rem] font-semibold text-tc-gray-900 no-underline transition-[border-color,background-color,color] duration-tc ease-tc;
+  }
+
+  .tc-btn-secondary:hover {
+    @apply border-tc-teal bg-tc-gray-50 text-tc-teal-dark;
+  }
+
+  /* Ghost button (text link style with button affordance) */
+  .tc-btn-ghost {
+    @apply inline-flex min-h-[48px] items-center justify-center gap-1 rounded-tc-xs px-2 text-sm font-medium text-tc-gray-500 underline-offset-2 transition-colors duration-tc ease-tc hover:text-tc-gray-900 hover:underline;
+  }
+
+  /* Card */
+  .tc-card {
+    @apply rounded-tc-md border border-tc-gray-100 bg-white p-6 shadow-tc-card transition-shadow duration-tc ease-tc;
+  }
+
+  .tc-card-hover {
+    @apply tc-card hover:shadow-tc-card-hover;
+  }
+
+  /* Inputs, textareas, selects */
+  input.tc-input,
+  textarea.tc-input,
+  select.tc-input {
+    @apply min-h-[48px] w-full rounded-tc-sm bg-white px-3 py-[10px] text-tc-gray-900 transition-[border-color,box-shadow] duration-tc ease-tc;
+    border: 1.5px solid var(--tc-gray-100);
+  }
+
+  input.tc-input:hover,
+  textarea.tc-input:hover,
+  select.tc-input:hover {
+    border-color: var(--tc-gray-200);
+  }
+
+  input.tc-input:focus,
+  textarea.tc-input:focus,
+  select.tc-input:focus {
+    outline: none;
+    border-color: var(--tc-teal);
+    box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.15);
+  }
+
+  /* Badge */
+  .tc-badge {
+    @apply inline-flex items-center rounded-tc-full border border-tc-gray-100 bg-tc-gray-50 px-3 py-1 text-xs font-semibold text-tc-gray-500;
+  }
+
+  .tc-badge-teal {
+    @apply inline-flex items-center rounded-tc-full border border-tc-teal/20 bg-tc-teal/10 px-3 py-1 text-xs font-semibold text-tc-teal-dark;
+  }
+
+  /* Divider */
+  .tc-divider {
+    @apply my-8 border-t border-tc-gray-100;
+  }
+}
+
+/* ── Global focus styles ────────────────────────────────── */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 1.5px solid var(--tc-teal);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
