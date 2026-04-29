@@ -1,6 +1,6 @@
 export function CarePillars() {
   return (
-    <section aria-labelledby="como-funciona-titulo" className="py-16 md:py-20">
+    <section aria-labelledby="como-funciona-titulo" className="tc-section-wrapper py-16 md:py-20">
       <div className="mx-auto w-full max-w-[1200px] px-4 md:px-8">
         <h2 id="como-funciona-titulo" className="header-1 text-3xl font-bold leading-tight tracking-[-0.02em] text-tc-gray-900 md:text-4xl">
           Como funciona
