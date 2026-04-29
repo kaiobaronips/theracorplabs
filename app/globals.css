@@ -2,9 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Branding Typography — Sofia Pro ───────────────────────── */
+@font-face {
+  font-family: 'SofiaProBold';
+  src: url('/css/fonts/SofiaProBold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SofiaProMedium';
+  src: url('/css/fonts/SofiaProMedium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SofiaProRegular';
+  src: url('/css/fonts/SofiaProRegular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Legacy aliases mantidos para compatibilidade com SofiaProWeb */
 @font-face {
   font-family: 'sofia-pro';
-  src: url('/css/fonts/SofiaProRegular.ttf') format('truetype');
+  src: url('/css/fonts/SofiaProRegular.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -12,7 +38,7 @@
 
 @font-face {
   font-family: 'sofia-pro';
-  src: url('/css/fonts/sofia-pro-bold.woff2') format('woff2');
+  src: url('/css/fonts/SofiaProBold.otf') format('opentype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -73,7 +99,7 @@ body {
 
   /* Section title */
   .tc-section-title {
-    @apply text-balance text-3xl font-bold leading-tight tracking-[-0.02em] text-tc-gray-900 md:text-4xl;
+    @apply text-balance text-3xl font-bold leading-tight tracking-[-0.06em] text-tc-gray-900 md:text-4xl;
   }
 
   /* Section description */
@@ -81,9 +107,10 @@ body {
     @apply max-w-[62ch] text-pretty text-base text-tc-gray-500;
   }
 
-  /* Hero gradient background */
-  .tc-hero {
-    background: linear-gradient(180deg, #f0fdf9 0%, #f7fbfa 45%, #fafbfc 100%);
+  /* Section gradient background */
+  .tc-hero,
+  .tc-section-wrapper {
+    background: linear-gradient(180deg, #00D4AA 0%, #F4F5F7 100%);
   }
 
   /* Orb element */
@@ -169,6 +196,25 @@ body {
   .tc-divider {
     @apply my-8 border-t border-tc-gray-100;
   }
+}
+
+/* ── Branding Typography Roles ──────────────────────────────── */
+/* header-1: cabeçalhos */
+.header-1 {
+  font-family: 'SofiaProBold', "Open Sans", Helvetica, Arial, sans-serif;
+  font-weight: 700;
+}
+
+/* content-1: conteúdo com peso médio */
+.content-1 {
+  font-family: 'SofiaProMedium', "Open Sans", Helvetica, Arial, sans-serif;
+  font-weight: 500;
+}
+
+/* content-2: texto comum */
+.content-2 {
+  font-family: 'SofiaProRegular', "Open Sans", Helvetica, Arial, sans-serif;
+  font-weight: 400;
 }
 
 /* ── Global focus styles ────────────────────────────────── */

@@ -1,3 +1,546 @@
+/* ===== TIPOGRAFIA — BRANDING SYSTEM ===== */
+
+/* header-1: cabeçalhos → SofiaProBold */
+@font-face {
+  font-family: 'SofiaProBold';
+  src: url('/css/fonts/SofiaProBold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.tc-floating-help-button {
+  position: fixed;
+  right: clamp(16px, 2.4vw, 32px);
+  bottom: clamp(16px, 2.4vw, 32px);
+  z-index: 9999;
+  width: clamp(165px, 20vw, 260px);
+  aspect-ratio: 1090 / 325;
+  padding: 0;
+  border: 0;
+  border-radius: 28px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #ffffff;
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.18);
+}
+
+.tc-floating-help-button img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tc-floating-help-button:hover {
+  transform: translateY(-3px);
+}
+
+.tc-floating-help-button:focus-visible {
+  outline: 3px solid rgba(0, 212, 170, 0.65);
+  outline-offset: 4px;
+}
+
+@media (max-width: 520px) {
+  .tc-floating-help-button {
+    width: min(210px, calc(100vw - 32px));
+    border-radius: 22px;
+  }
+}
+
+.tc-experts-showcase {
+  background: #ffffff;
+  color: #202023;
+  padding: 86px 32px 52px;
+}
+
+.tc-experts-showcase,
+.tc-experts-showcase * {
+  box-sizing: border-box;
+}
+
+.tc-experts-showcase__inner {
+  max-width: 1580px;
+  margin: 0 auto;
+  padding-left: 26px;
+}
+
+.tc-experts-showcase__header {
+  text-align: center;
+}
+
+.tc-experts-showcase__eyebrow {
+  margin: 0;
+  color: #8cadb1;
+  font-family: "SofiaProMedium", Arial, sans-serif;
+  font-size: 60px;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.06em;
+}
+
+.tc-experts-showcase__header h2 {
+  margin: 8px 0 0;
+  color: #202023;
+  font-family: "SofiaProMedium", Arial, sans-serif;
+  font-size: 60px;
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.06em;
+}
+
+.tc-experts-showcase__header > p:not(.tc-experts-showcase__eyebrow) {
+  margin: 26px 0 0;
+  color: #8f8f94;
+  font-family: "SofiaProMedium", Arial, sans-serif;
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.34;
+  letter-spacing: 0;
+}
+
+.tc-experts-showcase__grid {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  margin-top: 72px;
+  padding: 0 24px 18px 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  cursor: grab;
+  user-select: none;
+  touch-action: pan-y;
+  scroll-snap-type: x proximity;
+  scroll-behavior: smooth;
+}
+
+.tc-experts-showcase__grid::-webkit-scrollbar {
+  display: none;
+}
+
+.tc-expert-card {
+  flex: 0 0 300px;
+  width: 300px;
+  min-width: 300px;
+  scroll-snap-align: start;
+  cursor: inherit;
+}
+
+.tc-experts-showcase__grid.is-dragging,
+.tc-experts-showcase__grid.is-dragging .tc-expert-card,
+.tc-experts-showcase__grid.is-dragging .tc-expert-card * {
+  cursor: grabbing;
+}
+
+.tc-experts-showcase__grid.is-dragging {
+  scroll-behavior: auto;
+  scroll-snap-type: none;
+}
+
+.tc-expert-card__media {
+  position: relative;
+  width: 300px;
+  height: 170px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #eef4f0;
+}
+
+.tc-expert-card__portrait {
+  display: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tc-expert-card:first-child .tc-expert-card__portrait {
+  display: block;
+}
+
+.tc-expert-card:nth-child(2) .tc-expert-card__portrait {
+  display: block;
+}
+
+.tc-expert-card:nth-child(3) .tc-expert-card__portrait {
+  display: block;
+}
+
+.tc-expert-card:nth-child(4) .tc-expert-card__portrait {
+  display: block;
+}
+
+.tc-expert-card:nth-child(5) .tc-expert-card__portrait {
+  display: block;
+}
+
+.tc-expert-card__role {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 24px 22px;
+  width: 100%;
+  color: #242428;
+  font-family: "SofiaProMedium", Arial, sans-serif;
+}
+
+.tc-expert-card:first-child .tc-expert-card__role {
+  padding: 22px 18px 22px 172px;
+  justify-content: center;
+}
+
+.tc-expert-card:nth-child(2) .tc-expert-card__role {
+  padding: 22px 18px 22px 184px;
+  justify-content: center;
+}
+
+.tc-expert-card:nth-child(3) .tc-expert-card__role {
+  padding: 18px 16px 18px 168px;
+  justify-content: center;
+}
+
+.tc-expert-card:nth-child(4) .tc-expert-card__role {
+  padding: 22px 18px 22px 176px;
+  justify-content: center;
+}
+
+.tc-expert-card:nth-child(5) .tc-expert-card__role {
+  padding: 22px 18px 22px 172px;
+  justify-content: center;
+}
+
+.tc-expert-card__role h3 {
+  margin: 0 0 12px;
+  font-family: "SofiaProBold", Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+
+.tc-expert-card__role p {
+  position: relative;
+  margin: 8px 0 0;
+  padding-left: 11px;
+  color: #63666a;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+
+.tc-expert-card__role p::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 1px;
+  width: 2px;
+  height: 14px;
+  border-radius: 2px;
+  background: #2f7770;
+}
+
+.tc-expert-card__body {
+  padding-top: 18px;
+  font-family: "SofiaProMedium", Arial, sans-serif;
+}
+
+.tc-expert-card__body h3 {
+  margin: 0;
+  color: #2a2a2f;
+  font-family: "SofiaProBold", Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: 0;
+}
+
+.tc-expert-card__body p {
+  margin: 14px 0 0;
+  color: #6a6a70;
+  font-family: "SofiaProMedium", Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.32;
+  letter-spacing: 0;
+}
+
+.tc-footer-app-promo {
+  width: 100%;
+  margin: 0 auto 40px;
+}
+
+.tc-footer-app-promo__card {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 56px 40px 0;
+  border-radius: 32px;
+  background: #ededeb;
+  color: #1f2023;
+  text-align: center;
+  overflow: hidden;
+}
+
+.tc-footer-app-promo__eyebrow {
+  margin: 0;
+  font-family: "SofiaProMedium", Arial, sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.tc-footer-app-promo__title {
+  margin: 18px 0 0;
+  font-family: "SofiaProMedium", Arial, sans-serif;
+  font-size: 64px;
+  font-weight: 500;
+  line-height: 0.96;
+  letter-spacing: -0.05em;
+}
+
+.tc-footer-app-promo__download {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 34px;
+  padding: 10px 14px 10px 24px;
+  border-radius: 14px;
+  background: #e3e3e0;
+}
+
+.tc-footer-app-promo__download-label {
+  margin: 0;
+  color: #232427;
+  font-family: "SofiaProMedium", Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.tc-footer-app-promo__qr {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 112px;
+  height: 112px;
+  border-radius: 10px;
+  border: 5px solid #ffffff;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.12) 50%, transparent 50%) 0 0 / 12px 12px,
+    linear-gradient(rgba(0, 0, 0, 0.12) 50%, transparent 50%) 0 0 / 12px 12px,
+    #ffffff;
+}
+
+.tc-footer-app-promo__qr::before,
+.tc-footer-app-promo__qr::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 4px solid #111111;
+  border-radius: 6px;
+  background: #ffffff;
+}
+
+.tc-footer-app-promo__qr::before {
+  top: 8px;
+  left: 8px;
+  box-shadow: 72px 0 0 0 #ffffff, 0 72px 0 0 #ffffff;
+}
+
+.tc-footer-app-promo__qr::after {
+  right: 8px;
+  bottom: 8px;
+}
+
+.tc-footer-app-promo__qr span {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #111111;
+  color: #ffffff;
+  font-family: "SofiaProBold", Arial, sans-serif;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.tc-footer-app-promo__subcaption {
+  margin: 18px 0 0;
+  color: #303136;
+  font-family: "SofiaProMedium", Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.tc-footer-app-promo__image-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 42px;
+}
+
+.tc-footer-app-promo__image {
+  display: block;
+  width: min(100%, 760px);
+  height: auto;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+@media (max-width: 1120px) {
+  .tc-experts-showcase {
+    padding: 72px 24px 48px;
+  }
+
+  .tc-experts-showcase__inner {
+    padding-left: 18px;
+  }
+
+  .tc-experts-showcase__grid {
+    gap: 16px;
+    margin-top: 60px;
+    padding-right: 18px;
+  }
+
+  .tc-footer-app-promo__card {
+    padding: 48px 28px 0;
+  }
+
+  .tc-footer-app-promo__title {
+    font-size: 52px;
+  }
+}
+
+@media (max-width: 640px) {
+  .tc-experts-showcase {
+    padding: 56px 16px 40px;
+  }
+
+  .tc-experts-showcase__inner {
+    padding-left: 12px;
+  }
+
+  .tc-experts-showcase__eyebrow {
+    font-size: 36px;
+  }
+
+  .tc-experts-showcase__header h2 {
+    font-size: 40px;
+  }
+
+  .tc-experts-showcase__header > p:not(.tc-experts-showcase__eyebrow) {
+    font-size: 18px;
+  }
+
+  .tc-experts-showcase__grid {
+    margin-top: 44px;
+    padding-right: 12px;
+  }
+
+  .tc-footer-app-promo {
+    margin-bottom: 28px;
+  }
+
+  .tc-footer-app-promo__card {
+    padding: 38px 18px 0;
+    border-radius: 24px;
+  }
+
+  .tc-footer-app-promo__eyebrow {
+    font-size: 18px;
+  }
+
+  .tc-footer-app-promo__title {
+    font-size: 38px;
+    line-height: 1;
+  }
+
+  .tc-footer-app-promo__download {
+    display: flex;
+    width: 100%;
+    max-width: 280px;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px 10px 18px;
+  }
+
+  .tc-footer-app-promo__download-label,
+  .tc-footer-app-promo__subcaption {
+    font-size: 16px;
+  }
+
+  .tc-footer-app-promo__qr {
+    width: 94px;
+    height: 94px;
+    background:
+      linear-gradient(90deg, rgba(0, 0, 0, 0.12) 50%, transparent 50%) 0 0 / 10px 10px,
+      linear-gradient(rgba(0, 0, 0, 0.12) 50%, transparent 50%) 0 0 / 10px 10px,
+      #ffffff;
+  }
+
+  .tc-footer-app-promo__image-wrap {
+    margin-top: 34px;
+  }
+
+  .tc-footer-app-promo__image {
+    width: min(100%, 520px);
+  }
+}
+
+.tc-footer-legal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  width: 100%;
+  margin: 28px auto 0;
+  text-align: center;
+}
+
+.tc-footer-legal__logo {
+  display: block;
+  width: min(180px, 100%);
+  height: auto;
+  object-fit: contain;
+}
+
+.tc-footer-legal__text {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: "SofiaProMedium", Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.footer-style__FooterPrivacyWrapper-sc-ffd98edc-21.cUZYxa {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
+}
+
+.footer-style__FooterPrivacyWrapper-sc-ffd98edc-21.cUZYxa > .tc-footer-legal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 28px auto 0;
+  padding-right: 0;
+}
+
+
 /* ===== BLOCO DE ESTILO 1 ===== */
 @font-face { font-family: SofiaProWeb; font-weight: 300; src: url("/css/fonts/SofiaProLight-latin-extended-additional.woff2") format("woff2"), url("/css/fonts/SofiaProLight-latin-extended-additional.woff") format("woff"), url("/css/fonts/SofiaProLight.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+1E00-1EFF; } @font-face { font-family: SofiaProWeb; font-weight: 300; src: url("/css/fonts/SofiaProLight-latin-extended-a.woff2") format("woff2"), url("/css/fonts/SofiaProLight-latin-extended-a.woff") format("woff"), url("/css/fonts/SofiaProLight.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0100-0130,U+0132-0151,U+0154-017F; } @font-face { font-family: SofiaProWeb; font-weight: 300; src: url("/css/fonts/SofiaProLight-latin-extended-b.woff2") format("woff2"), url("/css/fonts/SofiaProLight-latin-extended-b.woff") format("woff"), url("/css/fonts/SofiaProLight.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0180-024F; } @font-face { font-family: SofiaProWeb; font-weight: 300; src: url("/css/fonts/SofiaProLight-rest-latin.woff2") format("woff2"), url("/css/fonts/SofiaProLight-rest-latin.woff") format("woff"), url("/css/fonts/SofiaProLight.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+00A1,U+00AA-00AB,U+00AF,U+00B8,U+00BB,U+00BF-00D6,U+00D8-00F6,U+00F8-00FF,U+0131,U+0152-0153,U+02B0-02FF; } @font-face { font-family: SofiaProWeb; font-weight: 300; src: url("/css/fonts/SofiaProLight-rest.woff2") format("woff2"), url("/css/fonts/SofiaProLight-rest.woff") format("woff"), url("/css/fonts/SofiaProLight.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0259,U+0300-03C0,U+2070-2073,U+2075-20AB,U+20AD-2121,U+2123-218F,U+21BC-2211,U+2213-2214,U+2216-F8FE,U+FB01-FB02; } @font-face { font-family: SofiaProWeb; font-weight: 300; src: url("/css/fonts/SofiaProLight-english.woff2") format("woff2"), url("/css/fonts/SofiaProLight-english.woff") format("woff"), url("/css/fonts/SofiaProLight.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0000-00A0, U+00A2-00A9, U+00AC-00AE, U+00B0-00B7, U+00B9-00BA, U+00BC-00BE, U+00D7, U+00F7, U+2000-206F, U+2074, U+20AC, U+2122, U+2190-21BB, U+2212, U+2215, U+F8FF, U+FEFF, U+FFFD; } @font-face { font-family: SofiaProWeb; font-weight: 400; src: url("/css/fonts/SofiaProRegular-latin-extended-additional.woff2") format("woff2"), url("/css/fonts/SofiaProRegular-latin-extended-additional.woff") format("woff"), url("/css/fonts/SofiaProRegular.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+1E00-1EFF; } @font-face { font-family: SofiaProWeb; font-weight: 400; src: url("/css/fonts/SofiaProRegular-latin-extended-a.woff2") format("woff2"), url("/css/fonts/SofiaProRegular-latin-extended-a.woff") format("woff"), url("/css/fonts/SofiaProRegular.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0100-0130,U+0132-0151,U+0154-017F; } @font-face { font-family: SofiaProWeb; font-weight: 400; src: url("/css/fonts/SofiaProRegular-latin-extended-b.woff2") format("woff2"), url("/css/fonts/SofiaProRegular-latin-extended-b.woff") format("woff"), url("/css/fonts/SofiaProRegular.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0180-024F; } @font-face { font-family: SofiaProWeb; font-weight: 400; src: url("/css/fonts/SofiaProRegular-rest-latin.woff2") format("woff2"), url("/css/fonts/SofiaProRegular-rest-latin.woff") format("woff"), url("/css/fonts/SofiaProRegular.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+00A1,U+00AA-00AB,U+00AF,U+00B8,U+00BB,U+00BF-00D6,U+00D8-00F6,U+00F8-00FF,U+0131,U+0152-0153,U+02B0-02FF; } @font-face { font-family: SofiaProWeb; font-weight: 400; src: url("/css/fonts/SofiaProRegular-rest.woff2") format("woff2"), url("/css/fonts/SofiaProRegular-rest.woff") format("woff"), url("/css/fonts/SofiaProRegular.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0259,U+0300-03C0,U+2070-2073,U+2075-20AB,U+20AD-2121,U+2123-218F,U+21BC-2211,U+2213-2214,U+2216-F8FE,U+FB01-FB02; } @font-face { font-family: SofiaProWeb; font-weight: 400; src: url("/css/fonts/SofiaProRegular-english.woff2") format("woff2"), url("/css/fonts/SofiaProRegular-english.woff") format("woff"), url("/css/fonts/SofiaProRegular.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0000-00A0, U+00A2-00A9, U+00AC-00AE, U+00B0-00B7, U+00B9-00BA, U+00BC-00BE, U+00D7, U+00F7, U+2000-206F, U+2074, U+20AC, U+2122, U+2190-21BB, U+2212, U+2215, U+F8FF, U+FEFF, U+FFFD; } @font-face { font-family: SofiaProWeb; font-weight: 500; src: url("/css/fonts/SofiaProMedium-latin-extended-additional.woff2") format("woff2"), url("/css/fonts/SofiaProMedium-latin-extended-additional.woff") format("woff"), url("/css/fonts/SofiaProMedium.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+1E00-1EFF; } @font-face { font-family: SofiaProWeb; font-weight: 500; src: url("/css/fonts/SofiaProMedium-latin-extended-a.woff2") format("woff2"), url("/css/fonts/SofiaProMedium-latin-extended-a.woff") format("woff"), url("/css/fonts/SofiaProMedium.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0100-0130,U+0132-0151,U+0154-017F; } @font-face { font-family: SofiaProWeb; font-weight: 500; src: url("/css/fonts/SofiaProMedium-latin-extended-b.woff2") format("woff2"), url("/css/fonts/SofiaProMedium-latin-extended-b.woff") format("woff"), url("/css/fonts/SofiaProMedium.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0180-024F; } @font-face { font-family: SofiaProWeb; font-weight: 500; src: url("/css/fonts/SofiaProMedium-rest-latin.woff2") format("woff2"), url("/css/fonts/SofiaProMedium-rest-latin.woff") format("woff"), url("/css/fonts/SofiaProMedium.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+00A1,U+00AA-00AB,U+00AF,U+00B8,U+00BB,U+00BF-00D6,U+00D8-00F6,U+00F8-00FF,U+0131,U+0152-0153,U+02B0-02FF; } @font-face { font-family: SofiaProWeb; font-weight: 500; src: url("/css/fonts/SofiaProMedium-rest.woff2") format("woff2"), url("/css/fonts/SofiaProMedium-rest.woff") format("woff"), url("/css/fonts/SofiaProMedium.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0259,U+0300-03C0,U+2070-2073,U+2075-20AB,U+20AD-2121,U+2123-218F,U+21BC-2211,U+2213-2214,U+2216-F8FE,U+FB01-FB02; } @font-face { font-family: SofiaProWeb; font-weight: 500; src: url("/css/fonts/SofiaProMedium-english.woff2") format("woff2"), url("/css/fonts/SofiaProMedium-english.woff") format("woff"), url("/css/fonts/SofiaProMedium.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0000-00A0, U+00A2-00A9, U+00AC-00AE, U+00B0-00B7, U+00B9-00BA, U+00BC-00BE, U+00D7, U+00F7, U+2000-206F, U+2074, U+20AC, U+2122, U+2190-21BB, U+2212, U+2215, U+F8FF, U+FEFF, U+FFFD; } @font-face { font-family: SofiaProWeb; font-weight: 600; src: url("/css/fonts/SofiaProSemiBold-latin-extended-additional.woff2") format("woff2"), url("/css/fonts/SofiaProSemiBold-latin-extended-additional.woff") format("woff"), url("/css/fonts/SofiaProSemiBold.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+1E00-1EFF; } @font-face { font-family: SofiaProWeb; font-weight: 600; src: url("/css/fonts/SofiaProSemiBold-latin-extended-a.woff2") format("woff2"), url("/css/fonts/SofiaProSemiBold-latin-extended-a.woff") format("woff"), url("/css/fonts/SofiaProSemiBold.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0100-0130,U+0132-0151,U+0154-017F; } @font-face { font-family: SofiaProWeb; font-weight: 600; src: url("/css/fonts/SofiaProSemiBold-latin-extended-b.woff2") format("woff2"), url("/css/fonts/SofiaProSemiBold-latin-extended-b.woff") format("woff"), url("/css/fonts/SofiaProSemiBold.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0180-024F; } @font-face { font-family: SofiaProWeb; font-weight: 600; src: url("/css/fonts/SofiaProSemiBold-rest-latin.woff2") format("woff2"), url("/css/fonts/SofiaProSemiBold-rest-latin.woff") format("woff"), url("/css/fonts/SofiaProSemiBold.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+00A1,U+00AA-00AB,U+00AF,U+00B8,U+00BB,U+00BF-00D6,U+00D8-00F6,U+00F8-00FF,U+0131,U+0152-0153,U+02B0-02FF; } @font-face { font-family: SofiaProWeb; font-weight: 600; src: url("/css/fonts/SofiaProSemiBold-rest.woff2") format("woff2"), url("/css/fonts/SofiaProSemiBold-rest.woff") format("woff"), url("/css/fonts/SofiaProSemiBold.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0259,U+0300-03C0,U+2070-2073,U+2075-20AB,U+20AD-2121,U+2123-218F,U+21BC-2211,U+2213-2214,U+2216-F8FE,U+FB01-FB02; } @font-face { font-family: SofiaProWeb; font-weight: 600; src: url("/css/fonts/SofiaProSemiBold-english.woff2") format("woff2"), url("/css/fonts/SofiaProSemiBold-english.woff") format("woff"), url("/css/fonts/SofiaProSemiBold.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0000-00A0, U+00A2-00A9, U+00AC-00AE, U+00B0-00B7, U+00B9-00BA, U+00BC-00BE, U+00D7, U+00F7, U+2000-206F, U+2074, U+20AC, U+2122, U+2190-21BB, U+2212, U+2215, U+F8FF, U+FEFF, U+FFFD; } @font-face { font-family: SofiaProWeb; font-weight: 700; src: url("/css/fonts/SofiaProBold-latin-extended-additional.woff2") format("woff2"), url("/css/fonts/SofiaProBold-latin-extended-additional.woff") format("woff"), url("/css/fonts/SofiaProBold.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+1E00-1EFF; } @font-face { font-family: SofiaProWeb; font-weight: 700; src: url("/css/fonts/SofiaProBold-latin-extended-a.woff2") format("woff2"), url("/css/fonts/SofiaProBold-latin-extended-a.woff") format("woff"), url("/css/fonts/SofiaProBold.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0100-0130,U+0132-0151,U+0154-017F; } @font-face { font-family: SofiaProWeb; font-weight: 700; src: url("/css/fonts/SofiaProBold-latin-extended-b.woff2") format("woff2"), url("/css/fonts/SofiaProBold-latin-extended-b.woff") format("woff"), url("/css/fonts/SofiaProBold.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0180-024F; } @font-face { font-family: SofiaProWeb; font-weight: 700; src: url("/css/fonts/SofiaProBold-rest-latin.woff2") format("woff2"), url("/css/fonts/SofiaProBold-rest-latin.woff") format("woff"), url("/css/fonts/SofiaProBold.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+00A1,U+00AA-00AB,U+00AF,U+00B8,U+00BB,U+00BF-00D6,U+00D8-00F6,U+00F8-00FF,U+0131,U+0152-0153,U+02B0-02FF; } @font-face { font-family: SofiaProWeb; font-weight: 700; src: url("/css/fonts/SofiaProBold-rest.woff2") format("woff2"), url("/css/fonts/SofiaProBold-rest.woff") format("woff"), url("/css/fonts/SofiaProBold.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0259,U+0300-03C0,U+2070-2073,U+2075-20AB,U+20AD-2121,U+2123-218F,U+21BC-2211,U+2213-2214,U+2216-F8FE,U+FB01-FB02; } @font-face { font-family: SofiaProWeb; font-weight: 700; src: url("/css/fonts/SofiaProBold-english.woff2") format("woff2"), url("/css/fonts/SofiaProBold-english.woff") format("woff"), url("/css/fonts/SofiaProBold.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0000-00A0, U+00A2-00A9, U+00AC-00AE, U+00B0-00B7, U+00B9-00BA, U+00BC-00BE, U+00D7, U+00F7, U+2000-206F, U+2074, U+20AC, U+2122, U+2190-21BB, U+2212, U+2215, U+F8FF, U+FEFF, U+FFFD; } @font-face { font-family: IvarSoft; font-weight: 400; src: url("/css/fonts/IvarSoftRegular-latin-extended-additional.woff2") format("woff2"), url("/css/fonts/IvarSoftRegular-latin-extended-additional.woff") format("woff"), url("/css/fonts/IvarSoftRegular.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+1E00-1EFF; } @font-face { font-family: IvarSoft; font-weight: 400; src: url("/css/fonts/IvarSoftRegular-latin-extended-a.woff2") format("woff2"), url("/css/fonts/IvarSoftRegular-latin-extended-a.woff") format("woff"), url("/css/fonts/IvarSoftRegular.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0100-0130,U+0132-0151,U+0154-017F; } @font-face { font-family: IvarSoft; font-weight: 400; src: url("/css/fonts/IvarSoftRegular-latin-extended-b.woff2") format("woff2"), url("/css/fonts/IvarSoftRegular-latin-extended-b.woff") format("woff"), url("/css/fonts/IvarSoftRegular.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0180-024F; } @font-face { font-family: IvarSoft; font-weight: 400; src: url("/css/fonts/IvarSoftRegular-rest-latin.woff2") format("woff2"), url("/css/fonts/IvarSoftRegular-rest-latin.woff") format("woff"), url("/css/fonts/IvarSoftRegular.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+00A1,U+00AA-00AB,U+00AF,U+00B8,U+00BB,U+00BF-00D6,U+00D8-00F6,U+00F8-00FF,U+0131,U+0152-0153,U+02B0-02FF; } @font-face { font-family: IvarSoft; font-weight: 400; src: url("/css/fonts/IvarSoftRegular-rest.woff2") format("woff2"), url("/css/fonts/IvarSoftRegular-rest.woff") format("woff"), url("/css/fonts/IvarSoftRegular.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0259,U+0300-03C0,U+2070-2073,U+2075-20AB,U+20AD-2121,U+2123-218F,U+21BC-2211,U+2213-2214,U+2216-F8FE,U+FB01-FB02; } @font-face { font-family: IvarSoft; font-weight: 400; src: url("/css/fonts/IvarSoftRegular-english.woff2") format("woff2"), url("/css/fonts/IvarSoftRegular-english.woff") format("woff"), url("/css/fonts/IvarSoftRegular.otf") format("opentype"); font-style: normal; font-display: swap; unicode-range: U+0000-00A0, U+00A2-00A9, U+00AC-00AE, U+00B0-00B7, U+00B9-00BA, U+00BC-00BE, U+00D7, U+00F7, U+2000-206F, U+2074, U+20AC, U+2122, U+2190-21BB, U+2212, U+2215, U+F8FF, U+FEFF, U+FFFD; } @font-face { font-family: IvarSoft; font-weight: 400; src: url("/css/fonts/IvarSoftItalic-latin-extended-additional.woff2") format("woff2"), url("/css/fonts/IvarSoftItalic-latin-extended-additional.woff") format("woff"), url("/css/fonts/IvarSoftItalic.otf") format("opentype"); font-style: italic; font-display: swap; unicode-range: U+1E00-1EFF; } @font-face { font-family: IvarSoft; font-weight: 400; src: url("/css/fonts/IvarSoftItalic-latin-extended-a.woff2") format("woff2"), url("/css/fonts/IvarSoftItalic-latin-extended-a.woff") format("woff"), url("/css/fonts/IvarSoftItalic.otf") format("opentype"); font-style: italic; font-display: swap; unicode-range: U+0100-0130,U+0132-0151,U+0154-017F; } @font-face { font-family: IvarSoft; font-weight: 400; src: url("/css/fonts/IvarSoftItalic-latin-extended-b.woff2") format("woff2"), url("/css/fonts/IvarSoftItalic-latin-extended-b.woff") format("woff"), url("/css/fonts/IvarSoftItalic.otf") format("opentype"); font-style: italic; font-display: swap; unicode-range: U+0180-024F; } @font-face { font-family: IvarSoft; font-weight: 400; src: url("/css/fonts/IvarSoftItalic-rest-latin.woff2") format("woff2"), url("/css/fonts/IvarSoftItalic-rest-latin.woff") format("woff"), url("/css/fonts/IvarSoftItalic.otf") format("opentype"); font-style: italic; font-display: swap; unicode-range: U+00A1,U+00AA-00AB,U+00AF,U+00B8,U+00BB,U+00BF-00D6,U+00D8-00F6,U+00F8-00FF,U+0131,U+0152-0153,U+02B0-02FF; } @font-face { font-family: IvarSoft; font-weight: 400; src: url("/css/fonts/IvarSoftItalic-rest.woff2") format("woff2"), url("/css/fonts/IvarSoftItalic-rest.woff") format("woff"), url("/css/fonts/IvarSoftItalic.otf") format("opentype"); font-style: italic; font-display: swap; unicode-range: U+0259,U+0300-03C0,U+2070-2073,U+2075-20AB,U+20AD-2121,U+2123-218F,U+21BC-2211,U+2213-2214,U+2216-F8FE,U+FB01-FB02; } @font-face { font-family: IvarSoft; font-weight: 400; src: url("/css/fonts/IvarSoftItalic-english.woff2") format("woff2"), url("/css/fonts/IvarSoftItalic-english.woff") format("woff"), url("/css/fonts/IvarSoftItalic.otf") format("opentype"); font-style: italic; font-display: swap; unicode-range: U+0000-00A0, U+00A2-00A9, U+00AC-00AE, U+00B0-00B7, U+00B9-00BA, U+00BC-00BE, U+00D7, U+00F7, U+2000-206F, U+2074, U+20AC, U+2122, U+2190-21BB, U+2212, U+2215, U+F8FF, U+FEFF, U+FFFD; }
 
@@ -245,7 +788,7 @@
 @media (min-width:1266px){.rPPSC{--scale:calc( (1266 - 360) / var(--max-viewport-size) );}}/*!sc*/
 @media (min-width:1392px){.rPPSC{--scale:calc(var(--max-viewport-size) / var(--max-viewport-size));}}/*!sc*/
 @media (max-width:359px){.rPPSC{--font-size:12;font-size:calc(var(--font-size) * var(--scale));}}/*!sc*/
-.bTHUGX{--base-font-size:16;--max-font-size:50;--max-letter-spacing:calc(0.0625 * -1em);--max-viewport-size:calc(1392 - 360);margin:0;padding:0;font-family:"sofia-pro",SofiaProWeb,Helvetica,Arial,sans-serif;font-weight:400;font-style:normal;-webkit-letter-spacing:-0.0625em;-moz-letter-spacing:-0.0625em;-ms-letter-spacing:-0.0625em;letter-spacing:-0.0625em;line-height:1.15;color:inherit;font-weight:500;line-height:1.125;--min-variant-font-size:28;--max-variant-font-size:51;--font-size:calc( ( (var(--max-variant-font-size) - var(--min-variant-font-size)) * var(--scale) ) + var(--min-variant-font-size) );font-size:calc(var(--font-size) * 1px);-webkit-letter-spacing:max( calc( ( ( ( (var(--font-size) - var(--base-font-size)) / ((var(--max-font-size) - var(--base-font-size)) / 5) ) + 1 ) / 100 ) * -1em ), var(--max-letter-spacing) );-moz-letter-spacing:max( calc( ( ( ( (var(--font-size) - var(--base-font-size)) / ((var(--max-font-size) - var(--base-font-size)) / 5) ) + 1 ) / 100 ) * -1em ), var(--max-letter-spacing) );-ms-letter-spacing:max( calc( ( ( ( (var(--font-size) - var(--base-font-size)) / ((var(--max-font-size) - var(--base-font-size)) / 5) ) + 1 ) / 100 ) * -1em ), var(--max-letter-spacing) );letter-spacing:max( calc( ( ( ( (var(--font-size) - var(--base-font-size)) / ((var(--max-font-size) - var(--base-font-size)) / 5) ) + 1 ) / 100 ) * -1em ), var(--max-letter-spacing) );color:rgba(255,255,255,1);text-shadow:0 1px 3px rgba(0,0,0,0.35);}/*!sc*/
+.bTHUGX{--base-font-size:16;--max-font-size:50;--max-letter-spacing:calc(0.0625 * -1em);--max-viewport-size:calc(1392 - 360);margin:0;padding:0;font-family:"sofia-pro",SofiaProWeb,Helvetica,Arial,sans-serif;font-weight:400;font-style:normal;-webkit-letter-spacing:-0.0625em;-moz-letter-spacing:-0.0625em;-ms-letter-spacing:-0.0625em;letter-spacing:-0.0625em;line-height:1.15;color:inherit;font-weight:500;line-height:1.125;--min-variant-font-size:28;--max-variant-font-size:51;--font-size:calc( ( (var(--max-variant-font-size) - var(--min-variant-font-size)) * var(--scale) ) + var(--min-variant-font-size) );font-size:calc(var(--font-size) * 1px);-webkit-letter-spacing:max( calc( ( ( ( (var(--font-size) - var(--base-font-size)) / ((var(--max-font-size) - var(--base-font-size)) / 5) ) + 1 ) / 100 ) * -1em ), var(--max-letter-spacing) );-moz-letter-spacing:max( calc( ( ( ( (var(--font-size) - var(--base-font-size)) / ((var(--max-font-size) - var(--base-font-size)) / 5) ) + 1 ) / 100 ) * -1em ), var(--max-letter-spacing) );-ms-letter-spacing:max( calc( ( ( ( (var(--font-size) - var(--base-font-size)) / ((var(--max-font-size) - var(--base-font-size)) / 5) ) + 1 ) / 100 ) * -1em ), var(--max-letter-spacing) );letter-spacing:max( calc( ( ( ( (var(--font-size) - var(--base-font-size)) / ((var(--max-font-size) - var(--base-font-size)) / 5) ) + 1 ) / 100 ) * -1em ), var(--max-letter-spacing) );color:rgba(255,255,255,1);}/*!sc*/
 @media (max-width:359px){.bTHUGX{--scale:calc(100vw / 360);}}/*!sc*/
 @media (min-width:360px){.bTHUGX{--scale:calc( (360 - 360) / var(--max-viewport-size) );}}/*!sc*/
 @media (min-width:488px){.bTHUGX{--scale:calc( (488 - 360) / var(--max-viewport-size) );}}/*!sc*/
@@ -254,7 +797,7 @@
 @media (min-width:1266px){.bTHUGX{--scale:calc( (1266 - 360) / var(--max-viewport-size) );}}/*!sc*/
 @media (min-width:1392px){.bTHUGX{--scale:calc(var(--max-viewport-size) / var(--max-viewport-size));}}/*!sc*/
 @media (max-width:359px){.bTHUGX{--font-size:28;font-size:calc(var(--font-size) * var(--scale));}}/*!sc*/
-.dnWuxh{--base-font-size:16;--max-font-size:50;--max-letter-spacing:calc(0.0625 * -1em);--max-viewport-size:calc(1392 - 360);margin:0;padding:0;font-family:"sofia-pro",SofiaProWeb,Helvetica,Arial,sans-serif;font-weight:400;font-style:normal;-webkit-letter-spacing:-0.0625em;-moz-letter-spacing:-0.0625em;-ms-letter-spacing:-0.0625em;letter-spacing:-0.0625em;line-height:1.15;color:inherit;font-weight:400;line-height:1.3;--min-variant-font-size:16;--max-variant-font-size:20;--font-size:calc( ( (var(--max-variant-font-size) - var(--min-variant-font-size)) * var(--scale) ) + var(--min-variant-font-size) );font-size:calc(var(--font-size) * 1px);-webkit-letter-spacing:max( calc( ( ( ( (var(--font-size) - var(--base-font-size)) / ((var(--max-font-size) - var(--base-font-size)) / 5) ) + 1 ) / 100 ) * -1em ), var(--max-letter-spacing) );-moz-letter-spacing:max( calc( ( ( ( (var(--font-size) - var(--base-font-size)) / ((var(--max-font-size) - var(--base-font-size)) / 5) ) + 1 ) / 100 ) * -1em ), var(--max-letter-spacing) );-ms-letter-spacing:max( calc( ( ( ( (var(--font-size) - var(--base-font-size)) / ((var(--max-font-size) - var(--base-font-size)) / 5) ) + 1 ) / 100 ) * -1em ), var(--max-letter-spacing) );letter-spacing:max( calc( ( ( ( (var(--font-size) - var(--base-font-size)) / ((var(--max-font-size) - var(--base-font-size)) / 5) ) + 1 ) / 100 ) * -1em ), var(--max-letter-spacing) );color:rgba(255,255,255,1);text-shadow:0 1px 3px rgba(0,0,0,0.35);}/*!sc*/
+.dnWuxh{--base-font-size:16;--max-font-size:50;--max-letter-spacing:calc(0.0625 * -1em);--max-viewport-size:calc(1392 - 360);margin:0;padding:0;font-family:"sofia-pro",SofiaProWeb,Helvetica,Arial,sans-serif;font-weight:400;font-style:normal;-webkit-letter-spacing:-0.0625em;-moz-letter-spacing:-0.0625em;-ms-letter-spacing:-0.0625em;letter-spacing:-0.0625em;line-height:1.15;color:inherit;font-weight:400;line-height:1.3;--min-variant-font-size:16;--max-variant-font-size:20;--font-size:calc( ( (var(--max-variant-font-size) - var(--min-variant-font-size)) * var(--scale) ) + var(--min-variant-font-size) );font-size:calc(var(--font-size) * 1px);-webkit-letter-spacing:max( calc( ( ( ( (var(--font-size) - var(--base-font-size)) / ((var(--max-font-size) - var(--base-font-size)) / 5) ) + 1 ) / 100 ) * -1em ), var(--max-letter-spacing) );-moz-letter-spacing:max( calc( ( ( ( (var(--font-size) - var(--base-font-size)) / ((var(--max-font-size) - var(--base-font-size)) / 5) ) + 1 ) / 100 ) * -1em ), var(--max-letter-spacing) );-ms-letter-spacing:max( calc( ( ( ( (var(--font-size) - var(--base-font-size)) / ((var(--max-font-size) - var(--base-font-size)) / 5) ) + 1 ) / 100 ) * -1em ), var(--max-letter-spacing) );letter-spacing:max( calc( ( ( ( (var(--font-size) - var(--base-font-size)) / ((var(--max-font-size) - var(--base-font-size)) / 5) ) + 1 ) / 100 ) * -1em ), var(--max-letter-spacing) );color:rgba(255,255,255,1);}/*!sc*/
 @media (max-width:359px){.dnWuxh{--scale:calc(100vw / 360);}}/*!sc*/
 @media (min-width:360px){.dnWuxh{--scale:calc( (360 - 360) / var(--max-viewport-size) );}}/*!sc*/
 @media (min-width:488px){.dnWuxh{--scale:calc( (488 - 360) / var(--max-viewport-size) );}}/*!sc*/
@@ -1587,12 +2130,13 @@ img[alt] { color: transparent; font-size: 0; }
 
     .ehupWf::before,
     .ehupWf::after {
-        box-shadow: 0 calc(-1 * var(--border-radius)) 0 0 #00D4AA !important;
+        display: none !important;
+        box-shadow: none !important;
     }
 
     .ehupWf:hover::before,
     .ehupWf:hover::after {
-        box-shadow: 0 calc(-1 * var(--border-radius)) 0 0 #00BFA5 !important;
+        box-shadow: none !important;
     }
 
     .waitlist-promo-style__IOSBrowserBackgroundController-sc-b72334cc-0,
@@ -1626,17 +2170,32 @@ img[alt] { color: transparent; font-size: 0; }
 
 /* ===== BLOCO DE ESTILO 6 ===== */
 /* Header Polish: Compact & Fade */
+    :root {
+        --global-nav-header-row-height: 64px;
+        --headerHeight: 64px;
+        --promoHeight: 42px;
+        --promoHeightOffset: 42px;
+    }
+
     .global-navigation-header-style__GlobalNavigationBackground-sc-4d0b1105-1 {
-        height: 80px !important;
+        height: 64px !important;
         transition: opacity 0.4s ease, height 0.4s ease !important;
-        background-color: #FFFFFF !important;
-        border: none !important;
-        box-shadow: none !important;
+        background-color: rgba(255, 255, 255, 0.82) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.58) !important;
+        border-radius: 24px 24px 0 0 !important;
+        box-shadow: 0 14px 34px rgba(18, 24, 33, 0.045) !important;
+        backdrop-filter: blur(22px) saturate(1.2) !important;
+        -webkit-backdrop-filter: blur(22px) saturate(1.2) !important;
+        overflow: hidden !important;
     }
     
     .global-navigation-header-style__GlobalNavigationHeaderContent-sc-4d0b1105-2 {
-        height: 80px !important;
+        height: 64px !important;
         border: none !important;
+    }
+
+    .global-navigation-header-style__GlobalNavigationTransformer-sc-4d0b1105-0 {
+        background: linear-gradient(to bottom, #00D4AA 0 64px, transparent 64px) !important;
     }
 
     /* Clean Logo Container - Removing excessive borders/padding */
@@ -1652,10 +2211,9 @@ img[alt] { color: transparent; font-size: 0; }
         justify-content: center !important;
     }
 
-    /* Large Logo fitting the 80px header */
     .global-navigation-header-style__LogoWrapper-sc-4d0b1105-4 img {
-        height: 72px !important; /* Large and prominent, but fits 80px height */
-        width: auto !important;
+        width: 101px !important;
+        height: auto !important;
         margin: 0 !important;
         border: none !important;
         display: block !important;
@@ -1669,22 +2227,23 @@ img[alt] { color: transparent; font-size: 0; }
 /* ===== BLOCO DE ESTILO 7 ===== */
 .tc-reference-hero {
         width: 100%;
-        min-height: calc(92vh - 80px);
+        min-height: calc(100vh - 106px);
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: clamp(36px, 4.6vw, 70px) 24px clamp(80px, 8vw, 124px);
+        padding: 57px 24px 96px;
         background: #ffffff;
         color: #151515;
-        font-family: "sofia-pro", SofiaProWeb, Helvetica, Arial, sans-serif;
+        font-family: "SofiaProMedium", "SofiaProRegular", Helvetica, Arial, sans-serif;
         text-align: center;
     }
 
     .tc-reference-hero__orb {
         position: relative;
-        width: clamp(96px, 7.2vw, 136px);
-        height: clamp(96px, 7.2vw, 136px);
+        top: -11px;
+        width: 97px;
+        height: 97px;
         border-radius: 999px;
         overflow: hidden;
         isolation: isolate;
@@ -1693,8 +2252,9 @@ img[alt] { color: transparent; font-size: 0; }
             linear-gradient(135deg, #a8f2e5 0%, #42dfbf 54%, #00cfa8 100%);
         box-shadow:
             inset 0 18px 34px rgba(255, 255, 255, 0.26),
-            inset 0 -18px 34px rgba(0, 129, 105, 0.16);
-        margin-bottom: clamp(34px, 3.4vw, 54px);
+            inset 0 -18px 34px rgba(0, 129, 105, 0.16),
+            0 27px 42px rgba(0, 212, 170, 0.2);
+        margin-bottom: 36px;
         transform-origin: center;
         will-change: transform, box-shadow, filter;
     }
@@ -1728,13 +2288,13 @@ img[alt] { color: transparent; font-size: 0; }
     }
 
     .tc-reference-hero h1 {
-        max-width: 900px;
+        max-width: 760px;
         margin: 0;
         color: #222222;
-        font-family: "sofia-pro", SofiaProWeb, Helvetica, Arial, sans-serif;
-        font-size: clamp(36px, 5.2vw, 76px);
-        font-weight: 400;
-        line-height: 1;
+        font-family: "SofiaProMedium", "SofiaProRegular", Helvetica, Arial, sans-serif;
+        font-size: clamp(48px, 4.85vw, 58px);
+        font-weight: 500;
+        line-height: 1.02;
         letter-spacing: 0;
     }
 
@@ -1742,7 +2302,8 @@ img[alt] { color: transparent; font-size: 0; }
         max-width: 760px;
         margin: 24px 0 0;
         color: #8e949d;
-        font-size: clamp(18px, 1.15vw, 23px);
+        font-family: "SofiaProMedium", "SofiaProRegular", Helvetica, Arial, sans-serif;
+        font-size: 18px;
         font-weight: 400;
         line-height: 1.45;
         letter-spacing: 0;
@@ -1753,7 +2314,7 @@ img[alt] { color: transparent; font-size: 0; }
         align-items: center;
         justify-content: center;
         gap: 12px;
-        margin-top: 30px;
+        margin-top: 29px;
         flex-wrap: wrap;
     }
 
@@ -1765,7 +2326,8 @@ img[alt] { color: transparent; font-size: 0; }
         justify-content: center;
         border-radius: 999px;
         padding: 0 22px;
-        font-size: clamp(13px, .72vw, 14px);
+        font-family: "SofiaProMedium", "SofiaProRegular", Helvetica, Arial, sans-serif;
+        font-size: 13px;
         font-weight: 400;
         line-height: 1;
         letter-spacing: 0;
@@ -1777,17 +2339,17 @@ img[alt] { color: transparent; font-size: 0; }
     }
 
     .tc-reference-hero__button--primary {
-        background: #111111;
-        border: 2px solid #111111;
+        background: #00D4AA;
+        border: 2px solid #00D4AA;
         color: #ffffff;
-        box-shadow: 0 10px 24px rgba(18, 24, 33, 0.12);
+        box-shadow: 0 16px 30px rgba(0, 212, 170, 0.22);
     }
 
     .tc-reference-hero__button--primary:hover {
-        background: #2a2a2a;
-        border-color: #2a2a2a;
+        background: #00BFA5;
+        border-color: #00BFA5;
         transform: translateY(-2px) scale(1.02);
-        box-shadow: 0 16px 32px rgba(18, 24, 33, 0.18);
+        box-shadow: 0 18px 34px rgba(0, 212, 170, 0.28);
     }
 
     .tc-reference-hero__button--primary:active {
@@ -1796,10 +2358,10 @@ img[alt] { color: transparent; font-size: 0; }
     }
 
     .tc-reference-hero__button--secondary {
-        background: rgba(255, 255, 255, 0.44);
+        background: rgba(255, 255, 255, 0.92);
         border: 0;
         color: #202020;
-        box-shadow: 0 10px 30px rgba(18, 24, 33, 0.08);
+        box-shadow: 0 14px 32px rgba(18, 24, 33, 0.06);
         backdrop-filter: blur(14px) saturate(1.2);
         -webkit-backdrop-filter: blur(14px) saturate(1.2);
     }
@@ -1823,8 +2385,8 @@ img[alt] { color: transparent; font-size: 0; }
 
     @media (max-width: 767px) {
         .tc-reference-hero {
-            min-height: calc(90vh - 80px);
-            padding: 34px 20px 72px;
+            min-height: calc(100vh - 106px);
+            padding: 42px 20px 72px;
         }
 
         .tc-reference-hero__orb {
@@ -1834,7 +2396,8 @@ img[alt] { color: transparent; font-size: 0; }
         }
 
         .tc-reference-hero h1 {
-            font-size: clamp(34px, 9vw, 42px);
+            font-size: clamp(38px, 10.5vw, 48px);
+            max-width: 480px;
         }
 
         .tc-reference-hero p {

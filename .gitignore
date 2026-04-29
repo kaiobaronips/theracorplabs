@@ -11,3 +11,14 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 .DS_Store
+
+# Playwright
+.playwright-mcp/
+playwright-report/
+test-results/
+
+# Python scripts de manutenção
+*.py
+
+# Arquivos de build temporários
+tsconfig.tsbuildinfo

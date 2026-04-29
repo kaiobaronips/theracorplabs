@@ -8,22 +8,22 @@ export function SiteFooter() {
         <nav aria-label="Navegação do rodapé">
           <ul className="flex flex-wrap gap-4 text-sm text-tc-gray-500">
             <li>
-              <Link href="/sobre" className="underline-offset-2 hover:text-tc-gray-900 hover:underline">
+              <Link href="/sobre" className="content-2 underline-offset-2 hover:text-tc-gray-900 hover:underline">
                 Sobre
               </Link>
             </li>
             <li>
-              <Link href="/blog" className="underline-offset-2 hover:text-tc-gray-900 hover:underline">
+              <Link href="/blog" className="content-2 underline-offset-2 hover:text-tc-gray-900 hover:underline">
                 Blog
               </Link>
             </li>
             <li>
-              <Link href="/cadastro" className="underline-offset-2 hover:text-tc-gray-900 hover:underline">
+              <Link href="/cadastro" className="content-2 underline-offset-2 hover:text-tc-gray-900 hover:underline">
                 Cadastro
               </Link>
             </li>
             <li>
-              <Link href="/login" className="underline-offset-2 hover:text-tc-gray-900 hover:underline">
+              <Link href="/login" className="content-2 underline-offset-2 hover:text-tc-gray-900 hover:underline">
                 Entrar
               </Link>
             </li>
