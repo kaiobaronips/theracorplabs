@@ -84,7 +84,7 @@ body {
 @layer components {
   /* Accessibility — skip link */
   .tc-skip-link {
-    @apply absolute left-2 z-[1000] rounded-tc-sm bg-tc-teal px-4 py-2 text-[#032920] no-underline;
+    @apply fixed left-2 z-[1000] rounded-tc-sm bg-tc-teal px-4 py-2 text-[#032920] no-underline;
     top: -40px;
   }
 

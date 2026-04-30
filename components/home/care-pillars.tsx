@@ -11,7 +11,7 @@ export function CarePillars() {
 
         <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
           <article className="tc-card">
-            <svg className="h-6 w-6 stroke-tc-teal-dark" viewBox="0 0 24 24" fill="none" strokeWidth="1.5" aria-hidden>
+            <svg className="h-6 w-6 stroke-tc-teal-dark" viewBox="0 0 24 24" fill="none" strokeWidth="1.5" aria-hidden={true}>
               <path d="M4 7h16M4 12h16M4 17h10" />
             </svg>
             <h3 className="content-1 mt-3 text-lg font-semibold text-tc-gray-900">Anamnese estruturada</h3>
@@ -21,7 +21,7 @@ export function CarePillars() {
           </article>
 
           <article className="tc-card">
-            <svg className="h-6 w-6 stroke-tc-teal-dark" viewBox="0 0 24 24" fill="none" strokeWidth="1.5" aria-hidden>
+            <svg className="h-6 w-6 stroke-tc-teal-dark" viewBox="0 0 24 24" fill="none" strokeWidth="1.5" aria-hidden={true}>
               <path d="M12 3v18M3 12h18" />
             </svg>
             <h3 className="content-1 mt-3 text-lg font-semibold text-tc-gray-900">Avaliação médica</h3>
@@ -31,7 +31,7 @@ export function CarePillars() {
           </article>
 
           <article className="tc-card">
-            <svg className="h-6 w-6 stroke-tc-teal-dark" viewBox="0 0 24 24" fill="none" strokeWidth="1.5" aria-hidden>
+            <svg className="h-6 w-6 stroke-tc-teal-dark" viewBox="0 0 24 24" fill="none" strokeWidth="1.5" aria-hidden={true}>
               <path d="M4 14l5 5 11-11" />
             </svg>
             <h3 className="content-1 mt-3 text-lg font-semibold text-tc-gray-900">Acompanhamento contínuo</h3>

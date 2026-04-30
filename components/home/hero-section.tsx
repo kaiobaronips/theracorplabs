@@ -29,7 +29,7 @@ export function HeroSection() {
           <Disclaimer className="mt-6" />
         </div>
 
-        <div className="grid min-h-[320px] place-items-center" aria-hidden>
+        <div className="grid min-h-[320px] place-items-center" aria-hidden={true}>
           <div className="tc-orb" />
         </div>
       </div>

@@ -12,7 +12,7 @@ export function SiteHeader() {
             aria-label="Theracorp, página inicial"
             className="content-1 inline-flex items-center gap-3 text-base font-semibold text-tc-gray-900"
           >
-            <Image src="/logo-theracorp-header-transparent.png" alt="Logo Theracorp" width={120} height={44} className="h-11 w-auto" priority />
+            <Image src="/logo-theracorp-header-transparent.png" alt="Logo Theracorp" width={843} height={596} className="h-11 w-auto" priority />
             <span>Theracorp</span>
           </Link>
 

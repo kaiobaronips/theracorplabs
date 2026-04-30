@@ -26,8 +26,8 @@ export function buildMetadata({ title, description, path }: BuildMetadataInput):
       images: [
         {
           url: `${siteUrl}/logo-theracorp.png`,
-          width: 1200,
-          height: 630,
+          width: 843,
+          height: 596,
           alt: 'Logo Theracorp'
         }
       ]
