@@ -1301,7 +1301,7 @@ data-styled.g1129[id="disclaimer-style__DisclaimerToggle-sc-57ec2856-4"]{content
 data-styled.g1130[id="disclaimer-style__DisclaimerWrapper-sc-57ec2856-5"]{content:"jQrlsA,"}/*!sc*/
 .eCxsrs{position:relative;}/*!sc*/
 data-styled.g1131[id="disclaimer-style__DisclaimerWrapperInner-sc-57ec2856-6"]{content:"eCxsrs,"}/*!sc*/
-.dfOLSP{--borderRadius:1rem;--bentoGap:0.25rem;--bentoVertPadding:2.25rem;--bentoHorizPadding:0.5rem;--heroOverlap:3rem;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-flow:column wrap;-ms-flex-flow:column wrap;flex-flow:column wrap;border-radius:var(--borderRadius);background:linear-gradient(180deg,#D8E1E8 0%,#FFF5D4 100%);padding-bottom:var(--bentoVertPadding);}/*!sc*/
+.dfOLSP{--borderRadius:1rem;--bentoGap:0.25rem;--bentoVertPadding:2.25rem;--bentoHorizPadding:0.5rem;--heroOverlap:3rem;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-flow:column wrap;-ms-flex-flow:column wrap;flex-flow:column wrap;border-radius:var(--borderRadius);background:linear-gradient(180deg,#D8E1E8 0%,#CDD8DC 100%);padding-bottom:var(--bentoVertPadding);}/*!sc*/
 @media (min-width:740px){.dfOLSP{--borderRadius:1.5rem;--bentoGap:0.5rem;--heroOverlap:3.75rem;}}/*!sc*/
 @media (min-width:1092px){.dfOLSP{--bentoHorizPadding:1rem;}}/*!sc*/
 @media (min-width:1266px){.dfOLSP{--bentoVertPadding:2.25rem;}}/*!sc*/
@@ -1468,6 +1468,8 @@ data-styled.g1168[id="measure-what-matters-component-style__ButtonWrapper-sc-f50
 .tc-baseline-phone-card{display:flex;align-items:center;justify-content:center;width:100%;max-width:34rem;margin:0 auto;padding-bottom:0;overflow:visible;-webkit-mask-image:none !important;mask-image:none !important;-webkit-transform:translateY(var(--bento-section-padding-v));transform:translateY(var(--bento-section-padding-v));}/*!sc*/
 .tc-baseline-phone-card .tc-baseline-phone-hand{display:block;width:min(51rem,158%);height:auto;max-width:none;object-fit:contain;object-position:center center;}/*!sc*/
 @media (max-width:739px){.tc-baseline-phone-card .tc-baseline-phone-hand{width:min(32rem,122%);}}/*!sc*/
+[data-testid="blood-hedge-section-baseline-to-breakthrough"] .kDWYVQ{display:flex;justify-content:center;}/*!sc*/
+@media (min-width:1092px){[data-testid="blood-hedge-section-baseline-to-breakthrough"] .kDWYVQ{left:auto;right:2.8125rem;width:calc((100% - 5.625rem) / 3);}}/*!sc*/
 data-styled.g1169[id="baseline-to-breakthrough-component-style__ImageWrapper-sc-8a8d2ddd-0"]{content:"fgdRrc,"}/*!sc*/
 .eMZlvE{position:absolute;top:16.6%;left:28.5%;width:49.7%;height:82.2%;z-index:1;border-top-left-radius:14% 8.3%;border-top-right-radius:14% 8.3%;overflow:hidden;}/*!sc*/
 data-styled.g1170[id="baseline-to-breakthrough-component-style__ScreenOuter-sc-8a8d2ddd-1"]{content:"eMZlvE,"}/*!sc*/
