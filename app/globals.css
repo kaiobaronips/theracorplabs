@@ -92,28 +92,23 @@ body {
     top: 8px;
   }
 
-  /* Section label — all-caps eyebrow text */
   .tc-section-label {
     @apply text-xs font-semibold uppercase tracking-[0.12em] text-tc-teal-dark;
   }
 
-  /* Section title */
   .tc-section-title {
     @apply text-balance text-3xl font-bold leading-tight tracking-[-0.06em] text-tc-gray-900 md:text-4xl;
   }
 
-  /* Section description */
   .tc-section-desc {
     @apply max-w-[62ch] text-pretty text-base text-tc-gray-500;
   }
 
-  /* Section gradient background */
   .tc-hero,
   .tc-section-wrapper {
     background: linear-gradient(180deg, #00D4AA 0%, #F4F5F7 100%);
   }
 
-  /* Orb element */
   .tc-orb {
     @apply relative aspect-square rounded-tc-full shadow-tc-orb;
     width: min(360px, 74vw);
@@ -127,7 +122,6 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.4);
   }
 
-  /* Primary button */
   .tc-btn-primary {
     @apply inline-flex min-h-[48px] items-center justify-center rounded-tc-sm border-0 bg-tc-teal px-[22px] text-[0.95rem] font-bold no-underline transition-[background-color,color] duration-tc ease-tc;
     color: #043328;
@@ -138,7 +132,6 @@ body {
     color: #eafff9;
   }
 
-  /* Secondary button (outline) */
   .tc-btn-secondary {
     @apply inline-flex min-h-[48px] items-center justify-center rounded-tc-sm border border-tc-gray-200 bg-white px-[22px] text-[0.95rem] font-semibold text-tc-gray-900 no-underline transition-[border-color,background-color,color] duration-tc ease-tc;
   }
@@ -152,7 +145,6 @@ body {
     @apply inline-flex min-h-[48px] items-center justify-center gap-1 rounded-tc-xs px-2 text-sm font-medium text-tc-gray-500 underline-offset-2 transition-colors duration-tc ease-tc hover:text-tc-gray-900 hover:underline;
   }
 
-  /* Card */
   .tc-card {
     @apply rounded-tc-md border border-tc-gray-100 bg-white p-6 shadow-tc-card transition-shadow duration-tc ease-tc;
   }
@@ -161,7 +153,6 @@ body {
     @apply tc-card hover:shadow-tc-card-hover;
   }
 
-  /* Inputs, textareas, selects */
   input.tc-input,
   textarea.tc-input,
   select.tc-input {
@@ -183,35 +174,30 @@ body {
     box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.15);
   }
 
-  /* Badge */
   .tc-badge {
     @apply inline-flex items-center rounded-tc-full border border-tc-gray-100 bg-tc-gray-50 px-3 py-1 text-xs font-semibold text-tc-gray-500;
   }
 
   .tc-badge-teal {
-    @apply inline-flex items-center rounded-tc-full border border-tc-teal/20 bg-tc-teal/10 px-3 py-1 text-xs font-semibold text-tc-teal-dark;
+    @apply tc-badge border-tc-teal/20 bg-tc-teal/10 text-tc-teal-dark;
   }
 
-  /* Divider */
   .tc-divider {
     @apply my-8 border-t border-tc-gray-100;
   }
 }
 
 /* ── Branding Typography Roles ──────────────────────────────── */
-/* header-1: cabeçalhos */
 .header-1 {
   font-family: 'SofiaProBold', "Open Sans", Helvetica, Arial, sans-serif;
   font-weight: 700;
 }
 
-/* content-1: conteúdo com peso médio */
 .content-1 {
   font-family: 'SofiaProMedium', "Open Sans", Helvetica, Arial, sans-serif;
   font-weight: 500;
 }
 
-/* content-2: texto comum */
 .content-2 {
   font-family: 'SofiaProRegular', "Open Sans", Helvetica, Arial, sans-serif;
   font-weight: 400;

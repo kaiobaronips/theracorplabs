@@ -1,6 +1,15 @@
 import type { Metadata } from 'next';
 import { siteUrl } from '@/lib/site';
 
+const logoUrl = `${siteUrl}/logo-theracorp.png`;
+
+const ogImage = {
+  url: logoUrl,
+  width: 843,
+  height: 596,
+  alt: 'Logo Theracorp',
+};
+
 type BuildMetadataInput = {
   title: string;
   description: string;
@@ -13,9 +22,7 @@ export function buildMetadata({ title, description, path }: BuildMetadataInput):
   return {
     title,
     description,
-    alternates: {
-      canonical
-    },
+    alternates: { canonical },
     openGraph: {
       title,
       description,
@@ -23,20 +30,13 @@ export function buildMetadata({ title, description, path }: BuildMetadataInput):
       siteName: 'Theracorp',
       locale: 'pt_BR',
       type: 'website',
-      images: [
-        {
-          url: `${siteUrl}/logo-theracorp.png`,
-          width: 843,
-          height: 596,
-          alt: 'Logo Theracorp'
-        }
-      ]
+      images: [ogImage],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: [`${siteUrl}/logo-theracorp.png`]
-    }
+      images: [logoUrl],
+    },
   };
 }

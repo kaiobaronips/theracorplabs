@@ -1,3 +1,27 @@
+type Step = {
+  iconPath: string;
+  title: string;
+  description: string;
+};
+
+const steps: Step[] = [
+  {
+    iconPath: 'M4 7h16M4 12h16M4 17h10',
+    title: 'Anamnese estruturada',
+    description: 'Coleta de dados clínicos para triagem e elegibilidade com critérios médicos objetivos.',
+  },
+  {
+    iconPath: 'M12 3v18M3 12h18',
+    title: 'Avaliação médica',
+    description: 'Consulta por telemedicina com decisão clínica individual e orientações de segurança.',
+  },
+  {
+    iconPath: 'M4 14l5 5 11-11',
+    title: 'Acompanhamento contínuo',
+    description: 'Monitoramento de evolução e ajustes de conduta conforme resposta clínica e adesão.',
+  },
+];
+
 export function CarePillars() {
   return (
     <section aria-labelledby="como-funciona-titulo" className="tc-section-wrapper py-16 md:py-20">
@@ -10,35 +34,15 @@ export function CarePillars() {
         </p>
 
         <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
-          <article className="tc-card">
-            <svg className="h-6 w-6 stroke-tc-teal-dark" viewBox="0 0 24 24" fill="none" strokeWidth="1.5" aria-hidden={true}>
-              <path d="M4 7h16M4 12h16M4 17h10" />
-            </svg>
-            <h3 className="content-1 mt-3 text-lg font-semibold text-tc-gray-900">Anamnese estruturada</h3>
-            <p className="content-2 mt-2 text-sm text-tc-gray-500">
-              Coleta de dados clínicos para triagem e elegibilidade com critérios médicos objetivos.
-            </p>
-          </article>
-
-          <article className="tc-card">
-            <svg className="h-6 w-6 stroke-tc-teal-dark" viewBox="0 0 24 24" fill="none" strokeWidth="1.5" aria-hidden={true}>
-              <path d="M12 3v18M3 12h18" />
-            </svg>
-            <h3 className="content-1 mt-3 text-lg font-semibold text-tc-gray-900">Avaliação médica</h3>
-            <p className="content-2 mt-2 text-sm text-tc-gray-500">
-              Consulta por telemedicina com decisão clínica individual e orientações de segurança.
-            </p>
-          </article>
-
-          <article className="tc-card">
-            <svg className="h-6 w-6 stroke-tc-teal-dark" viewBox="0 0 24 24" fill="none" strokeWidth="1.5" aria-hidden={true}>
-              <path d="M4 14l5 5 11-11" />
-            </svg>
-            <h3 className="content-1 mt-3 text-lg font-semibold text-tc-gray-900">Acompanhamento contínuo</h3>
-            <p className="content-2 mt-2 text-sm text-tc-gray-500">
-              Monitoramento de evolução e ajustes de conduta conforme resposta clínica e adesão.
-            </p>
-          </article>
+          {steps.map((step) => (
+            <article key={step.title} className="tc-card">
+              <svg className="h-6 w-6 stroke-tc-teal-dark" viewBox="0 0 24 24" fill="none" strokeWidth="1.5" aria-hidden={true}>
+                <path d={step.iconPath} />
+              </svg>
+              <h3 className="content-1 mt-3 text-lg font-semibold text-tc-gray-900">{step.title}</h3>
+              <p className="content-2 mt-2 text-sm text-tc-gray-500">{step.description}</p>
+            </article>
+          ))}
         </div>
       </div>
     </section>
