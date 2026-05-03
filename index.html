@@ -382,6 +382,27 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
   }
 })();
 </script>
+<div class="tc-onboard" data-tc-onboard aria-hidden="true">
+  <div class="tc-onboard__scrim" data-tc-onboard-close></div>
+  <section class="tc-onboard__sheet" role="dialog" aria-modal="true" aria-labelledby="tc-onboard-question" tabindex="-1">
+    <button class="tc-onboard__close" type="button" aria-label="Fechar consulta" data-tc-onboard-close>
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M5.7 4.3 12 10.6l6.3-6.3 1.4 1.4-6.3 6.3 6.3 6.3-1.4 1.4-6.3-6.3-6.3 6.3-1.4-1.4 6.3-6.3-6.3-6.3z" fill="currentColor"></path>
+      </svg>
+    </button>
+    <div class="tc-onboard__progress" aria-hidden="true">
+      <span class="tc-onboard__progress-bar" data-tc-onboard-progress></span>
+    </div>
+    <form class="tc-onboard__form" data-tc-onboard-form>
+      <div class="tc-onboard__stage" data-tc-onboard-stage>
+        <p class="tc-onboard__step" data-tc-onboard-step></p>
+        <div class="tc-onboard__orb" aria-hidden="true"></div>
+        <h2 id="tc-onboard-question" class="tc-onboard__question" data-tc-onboard-question></h2>
+        <div class="tc-onboard__options" data-tc-onboard-options></div>
+      </div>
+    </form>
+  </section>
+</div>
 <aside class="tc-floating-promo" aria-label="Promoção de emagrecimento com prescrição médica" aria-hidden="true">
   <div class="tc-floating-promo__media" aria-hidden="true">
     <img class="tc-floating-promo__image" src="./floating-promo-photo.png" alt="">
@@ -419,6 +440,235 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       promo.hidden = true;
     }, 240);
   });
+})();
+</script>
+<script id="theracorp-onboard-flow">
+(function () {
+  var modal = document.querySelector('[data-tc-onboard]');
+  var sheet = modal && modal.querySelector('.tc-onboard__sheet');
+  var stage = modal && modal.querySelector('[data-tc-onboard-stage]');
+  var stepEl = modal && modal.querySelector('[data-tc-onboard-step]');
+  var questionEl = modal && modal.querySelector('[data-tc-onboard-question]');
+  var optionsEl = modal && modal.querySelector('[data-tc-onboard-options]');
+  var progressEl = modal && modal.querySelector('[data-tc-onboard-progress]');
+  var form = modal && modal.querySelector('[data-tc-onboard-form]');
+  var orb = modal && modal.querySelector('.tc-onboard__orb');
+  var closeTriggers = modal ? modal.querySelectorAll('[data-tc-onboard-close]') : [];
+  if (!modal || !sheet || !stage || !stepEl || !questionEl || !optionsEl || !progressEl || !form) return;
+
+  var flow = [
+    {
+      id: 'sentimento',
+      step: '01',
+      question: 'Como você está se sentindo hoje, de verdade?',
+      options: [
+        'Cansada de tentar',
+        'Pronta para começar',
+        'Com medo, mas aqui estou',
+        'Não sei bem, mas preciso de ajuda'
+      ]
+    },
+    {
+      id: 'motivo',
+      step: '02',
+      question: 'O que te trouxe até aqui hoje?',
+      options: [
+        'Quero emagrecer com saúde',
+        'Quero me sentir bem no meu corpo',
+        'Ouvi falar sobre o tratamento e fiquei curiosa',
+        'Estou cansada de soluções que não funcionam'
+      ]
+    },
+    {
+      id: 'barreira',
+      step: '03',
+      question: 'O que sempre impediu você de buscar ajuda antes?',
+      options: [
+        'Vergonha de falar sobre o meu corpo',
+        'Falta de tempo para ir a consultas',
+        'Medo de ser julgada',
+        'Não sabia por onde começar'
+      ]
+    },
+    {
+      id: 'vitoria',
+      step: '04',
+      question: 'O que seria uma vitória real para você nos próximos meses?',
+      options: [
+        'Me olhar no espelho e me reconhecer',
+        'Ter mais energia no dia a dia',
+        'Controlar minha saúde de verdade',
+        'Sentir que finalmente estou cuidando de mim'
+      ]
+    },
+    {
+      id: 'inicio',
+      step: '05',
+      question: 'Como prefere começar seu acompanhamento?',
+      options: [
+        'Quero falar com um médico hoje',
+        'Prefiro conhecer melhor o programa primeiro',
+        'Quero ver os planos disponíveis'
+      ]
+    },
+    {
+      id: 'final',
+      step: '06',
+      question: 'Obrigada por estar aqui. Você acabou de fazer a parte mais difícil.',
+      options: [
+        'Ver meu plano'
+      ],
+      final: true
+    }
+  ];
+
+  var answers = {};
+  var activeIndex = 0;
+  var lastFocus = null;
+  var isAnimating = false;
+  var orbFrame = null;
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function openModal() {
+    lastFocus = document.activeElement;
+    modal.hidden = false;
+    modal.setAttribute('aria-hidden', 'false');
+    document.documentElement.classList.add('tc-onboard-open');
+    window.requestAnimationFrame(function () {
+      modal.classList.add('is-open');
+      sheet.focus({ preventScroll: true });
+    });
+    renderStep(0, true);
+    initOnboardOrb();
+  }
+
+  function closeModal() {
+    if (orbFrame) {
+      window.cancelAnimationFrame(orbFrame);
+      orbFrame = null;
+    }
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.documentElement.classList.remove('tc-onboard-open');
+    window.setTimeout(function () {
+      modal.hidden = true;
+      if (lastFocus && typeof lastFocus.focus === 'function') {
+        lastFocus.focus({ preventScroll: true });
+      }
+    }, 360);
+  }
+
+  function initOnboardOrb() {
+    if (!orb || reduceMotion || orbFrame) return;
+
+    var pointerX = 0;
+    var pointerY = 0;
+    var currentX = 0;
+    var currentY = 0;
+    var startedAt = performance.now();
+
+    sheet.addEventListener('mousemove', function (event) {
+      var rect = sheet.getBoundingClientRect();
+      pointerX = ((event.clientX - rect.left) / rect.width - 0.5) * 12;
+      pointerY = ((event.clientY - rect.top) / rect.height - 0.5) * 10;
+    });
+
+    sheet.addEventListener('mouseleave', function () {
+      pointerX = 0;
+      pointerY = 0;
+    });
+
+    function animate(now) {
+      var elapsed = (now - startedAt) / 1000;
+      currentX += (pointerX - currentX) * 0.055;
+      currentY += (pointerY - currentY) * 0.055;
+
+      var floatY = Math.sin(elapsed * 1.35) * 5;
+      var floatX = Math.cos(elapsed * 0.9) * 2;
+      var scale = 1 + Math.sin(elapsed * 1.65) * 0.03;
+      var glow = 18 + Math.sin(elapsed * 1.2) * 8;
+
+      orb.style.transform = 'translate3d(' + (currentX + floatX) + 'px, ' + (currentY + floatY) + 'px, 0) scale(' + scale + ')';
+      orb.style.boxShadow = 'inset 0 14px 28px rgba(255, 255, 255, 0.26), inset 0 -14px 28px rgba(0, 129, 105, 0.16), 0 ' + Math.max(10, glow - 5) + 'px ' + glow + 'px rgba(0, 212, 170, 0.24)';
+      orb.style.filter = 'saturate(' + (1.02 + Math.sin(elapsed * 1.1) * 0.08) + ')';
+
+      orbFrame = window.requestAnimationFrame(animate);
+    }
+
+    orbFrame = window.requestAnimationFrame(animate);
+  }
+
+  function renderStep(index, immediate) {
+    var item = flow[index];
+    if (!item) return;
+
+    activeIndex = index;
+    var render = function () {
+      stepEl.textContent = item.final ? 'Primeira etapa concluída' : 'Pergunta ' + item.step + ' de 05';
+      questionEl.textContent = item.question;
+      optionsEl.innerHTML = '';
+
+      item.options.forEach(function (label) {
+        var button = document.createElement('button');
+        button.className = 'tc-onboard__option';
+        button.type = 'button';
+        button.setAttribute('data-value', label);
+        button.innerHTML = '<span>' + label + '</span><i aria-hidden="true"></i>';
+        optionsEl.appendChild(button);
+      });
+
+      progressEl.style.width = Math.min(((index + 1) / flow.length) * 100, 100) + '%';
+      stage.classList.remove('is-fading');
+      isAnimating = false;
+    };
+
+    if (immediate) {
+      render();
+      return;
+    }
+
+    isAnimating = true;
+    stage.classList.add('is-fading');
+    window.setTimeout(render, 210);
+  }
+
+  form.addEventListener('click', function (event) {
+    var option = event.target.closest('.tc-onboard__option');
+    if (!option || isAnimating) return;
+
+    var current = flow[activeIndex];
+    var value = option.getAttribute('data-value') || '';
+    option.classList.add('is-selected');
+    answers[current.id] = value;
+
+    window.setTimeout(function () {
+      if (current.final) {
+        modal.setAttribute('data-result', answers.inicio || '');
+        closeModal();
+        return;
+      }
+      renderStep(activeIndex + 1);
+    }, 180);
+  });
+
+  document.addEventListener('click', function (event) {
+    var trigger = event.target.closest('a[href*="#wm-quiz"], [data-wm-quiz]');
+    if (!trigger) return;
+    event.preventDefault();
+    openModal();
+  });
+
+  closeTriggers.forEach(function (trigger) {
+    trigger.addEventListener('click', closeModal);
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && modal.classList.contains('is-open')) {
+      closeModal();
+    }
+  });
+
+  modal.hidden = true;
 })();
 </script>
 </body>

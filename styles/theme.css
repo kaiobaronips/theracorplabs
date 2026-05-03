@@ -3589,3 +3589,349 @@ img[alt] { color: transparent; font-size: 0; }
 .tc-labs-card__age-item--faster::before { background: #ef4444; }
 .tc-labs-card__age-item--normal::before { background: #22c55e; }
 .tc-labs-card__age-item--slower::before { background: #3b82f6; }
+
+/* ===== ONBOARDING POPUP — FLUXO INICIAL DO PACIENTE ===== */
+.tc-onboard,
+.tc-onboard * {
+    box-sizing: border-box;
+}
+
+.tc-onboard[hidden] {
+    display: none;
+}
+
+.tc-onboard {
+    position: fixed;
+    inset: 0;
+    z-index: 20000;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    color: #241f1b;
+    font-family: "SofiaProMedium", "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
+    pointer-events: none;
+}
+
+.tc-onboard__scrim {
+    position: absolute;
+    inset: 0;
+    background: rgba(16, 14, 12, 0.38);
+    opacity: 0;
+    transition: opacity 360ms ease;
+}
+
+.tc-onboard__sheet {
+    position: relative;
+    z-index: 1;
+    width: 697px;
+    height: 865px;
+    max-width: calc(100vw - 24px);
+    max-height: calc(100vh - 24px);
+    padding: 52px 66px 58px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 42px 42px 0 0;
+    background: #ffffff;
+    box-shadow: 0 -28px 70px rgba(18, 24, 33, 0.18);
+    transform: translate3d(0, 104%, 0);
+    transition: transform 560ms cubic-bezier(0.19, 1, 0.22, 1);
+    outline: none;
+}
+
+.tc-onboard.is-open {
+    pointer-events: auto;
+}
+
+.tc-onboard.is-open .tc-onboard__scrim {
+    opacity: 1;
+}
+
+.tc-onboard.is-open .tc-onboard__sheet {
+    transform: translate3d(0, 0, 0);
+}
+
+.tc-onboard-open,
+.tc-onboard-open body {
+    overflow: hidden;
+}
+
+.tc-onboard__close,
+.tc-onboard__back {
+    position: absolute;
+    top: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    color: #141414;
+    background: #f7f7f6;
+    box-shadow: 0 14px 36px rgba(18, 24, 33, 0.08);
+    cursor: pointer;
+    transition: transform 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
+}
+
+.tc-onboard__close {
+    right: 34px;
+}
+
+.tc-onboard__back {
+    left: 34px;
+}
+
+.tc-onboard__back[hidden] {
+    display: none;
+}
+
+.tc-onboard__close svg,
+.tc-onboard__back svg {
+    width: 27px;
+    height: 27px;
+}
+
+.tc-onboard__close:hover,
+.tc-onboard__back:hover {
+    background: #eeeeec;
+    transform: translateY(-1px);
+    box-shadow: 0 16px 38px rgba(18, 24, 33, 0.12);
+}
+
+.tc-onboard__close:focus-visible,
+.tc-onboard__back:focus-visible,
+.tc-onboard__option:focus-visible {
+    outline: 3px solid rgba(0, 212, 170, 0.48);
+    outline-offset: 3px;
+}
+
+.tc-onboard__progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.04);
+    display: none;
+}
+
+.tc-onboard__progress-bar {
+    display: block;
+    width: 0;
+    height: 100%;
+    border-radius: 0 999px 999px 0;
+    background: #00d4aa;
+    transition: width 420ms ease;
+}
+
+.tc-onboard__form {
+    width: 100%;
+    height: 100%;
+}
+
+.tc-onboard__stage {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    transition: opacity 210ms ease, transform 210ms ease;
+}
+
+.tc-onboard__stage.is-fading {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+}
+
+.tc-onboard__step {
+    display: none;
+    margin: 0;
+    color: #8f969b;
+    font-family: "SofiaProMedium", "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0;
+    text-align: center;
+    visibility: hidden;
+}
+
+.tc-onboard__orb {
+    position: relative;
+    align-self: center;
+    width: 68px;
+    height: 68px;
+    margin: 0 auto 22px;
+    border-radius: 999px;
+    overflow: hidden;
+    isolation: isolate;
+    background:
+        radial-gradient(circle at 34% 26%, rgba(255, 255, 255, 0.58) 0%, rgba(226, 255, 249, 0.34) 28%, rgba(255, 255, 255, 0) 56%),
+        linear-gradient(135deg, #a8f2e5 0%, #42dfbf 54%, #00cfa8 100%);
+    box-shadow:
+        inset 0 14px 28px rgba(255, 255, 255, 0.26),
+        inset 0 -14px 28px rgba(0, 129, 105, 0.16),
+        0 20px 30px rgba(0, 212, 170, 0.18);
+    transform-origin: center;
+    will-change: transform, box-shadow, filter;
+}
+
+.tc-onboard__orb::before {
+    content: "";
+    position: absolute;
+    inset: -42%;
+    z-index: -1;
+    background: linear-gradient(0deg, rgba(255, 255, 255, 0) 0%, rgba(238, 255, 251, 0.44) 38%, rgba(110, 232, 207, 0.42) 52%, rgba(255, 255, 255, 0) 72%);
+    transform: translate3d(0, 42%, 0) rotate(8deg);
+    animation: tc-orb-gradient-rise 7.5s ease-in-out infinite;
+    opacity: .72;
+    filter: blur(.2px);
+}
+
+.tc-onboard__question {
+    max-width: 560px;
+    margin: 0 auto 32px;
+    color: #2f271f;
+    font-family: "SofiaProMedium", "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 42px;
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: -0.06em;
+    text-align: center;
+}
+
+.tc-onboard__options {
+    display: grid;
+    gap: 14px;
+    width: 100%;
+}
+
+.tc-onboard__option {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 34px;
+    align-items: center;
+    gap: 18px;
+    min-height: 76px;
+    width: 100%;
+    padding: 0 24px 0 28px;
+    border: 1.5px solid #d3d6d8;
+    border-radius: 18px;
+    color: #222222;
+    background: #ffffff;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
+}
+
+.tc-onboard__option span {
+    display: block;
+    overflow-wrap: anywhere;
+    font-family: "SofiaProMedium", "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.18;
+    letter-spacing: 0;
+}
+
+.tc-onboard__option i {
+    display: block;
+    width: 30px;
+    height: 30px;
+    border: 3px solid #c9cacc;
+    border-radius: 10px;
+    transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.tc-onboard__option:hover {
+    border-color: #aab0b4;
+    box-shadow: 0 12px 30px rgba(18, 24, 33, 0.08);
+    transform: translateY(-1px);
+}
+
+.tc-onboard__option.is-selected {
+    border-color: #00d4aa;
+    background: #f4fffc;
+}
+
+.tc-onboard__option.is-selected i {
+    border-color: #00d4aa;
+    background: #00d4aa;
+    box-shadow: inset 0 0 0 6px #ffffff;
+}
+
+@media (max-width: 767px) {
+    .tc-onboard__sheet {
+        width: 100%;
+        max-width: 100%;
+        height: min(865px, calc(100vh - 16px));
+        max-height: calc(100vh - 16px);
+        padding: 54px 22px 34px;
+        border-radius: 32px 32px 0 0;
+    }
+
+    .tc-onboard__close,
+    .tc-onboard__back {
+        top: 22px;
+        width: 48px;
+        height: 48px;
+    }
+
+    .tc-onboard__close {
+        right: 22px;
+    }
+
+    .tc-onboard__back {
+        left: 22px;
+    }
+
+    .tc-onboard__question {
+        margin-bottom: 24px;
+        font-size: 31px;
+        line-height: 1.1;
+    }
+
+    .tc-onboard__orb {
+        width: 52px;
+        height: 52px;
+        margin: 0 auto 18px;
+    }
+
+    .tc-onboard__options {
+        gap: 12px;
+    }
+
+    .tc-onboard__option {
+        min-height: 66px;
+        grid-template-columns: minmax(0, 1fr) 30px;
+        padding: 0 18px 0 20px;
+        border-radius: 16px;
+    }
+
+    .tc-onboard__option span {
+        font-size: 18px;
+    }
+
+    .tc-onboard__option i {
+        width: 28px;
+        height: 28px;
+        border-radius: 9px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tc-onboard__scrim,
+    .tc-onboard__sheet,
+    .tc-onboard__stage,
+    .tc-onboard__orb::before,
+    .tc-onboard__progress-bar,
+    .tc-onboard__option,
+    .tc-onboard__close,
+    .tc-onboard__back {
+        transition: none;
+        animation: none;
+    }
+}
