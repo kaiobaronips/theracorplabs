@@ -1013,6 +1013,14 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
           nameInput.placeholder = 'Digite seu nome';
           nameInput.setAttribute('autocomplete', 'given-name');
           nameInput.value = answers.nome || '';
+          nameInput.addEventListener('input', function () {
+            if (nameInput.value.trim()) {
+              nameInput.classList.remove('is-invalid');
+              nameInput.classList.add('is-valid');
+            } else {
+              nameInput.classList.remove('is-valid');
+            }
+          });
           frag.appendChild(nameInput);
 
           var genderLabel = document.createElement('p');
@@ -1089,6 +1097,11 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
         });
         genderOpt.classList.add('is-selected');
         answers.genero = genderOpt.getAttribute('data-value');
+        var gGrid = optionsEl.querySelector('.tc-onboard__gender-options');
+        if (gGrid) {
+          gGrid.classList.remove('is-invalid');
+          gGrid.classList.add('is-valid');
+        }
         return;
       }
       if (event.target.closest('[data-tc-onboard-continue]')) {

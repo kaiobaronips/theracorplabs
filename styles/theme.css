@@ -3998,12 +3998,16 @@ img[alt] { color: transparent; font-size: 0; }
     border-bottom-color: #e05252;
 }
 
+.tc-onboard__name-input.is-valid {
+    border-bottom-color: #00d4aa;
+}
+
 .tc-onboard__gender-options {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 8px;
-    margin: 0 0 14px;
+    max-width: 280px;
+    margin: 0 auto 14px;
 }
 
 .tc-onboard__gender-option {
@@ -4035,16 +4039,23 @@ img[alt] { color: transparent; font-size: 0; }
 .tc-onboard__gender-option:active {
     outline: none;
     border-color: transparent;
-}
-
-.tc-onboard__gender-option.is-selected {
-    border-color: #00d4aa;
-    background: rgba(0, 212, 170, 0.12);
+    background: rgba(0, 212, 170, 0.22);
     color: #007a62;
 }
 
+.tc-onboard__gender-option.is-selected {
+    border-color: transparent;
+    background: #00d4aa;
+    color: #ffffff;
+}
+
 .tc-onboard__gender-options.is-invalid .tc-onboard__gender-option:not(.is-selected) {
-    border-color: #e05252;
+    border: 1px solid rgba(224, 82, 82, 0.5);
+}
+
+.tc-onboard__gender-options.is-valid .tc-onboard__gender-option.is-selected {
+    background: #00d4aa;
+    color: #ffffff;
 }
 
 .tc-onboard__continue {
