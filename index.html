@@ -466,10 +466,20 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     {
       id: 'sentimento',
       step: '01',
-      question: 'Como você está se sentindo hoje,\nde verdade?',
+      question: function (nome) {
+        return nome
+          ? nome + ', como você está\nse sentindo hoje?'
+          : 'Como você está se sentindo hoje,\nde verdade?';
+      },
       options: [
         'Cansada de tentar',
         'Pronta para começar',
+        'Com medo, mas aqui estou',
+        'Não sei bem, mas preciso de ajuda'
+      ],
+      optionsMasc: [
+        'Cansado de tentar',
+        'Pronto para começar',
         'Com medo, mas aqui estou',
         'Não sei bem, mas preciso de ajuda'
       ],
@@ -478,23 +488,43 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     {
       id: 'motivo',
       step: '02',
-      question: 'O que te trouxe até aqui hoje?',
+      question: function (nome) {
+        return nome
+          ? 'O que te trouxe até aqui hoje,\n' + nome + '?'
+          : 'O que te trouxe até aqui hoje?';
+      },
       options: [
         'Quero emagrecer com saúde',
         'Quero me sentir bem com meu corpo',
         'Ouvi falar sobre a theracorp, e quero saber mais',
-        'Estou cansado(a) de soluções que não funcionam'
+        'Estou cansada de soluções que não funcionam'
+      ],
+      optionsMasc: [
+        'Quero emagrecer com saúde',
+        'Quero me sentir bem com meu corpo',
+        'Ouvi falar sobre a theracorp, e quero saber mais',
+        'Estou cansado de soluções que não funcionam'
       ],
       type: 'options'
     },
     {
       id: 'barreira',
       step: '03',
-      question: 'O que sempre impediu\nvocê de buscar ajuda antes?',
+      question: function (nome) {
+        return nome
+          ? 'O que sempre te impediu\nde buscar ajuda, ' + nome + '?'
+          : 'O que sempre impediu\nvocê de buscar ajuda antes?';
+      },
       options: [
         'Vergonha de falar sobre o meu corpo',
         'Falta de tempo para ir a consultas',
-        'Medo de ser julgado(a)',
+        'Medo de ser julgada',
+        'Não sabia por onde começar'
+      ],
+      optionsMasc: [
+        'Vergonha de falar sobre o meu corpo',
+        'Falta de tempo para ir a consultas',
+        'Medo de ser julgado',
         'Não sabia por onde começar'
       ],
       type: 'options'
@@ -502,7 +532,11 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     {
       id: 'vitoria',
       step: '04',
-      question: 'O que seria uma vitória real para você nos próximos meses?',
+      question: function (nome) {
+        return nome
+          ? 'O que seria uma vitória real\npara você, ' + nome + '?'
+          : 'O que seria uma vitória real\npara você nos próximos meses?';
+      },
       options: [
         'Me olhar no espelho e me reconhecer',
         'Ter mais energia no dia a dia',
@@ -514,7 +548,11 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     {
       id: 'inicio',
       step: '05',
-      question: 'Como prefere começar seu acompanhamento?',
+      question: function (nome) {
+        return nome
+          ? 'Como prefere começar\nseu acompanhamento, ' + nome + '?'
+          : 'Como prefere começar\nseu acompanhamento?';
+      },
       options: [
         'Quero falar com um médico hoje',
         'Prefiro conhecer melhor o programa primeiro',
@@ -690,6 +728,12 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     }
   };
 
+  var welcomeStep = {
+    id: 'boas-vindas',
+    type: 'welcome',
+    question: 'Estamos orgulhosos\nda sua nova jornada,\nbom ter você conosco.'
+  };
+
   var answers = {};
   var currentStep = null;
   var history = [];
@@ -709,7 +753,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       sheet.focus({ preventScroll: true });
     });
     history = [];
-    renderStep(baseFlow[0], true);
+    renderStep(welcomeStep, true);
     initOnboardOrb();
   }
 
@@ -898,12 +942,15 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     var render = function () {
       var baseIndex = getBaseIndex(item);
       stepEl.textContent = item.label || (baseIndex > -1 ? 'Pergunta ' + item.step + ' de 05' : '');
-      questionEl.textContent = item.question;
+      questionEl.textContent = typeof item.question === 'function'
+        ? item.question(answers.nome || '')
+        : item.question;
       optionsEl.innerHTML = '';
       optionsEl.className = 'tc-onboard__options';
 
       if (item.type === 'options') {
-        item.options.forEach(function (label) {
+        var opts = (answers.genero === 'Homem' && item.optionsMasc) ? item.optionsMasc : item.options;
+        opts.forEach(function (label) {
           optionsEl.insertAdjacentHTML('beforeend', renderOption(label));
         });
       }
@@ -943,6 +990,53 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
         optionsEl.innerHTML = renderPlanConfirmed();
       }
 
+      if (item.type === 'welcome') {
+        optionsEl.classList.add('tc-onboard__options--wide');
+        (function buildWelcome() {
+          var frag = document.createDocumentFragment();
+
+          var nameLabel = document.createElement('p');
+          nameLabel.className = 'tc-onboard__field-label';
+          nameLabel.textContent = 'Como você se chama?';
+          frag.appendChild(nameLabel);
+
+          var nameInput = document.createElement('input');
+          nameInput.className = 'tc-onboard__name-input';
+          nameInput.name = 'welcome-name';
+          nameInput.type = 'text';
+          nameInput.placeholder = 'Seu nome';
+          nameInput.setAttribute('autocomplete', 'given-name');
+          nameInput.value = answers.nome || '';
+          frag.appendChild(nameInput);
+
+          var genderLabel = document.createElement('p');
+          genderLabel.className = 'tc-onboard__field-label';
+          genderLabel.textContent = 'Você é:';
+          frag.appendChild(genderLabel);
+
+          var genderGrid = document.createElement('div');
+          genderGrid.className = 'tc-onboard__gender-options';
+          ['Homem', 'Mulher', 'Personalizar', 'Prefiro não dizer'].forEach(function (label) {
+            var btn = document.createElement('button');
+            btn.className = 'tc-onboard__gender-option' + (answers.genero === label ? ' is-selected' : '');
+            btn.type = 'button';
+            btn.setAttribute('data-value', label);
+            btn.textContent = label;
+            genderGrid.appendChild(btn);
+          });
+          frag.appendChild(genderGrid);
+
+          var continueBtn = document.createElement('button');
+          continueBtn.className = 'tc-onboard__continue';
+          continueBtn.type = 'button';
+          continueBtn.setAttribute('data-tc-onboard-continue', '');
+          continueBtn.textContent = 'Continuar';
+          frag.appendChild(continueBtn);
+
+          optionsEl.appendChild(frag);
+        }());
+      }
+
       progressEl.style.width = Math.min(getProgress(item), 100) + '%';
       backButton.hidden = history.length === 0;
       stage.classList.remove('is-fading');
@@ -980,6 +1074,30 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
 
   form.addEventListener('click', function (event) {
     if (isAnimating || !currentStep) return;
+
+    if (currentStep.type === 'welcome') {
+      var genderOpt = event.target.closest('.tc-onboard__gender-option');
+      if (genderOpt) {
+        optionsEl.querySelectorAll('.tc-onboard__gender-option').forEach(function (b) {
+          b.classList.remove('is-selected');
+        });
+        genderOpt.classList.add('is-selected');
+        answers.genero = genderOpt.getAttribute('data-value');
+        return;
+      }
+      if (event.target.closest('[data-tc-onboard-continue]')) {
+        var nameInput = optionsEl.querySelector('.tc-onboard__name-input');
+        var nome = nameInput ? nameInput.value.trim() : '';
+        if (!nome) {
+          if (nameInput) nameInput.classList.add('is-invalid');
+          return;
+        }
+        if (nameInput) nameInput.classList.remove('is-invalid');
+        answers.nome = nome;
+        goTo(baseFlow[0]);
+      }
+      return;
+    }
 
     var groupOption = event.target.closest('[data-group-option]');
     if (groupOption) {

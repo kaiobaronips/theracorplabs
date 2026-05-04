@@ -3639,7 +3639,7 @@ img[alt] { color: transparent; font-size: 0; }
     overflow: hidden;
     border: 1px solid rgba(0, 0, 0, 0.06);
     border-radius: 42px 42px 0 0;
-    background: #ffffff;
+    background: linear-gradient(135deg, #B8EDE3 0%, #F5FFFC 45%);
     box-shadow: 0 -28px 70px rgba(18, 24, 33, 0.18);
     transform: translate3d(0, 104%, 0);
     transition: transform 560ms cubic-bezier(0.19, 1, 0.22, 1);
@@ -3939,6 +3939,113 @@ img[alt] { color: transparent; font-size: 0; }
 .tc-onboard__option.is-selected {
     border-color: #00d4aa;
     background: #f4fffc;
+}
+
+.tc-onboard__field-label {
+    margin: 0 0 8px;
+    color: #6e757a;
+    font-family: "SofiaProMedium", "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    letter-spacing: 0;
+}
+
+.tc-onboard__field-label + .tc-onboard__field-label {
+    margin-top: 18px;
+}
+
+.tc-onboard__name-input {
+    display: block;
+    width: 100%;
+    height: 58px;
+    margin: 0 0 4px;
+    padding: 0 18px;
+    border: 1px solid #d3d6d8;
+    border-radius: 14px;
+    background: #ffffff;
+    color: #222222;
+    font-family: "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    outline: none;
+    transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.tc-onboard__name-input::placeholder {
+    color: #b0b7bc;
+}
+
+.tc-onboard__name-input:focus {
+    border-color: #00d4aa;
+    box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.12);
+}
+
+.tc-onboard__name-input.is-invalid {
+    border-color: #e05252;
+}
+
+.tc-onboard__gender-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 0 0 14px;
+}
+
+.tc-onboard__gender-option {
+    height: 54px;
+    padding: 0 12px;
+    border: 1px solid #d3d6d8;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #222222;
+    font-family: "SofiaProMedium", "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
+}
+
+.tc-onboard__gender-option:hover {
+    border-color: #aab0b4;
+    box-shadow: 0 4px 12px rgba(18, 24, 33, 0.06);
+}
+
+.tc-onboard__gender-option.is-selected {
+    border-color: #00d4aa;
+    background: #f4fffc;
+}
+
+.tc-onboard__continue {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 188px;
+    min-height: 44px;
+    margin: 0 auto;
+    padding: 0 22px;
+    border: 2px solid #000000;
+    border-radius: 999px;
+    background: #000000;
+    color: #ffffff;
+    font-family: "SofiaProMedium", "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0;
+    cursor: pointer;
+    transform: translateY(0) scale(1);
+    transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+    will-change: transform;
+}
+
+.tc-onboard__continue:hover {
+    background: #222222;
+    border-color: #222222;
+    transform: translateY(-2px) scale(1.02);
+}
+
+.tc-onboard__continue:active {
+    transform: translateY(0) scale(0.99);
 }
 
 .tc-onboard__groups,
@@ -4393,6 +4500,21 @@ img[alt] { color: transparent; font-size: 0; }
 .tc-onboard__stage.is-entering .tc-onboard__option:nth-child(3) { animation-delay: 220ms; }
 .tc-onboard__stage.is-entering .tc-onboard__option:nth-child(4) { animation-delay: 290ms; }
 
+.tc-onboard__stage.is-entering .tc-onboard__name-input {
+    animation: tc-onboard-slide-in 640ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 100ms;
+}
+
+.tc-onboard__stage.is-entering .tc-onboard__gender-options {
+    animation: tc-onboard-slide-in 640ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 180ms;
+}
+
+.tc-onboard__stage.is-entering .tc-onboard__continue {
+    animation: tc-onboard-slide-in 640ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 260ms;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .tc-onboard__scrim,
     .tc-onboard__sheet,
@@ -4404,6 +4526,9 @@ img[alt] { color: transparent; font-size: 0; }
     .tc-onboard__option,
     .tc-onboard__primary,
     .tc-onboard__card-button,
+    .tc-onboard__name-input,
+    .tc-onboard__gender-option,
+    .tc-onboard__continue,
     .tc-onboard__close,
     .tc-onboard__back {
         transition: none;
@@ -4411,7 +4536,10 @@ img[alt] { color: transparent; font-size: 0; }
     }
 
     .tc-onboard__stage.is-entering .tc-onboard__question,
-    .tc-onboard__stage.is-entering .tc-onboard__option {
+    .tc-onboard__stage.is-entering .tc-onboard__option,
+    .tc-onboard__stage.is-entering .tc-onboard__name-input,
+    .tc-onboard__stage.is-entering .tc-onboard__gender-options,
+    .tc-onboard__stage.is-entering .tc-onboard__continue {
         animation: none;
     }
 }
