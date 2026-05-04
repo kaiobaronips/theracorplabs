@@ -3868,6 +3868,18 @@ img[alt] { color: transparent; font-size: 0; }
     text-align: center;
 }
 
+.tc-onboard__subtitle {
+    max-width: 400px;
+    margin: 0 auto 20px;
+    color: #6e757a;
+    font-family: "SofiaProLight", "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.5;
+    letter-spacing: 0;
+    text-align: center;
+}
+
 .tc-onboard__stage.is-loading .tc-onboard__question {
     max-width: 430px;
     margin: 0 auto;
@@ -3957,18 +3969,21 @@ img[alt] { color: transparent; font-size: 0; }
 
 .tc-onboard__name-input {
     display: block;
-    width: 100%;
-    height: 58px;
-    margin: 0 0 4px;
-    padding: 0 18px;
-    border: 1px solid #d3d6d8;
-    border-radius: 14px;
-    background: #ffffff;
+    width: min(100%, 300px);
+    height: 52px;
+    margin: 0 auto 4px;
+    padding: 0 4px;
+    border: none;
+    border-bottom: 1.5px solid #d3d6d8;
+    border-radius: 0;
+    background: transparent;
     color: #222222;
     font-family: "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
     font-size: 18px;
+    text-align: center;
+    text-transform: capitalize;
     outline: none;
-    transition: border-color 180ms ease, box-shadow 180ms ease;
+    transition: border-color 180ms ease;
 }
 
 .tc-onboard__name-input::placeholder {
@@ -3976,12 +3991,11 @@ img[alt] { color: transparent; font-size: 0; }
 }
 
 .tc-onboard__name-input:focus {
-    border-color: #00d4aa;
-    box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.12);
+    border-bottom-color: #00d4aa;
 }
 
 .tc-onboard__name-input.is-invalid {
-    border-color: #e05252;
+    border-bottom-color: #e05252;
 }
 
 .tc-onboard__gender-options {
@@ -4013,6 +4027,10 @@ img[alt] { color: transparent; font-size: 0; }
 .tc-onboard__gender-option.is-selected {
     border-color: #00d4aa;
     background: #f4fffc;
+}
+
+.tc-onboard__gender-options.is-invalid .tc-onboard__gender-option {
+    border-color: #e05252;
 }
 
 .tc-onboard__continue {
@@ -4096,33 +4114,39 @@ img[alt] { color: transparent; font-size: 0; }
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 56px;
-    width: 100%;
-    margin-top: 14px;
+    min-width: 188px;
+    min-height: 44px;
+    margin: 14px auto 0;
     padding: 0 22px;
-    border: 0;
+    border: 2px solid #00d4aa;
     border-radius: 999px;
     color: #ffffff;
     background: #00d4aa;
     font-family: "SofiaProMedium", "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 15px;
+    font-weight: 400;
     line-height: 1;
     letter-spacing: 0;
     cursor: pointer;
-    transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+    transform: translateY(0) scale(1);
+    transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+    will-change: transform;
 }
 
 .tc-onboard__primary:hover {
     background: #00bf99;
-    box-shadow: 0 16px 34px rgba(0, 160, 128, 0.22);
-    transform: translateY(-1px);
+    border-color: #00bf99;
+    transform: translateY(-2px) scale(1.02);
+}
+
+.tc-onboard__primary:active {
+    transform: translateY(0) scale(0.99);
 }
 
 .tc-onboard__primary--compact {
     min-height: 44px;
     margin-top: 10px;
-    font-size: 14px;
+    font-size: 15px;
 }
 
 .tc-onboard__card-button,

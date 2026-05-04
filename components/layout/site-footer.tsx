@@ -5,8 +5,8 @@ import { Disclaimer } from '@/components/ui/disclaimer';
 const footerLinks = [
   { href: '/sobre', label: 'Sobre' },
   { href: '/blog', label: 'Blog' },
-  { href: '/cadastro', label: 'Cadastro' },
   { href: '/login', label: 'Entrar' },
+  { href: '/cadastro', label: 'Cadastro' },
 ] as const;
 
 export function SiteFooter() {
