@@ -9,6 +9,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'SofiaProLight';
+  src: url('/sofiapro-light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
 .tc-floating-help-button {
   position: fixed;
   right: clamp(16px, 2.4vw, 32px);
@@ -112,9 +120,9 @@
 .tc-floating-promo__text {
   margin: 6px 0 0;
   color: #66666a;
-  font-family: "SofiaProMedium", "sofia-pro", SofiaProWeb, Helvetica, Arial, sans-serif;
+  font-family: "SofiaProLight", "sofia-pro", SofiaProWeb, Helvetica, Arial, sans-serif;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 300;
   line-height: 1.18;
   letter-spacing: -0.01em;
 }
@@ -3172,7 +3180,7 @@ img[alt] { color: transparent; font-size: 0; }
 
 .tc-expert-carousel__header {
     max-width: 1320px;
-    margin: 0 auto;
+    margin: 14px auto 0;
     padding: 0 24px;
     text-align: center;
 }
@@ -3746,6 +3754,13 @@ img[alt] { color: transparent; font-size: 0; }
     transform: translate3d(0, 8px, 0);
 }
 
+.tc-onboard__stage.is-loading {
+    min-height: 100%;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 96px;
+}
+
 .tc-onboard__step {
     display: none;
     margin: 0;
@@ -3764,7 +3779,7 @@ img[alt] { color: transparent; font-size: 0; }
     align-self: center;
     width: 68px;
     height: 68px;
-    margin: 0 auto 22px;
+    margin: 0 auto 14px;
     border-radius: 999px;
     overflow: hidden;
     isolation: isolate;
@@ -3791,34 +3806,97 @@ img[alt] { color: transparent; font-size: 0; }
     filter: blur(.2px);
 }
 
+.tc-onboard__stage.is-loading .tc-onboard__orb {
+    width: 82px;
+    height: 82px;
+    margin: 0 auto 30px;
+    animation: tc-onboard-loading-orb 1.8s ease-in-out infinite;
+}
+
+.tc-onboard__stage.is-loading .tc-onboard__orb::after {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    border: 2px solid rgba(0, 212, 170, 0.14);
+    border-top-color: rgba(0, 212, 170, 0.62);
+    border-radius: 999px;
+    animation: tc-onboard-loading-ring 1.15s linear infinite;
+}
+
+@keyframes tc-onboard-loading-orb {
+    0%, 100% {
+        transform: scale(1);
+        filter: saturate(1.02);
+    }
+    50% {
+        transform: scale(1.055);
+        filter: saturate(1.14);
+    }
+}
+
+@keyframes tc-onboard-loading-ring {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 .tc-onboard__question {
     max-width: 560px;
-    margin: 0 auto 32px;
+    margin: 0 auto 22px;
     color: #2f271f;
     font-family: "SofiaProMedium", "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
-    font-size: 42px;
+    font-size: 34px;
     font-weight: 500;
     line-height: 1.08;
     letter-spacing: -0.06em;
     text-align: center;
+    white-space: pre-line;
+}
+
+.tc-onboard__support {
+    max-width: 360px;
+    margin: 0 auto 32px;
+    color: #8f969b;
+    font-family: "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 1.28;
+    letter-spacing: 0;
+    text-align: center;
+}
+
+.tc-onboard__stage.is-loading .tc-onboard__question {
+    max-width: 430px;
+    margin: 0 auto;
+    color: #9aa0a6;
+    font-family: SofiaProWeb, "SofiaProRegular", Helvetica, Arial, sans-serif;
+    font-size: 28px;
+    font-weight: 300;
+    line-height: 1.24;
+    letter-spacing: 0;
+}
+
+.tc-onboard__stage.is-loading .tc-onboard__options {
+    display: none;
 }
 
 .tc-onboard__options {
     display: grid;
-    gap: 14px;
-    width: 100%;
+    gap: 10px;
+    width: min(100%, 460px);
+    margin: 14px auto 0;
 }
 
 .tc-onboard__option {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 34px;
+    grid-template-columns: minmax(0, 1fr);
     align-items: center;
-    gap: 18px;
-    min-height: 76px;
+    gap: 14px;
+    min-height: 72px;
     width: 100%;
-    padding: 0 24px 0 28px;
+    padding: 0 18px 0 20px;
     border: 1.5px solid #d3d6d8;
-    border-radius: 18px;
+    border-radius: 14px;
     color: #222222;
     background: #ffffff;
     font: inherit;
@@ -3831,19 +3909,14 @@ img[alt] { color: transparent; font-size: 0; }
     display: block;
     overflow-wrap: anywhere;
     font-family: "SofiaProMedium", "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
-    font-size: 24px;
+    font-size: 18px;
     font-weight: 500;
     line-height: 1.18;
     letter-spacing: 0;
 }
 
 .tc-onboard__option i {
-    display: block;
-    width: 30px;
-    height: 30px;
-    border: 3px solid #c9cacc;
-    border-radius: 10px;
-    transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+    display: none;
 }
 
 .tc-onboard__option:hover {
@@ -3855,12 +3928,6 @@ img[alt] { color: transparent; font-size: 0; }
 .tc-onboard__option.is-selected {
     border-color: #00d4aa;
     background: #f4fffc;
-}
-
-.tc-onboard__option.is-selected i {
-    border-color: #00d4aa;
-    background: #00d4aa;
-    box-shadow: inset 0 0 0 6px #ffffff;
 }
 
 @media (max-width: 767px) {
@@ -3889,37 +3956,54 @@ img[alt] { color: transparent; font-size: 0; }
     }
 
     .tc-onboard__question {
-        margin-bottom: 24px;
-        font-size: 31px;
+        margin-bottom: 18px;
+        font-size: 26px;
         line-height: 1.1;
     }
 
     .tc-onboard__orb {
         width: 52px;
         height: 52px;
-        margin: 0 auto 18px;
+        margin: 0 auto 12px;
+    }
+
+    .tc-onboard__support {
+        margin-bottom: 24px;
+        font-size: 16px;
+        line-height: 1.3;
+    }
+
+    .tc-onboard__stage.is-loading {
+        padding-bottom: 84px;
+    }
+
+    .tc-onboard__stage.is-loading .tc-onboard__orb {
+        width: 70px;
+        height: 70px;
+        margin-bottom: 24px;
+    }
+
+    .tc-onboard__stage.is-loading .tc-onboard__question {
+        font-size: 24px;
+        line-height: 1.26;
     }
 
     .tc-onboard__options {
-        gap: 12px;
+        gap: 9px;
+        margin-top: 12px;
     }
 
     .tc-onboard__option {
         min-height: 66px;
-        grid-template-columns: minmax(0, 1fr) 30px;
-        padding: 0 18px 0 20px;
-        border-radius: 16px;
+        grid-template-columns: minmax(0, 1fr);
+        padding: 0 16px 0 18px;
+        border-radius: 14px;
     }
 
     .tc-onboard__option span {
-        font-size: 18px;
+        font-size: 16px;
     }
 
-    .tc-onboard__option i {
-        width: 28px;
-        height: 28px;
-        border-radius: 9px;
-    }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -3927,6 +4011,8 @@ img[alt] { color: transparent; font-size: 0; }
     .tc-onboard__sheet,
     .tc-onboard__stage,
     .tc-onboard__orb::before,
+    .tc-onboard__stage.is-loading .tc-onboard__orb,
+    .tc-onboard__stage.is-loading .tc-onboard__orb::after,
     .tc-onboard__progress-bar,
     .tc-onboard__option,
     .tc-onboard__close,
