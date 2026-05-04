@@ -385,6 +385,11 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
 <div class="tc-onboard" data-tc-onboard aria-hidden="true">
   <div class="tc-onboard__scrim" data-tc-onboard-close></div>
   <section class="tc-onboard__sheet" role="dialog" aria-modal="true" aria-labelledby="tc-onboard-question" tabindex="-1">
+    <button class="tc-onboard__back" type="button" aria-label="Voltar pergunta" data-tc-onboard-back hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M14.7 5.3 8 12l6.7 6.7-1.4 1.4L5.2 12l8.1-8.1 1.4 1.4z" fill="currentColor"></path>
+      </svg>
+    </button>
     <button class="tc-onboard__close" type="button" aria-label="Fechar consulta" data-tc-onboard-close>
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
         <path d="M5.7 4.3 12 10.6l6.3-6.3 1.4 1.4-6.3 6.3 6.3 6.3-1.4 1.4-6.3-6.3-6.3 6.3-1.4-1.4 6.3-6.3-6.3-6.3z" fill="currentColor"></path>
@@ -453,20 +458,22 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
   var progressEl = modal && modal.querySelector('[data-tc-onboard-progress]');
   var form = modal && modal.querySelector('[data-tc-onboard-form]');
   var orb = modal && modal.querySelector('.tc-onboard__orb');
+  var backButton = modal && modal.querySelector('[data-tc-onboard-back]');
   var closeTriggers = modal ? modal.querySelectorAll('[data-tc-onboard-close]') : [];
-  if (!modal || !sheet || !stage || !stepEl || !questionEl || !optionsEl || !progressEl || !form) return;
+  if (!modal || !sheet || !stage || !stepEl || !questionEl || !optionsEl || !progressEl || !form || !backButton) return;
 
-  var flow = [
+  var baseFlow = [
     {
       id: 'sentimento',
       step: '01',
-      question: 'Como você está\nse sentindo hoje,\nde verdade?',
+      question: 'Como você está se sentindo hoje,\nde verdade?',
       options: [
         'Cansada de tentar',
         'Pronta para começar',
         'Com medo, mas aqui estou',
         'Não sei bem, mas preciso de ajuda'
-      ]
+      ],
+      type: 'options'
     },
     {
       id: 'motivo',
@@ -475,20 +482,22 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       options: [
         'Quero emagrecer com saúde',
         'Quero me sentir bem com meu corpo',
-        'Ouvi falar sobre o trat e fiquei curiosa',
-        'Estou cansada de soluções que não funcionam'
-      ]
+        'Ouvi falar sobre a theracorp, e quero saber mais',
+        'Estou cansado(a) de soluções que não funcionam'
+      ],
+      type: 'options'
     },
     {
       id: 'barreira',
       step: '03',
-      question: 'O que sempre impediu você de buscar ajuda antes?',
+      question: 'O que sempre impediu\nvocê de buscar ajuda antes?',
       options: [
         'Vergonha de falar sobre o meu corpo',
         'Falta de tempo para ir a consultas',
         'Medo de ser julgado(a)',
         'Não sabia por onde começar'
-      ]
+      ],
+      type: 'options'
     },
     {
       id: 'vitoria',
@@ -499,7 +508,8 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
         'Ter mais energia no dia a dia',
         'Controlar minha saúde de verdade',
         'Sentir que finalmente estou cuidando de mim'
-      ]
+      ],
+      type: 'options'
     },
     {
       id: 'inicio',
@@ -509,21 +519,180 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
         'Quero falar com um médico hoje',
         'Prefiro conhecer melhor o programa primeiro',
         'Quero ver os planos disponíveis'
-      ]
-    },
-    {
-      id: 'final',
-      step: '06',
-      question: 'Obrigada por estar aqui. Você acabou de fazer a parte mais difícil.',
-      options: [
-        'Ver meu plano'
       ],
-      final: true
+      type: 'options'
     }
   ];
 
+  var scheduleSlots = [
+    {
+      value: 'Hoje, 18:30',
+      doctor: 'Dra. Marina Valente',
+      crm: 'CRM-SP 182.764',
+      specialty: 'Endocrinologista',
+      note: 'Atendimento por teleconsulta'
+    },
+    {
+      value: 'Amanhã, 09:10',
+      doctor: 'Dr. Rafael Nogueira',
+      crm: 'CRM-SP 204.318',
+      specialty: 'Endocrinologista',
+      note: 'Primeiro horário da manhã'
+    },
+    {
+      value: 'Amanhã, 14:40',
+      doctor: 'Dra. Helena Moraes',
+      crm: 'CRM-SP 176.052',
+      specialty: 'Endocrinologista',
+      note: 'Consulta de ativação'
+    }
+  ];
+
+  var planCards = [
+    {
+      name: 'THERACORP Smart Care',
+      price: 'R$ 349/mês',
+      benefits: [
+        'Plataforma de gerenciamento',
+        'Histórico clínico integrado e legível',
+        'Suporte nutricional via chat',
+        'Suporte 24/7 com IA',
+        'Renovação de prescrição via chat'
+      ]
+    },
+    {
+      name: 'THERACORP Essencial Care',
+      badge: 'Melhor custo-benefício',
+      price: 'R$ 797/mês',
+      featured: true,
+      benefits: [
+        'Tudo do Smart Care',
+        '01 consulta mensal com endocrinologista',
+        'Prescrição eletrônica ICP-Brasil',
+        'Coleta domiciliar de sangue',
+        '8 exames de rotina trimestrais',
+        'Kit nutracêutico básico 30 dias'
+      ]
+    },
+    {
+      name: 'THERACORP SIGNATURE',
+      price: 'R$ 1.197/mês',
+      benefits: [
+        'Tudo do Essencial Care',
+        '01 consulta mensal com nutricionista',
+        '12 exames clínicos trimestrais',
+        'Kit nutracêutico completo 30 dias',
+        'Concierge de saúde dedicado'
+      ]
+    }
+  ];
+
+  var steps = {
+    scheduleStart: {
+      id: 'scheduleStart',
+      type: 'choiceGroups',
+      label: 'Agendamento gratuito',
+      question: 'Ótima decisão.\nVamos encontrar o médico certo para você agora.',
+      groups: [
+        {
+          id: 'preferredTime',
+          title: 'Melhor horário',
+          options: ['Hoje', 'Amanhã pela manhã', 'Amanhã à tarde']
+        },
+        {
+          id: 'doctorPreference',
+          title: 'Preferência de médico',
+          options: ['Sem preferência', 'Prefiro médica', 'Prefiro médico']
+        }
+      ],
+      actionLabel: 'Ver horários disponíveis',
+      next: 'scheduleSlots'
+    },
+    scheduleSlots: {
+      id: 'scheduleSlots',
+      type: 'slots',
+      label: 'Disponibilidade',
+      question: 'Escolha o horário que faz mais sentido para você.',
+      slots: scheduleSlots,
+      next: 'leadForm'
+    },
+    leadForm: {
+      id: 'leadForm',
+      type: 'leadForm',
+      label: 'Dados mínimos',
+      question: 'Só precisamos dos dados essenciais para reservar sua consulta.',
+      next: 'bookingConfirmed'
+    },
+    bookingConfirmed: {
+      id: 'bookingConfirmed',
+      type: 'confirmation',
+      label: 'Primeira vitória',
+      question: 'Sua consulta está confirmada.',
+      actionLabel: 'Escolher meu plano',
+      next: 'plans'
+    },
+    learnIntro: {
+      id: 'learnIntro',
+      type: 'info',
+      label: 'Conheça o programa',
+      question: 'Antes de decidir, entenda como a Theracorp cuida de você.',
+      cards: [
+        {
+          title: 'Plataforma integrada',
+          text: 'Seu histórico clínico, prescrições, exames e acompanhamento ficam organizados em um só lugar.'
+        },
+        {
+          title: 'Acompanhamento humano',
+          text: 'A tecnologia reduz a burocracia, mas o cuidado continua conduzido por profissionais reais.'
+        },
+        {
+          title: 'Coleta domiciliar',
+          text: 'Nos planos com exames, a coleta acontece em casa, com frequência trimestral.'
+        }
+      ],
+      actionLabel: 'Continuar',
+      next: 'learnProof'
+    },
+    learnProof: {
+      id: 'learnProof',
+      type: 'info',
+      label: 'Experiência de cuidado',
+      question: 'Cuidado não começa por promessa.\nComeça por presença.',
+      cards: [
+        {
+          title: 'Sem julgamento',
+          text: 'A jornada foi desenhada para acolher quem já tentou antes e precisa de clareza.'
+        },
+        {
+          title: 'Médico visível',
+          text: 'A consulta gratuita mostra quem vai acompanhar você antes de qualquer compromisso recorrente.'
+        },
+        {
+          title: 'Próximo passo leve',
+          text: 'Quando estiver pronta, começamos juntas com uma consulta gratuita.'
+        }
+      ],
+      actionLabel: 'Agendar minha consulta gratuita',
+      next: 'scheduleStart'
+    },
+    plans: {
+      id: 'plans',
+      type: 'plans',
+      label: 'Escolha de plano',
+      question: 'Agora escolha como quer continuar sua jornada.',
+      plans: planCards
+    },
+    planConfirmed: {
+      id: 'planConfirmed',
+      type: 'planConfirmed',
+      label: 'Plano escolhido',
+      question: 'Seu plano foi selecionado.'
+    }
+  };
+
   var answers = {};
-  var activeIndex = 0;
+  var currentStep = null;
+  var history = [];
   var lastFocus = null;
   var isAnimating = false;
   var orbFrame = null;
@@ -531,6 +700,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
 
   function openModal() {
     lastFocus = document.activeElement;
+    answers = {};
     modal.hidden = false;
     modal.setAttribute('aria-hidden', 'false');
     document.documentElement.classList.add('tc-onboard-open');
@@ -538,7 +708,8 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       modal.classList.add('is-open');
       sheet.focus({ preventScroll: true });
     });
-    renderStep(0, true);
+    history = [];
+    renderStep(baseFlow[0], true);
     initOnboardOrb();
   }
 
@@ -598,27 +769,189 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     orbFrame = window.requestAnimationFrame(animate);
   }
 
-  function renderStep(index, immediate) {
-    var item = flow[index];
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function getBaseIndex(item) {
+    return baseFlow.indexOf(item);
+  }
+
+  function getNextBaseStep(item) {
+    var index = getBaseIndex(item);
+    return index > -1 ? baseFlow[index + 1] : null;
+  }
+
+  function getProgress(item) {
+    var index = getBaseIndex(item);
+    if (index > -1) return ((index + 1) / 5) * 100;
+    return 100;
+  }
+
+  function renderOption(label, className, attrs) {
+    return '<button class="' + (className || 'tc-onboard__option') + '" type="button" data-value="' + escapeHtml(label) + '"' + (attrs || '') + '><span>' + escapeHtml(label) + '</span><i aria-hidden="true"></i></button>';
+  }
+
+  function renderChoiceGroups(item) {
+    var html = '<div class="tc-onboard__groups">';
+    item.groups.forEach(function (group) {
+      html += '<fieldset class="tc-onboard__group" data-group="' + escapeHtml(group.id) + '">';
+      html += '<legend>' + escapeHtml(group.title) + '</legend>';
+      html += '<div class="tc-onboard__mini-options">';
+      group.options.forEach(function (label, index) {
+        var selected = index === 0 ? ' is-selected' : '';
+        var checked = index === 0 ? ' aria-pressed="true"' : ' aria-pressed="false"';
+        html += renderOption(label, 'tc-onboard__option tc-onboard__option--mini' + selected, ' data-group-option="' + escapeHtml(group.id) + '"' + checked);
+      });
+      html += '</div></fieldset>';
+    });
+    html += '</div><button class="tc-onboard__primary" type="button" data-action="next">' + escapeHtml(item.actionLabel) + '</button>';
+    return html;
+  }
+
+  function renderSlots(item) {
+    var html = '<div class="tc-onboard__cards">';
+    item.slots.forEach(function (slot, index) {
+      html += '<button class="tc-onboard__card-button" type="button" data-slot-index="' + index + '">';
+      html += '<strong>' + escapeHtml(slot.value) + '</strong>';
+      html += '<span>' + escapeHtml(slot.doctor) + '</span>';
+      html += '<em>' + escapeHtml(slot.specialty) + ' | ' + escapeHtml(slot.crm) + '</em>';
+      html += '<small>' + escapeHtml(slot.note) + '</small>';
+      html += '</button>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  function renderLeadForm() {
+    return '' +
+      '<div class="tc-onboard__fields">' +
+        '<label>Nome<input name="name" autocomplete="name" required></label>' +
+        '<label>Email<input name="email" type="email" autocomplete="email" required></label>' +
+        '<label>Telefone<input name="phone" type="tel" autocomplete="tel" required></label>' +
+        '<label>Data de nascimento<input name="birthDate" type="date" required></label>' +
+      '</div>' +
+      '<p class="tc-onboard__privacy">Usaremos esses dados apenas para reservar sua consulta gratuita e manter seu atendimento organizado, conforme a LGPD.</p>' +
+      '<button class="tc-onboard__primary" type="submit">Confirmar consulta</button>';
+  }
+
+  function renderConfirmation(item) {
+    var slot = answers.slot || scheduleSlots[0];
+    return '' +
+      '<div class="tc-onboard__summary">' +
+        '<p>Você acabou de fazer algo importante por si mesma. A Theracorp estará com você a partir de agora.</p>' +
+        '<dl>' +
+          '<div><dt>Data e horário</dt><dd>' + escapeHtml(slot.value) + '</dd></div>' +
+          '<div><dt>Médico</dt><dd>' + escapeHtml(slot.doctor) + '</dd></div>' +
+          '<div><dt>CRM</dt><dd>' + escapeHtml(slot.crm) + '</dd></div>' +
+        '</dl>' +
+      '</div>' +
+      '<button class="tc-onboard__primary" type="button" data-action="next">' + escapeHtml(item.actionLabel) + '</button>';
+  }
+
+  function renderInfo(item) {
+    var html = '<div class="tc-onboard__info-grid">';
+    item.cards.forEach(function (card) {
+      html += '<article class="tc-onboard__info-card"><h3>' + escapeHtml(card.title) + '</h3><p>' + escapeHtml(card.text) + '</p></article>';
+    });
+    html += '</div><button class="tc-onboard__primary" type="button" data-action="next">' + escapeHtml(item.actionLabel) + '</button>';
+    return html;
+  }
+
+  function renderPlans(item) {
+    var html = '<div class="tc-onboard__plans">';
+    item.plans.forEach(function (plan, index) {
+      html += '<article class="tc-onboard__plan' + (plan.featured ? ' tc-onboard__plan--featured' : '') + '">';
+      if (plan.badge) html += '<span class="tc-onboard__plan-badge">' + escapeHtml(plan.badge) + '</span>';
+      html += '<h3>' + escapeHtml(plan.name) + '</h3><ul>';
+      plan.benefits.forEach(function (benefit) {
+        html += '<li>' + escapeHtml(benefit) + '</li>';
+      });
+      html += '</ul><strong>' + escapeHtml(plan.price) + '</strong>';
+      html += '<p>Cancele quando quiser.</p>';
+      html += '<button class="tc-onboard__primary tc-onboard__primary--compact" type="button" data-plan-index="' + index + '">Escolher plano</button>';
+      html += '</article>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  function renderPlanConfirmed() {
+    var selectedPlan = answers.plan || planCards[1];
+    return '' +
+      '<div class="tc-onboard__summary tc-onboard__summary--center">' +
+        '<p>Selecionamos ' + escapeHtml(selectedPlan.name) + ' para esta simulação. O checkout real será conectado em uma próxima etapa.</p>' +
+        '<dl><div><dt>Plano</dt><dd>' + escapeHtml(selectedPlan.name) + '</dd></div><div><dt>Valor</dt><dd>' + escapeHtml(selectedPlan.price) + '</dd></div></dl>' +
+      '</div>' +
+      '<button class="tc-onboard__primary" type="button" data-action="close">Concluir</button>';
+  }
+
+  function renderStep(item, immediate) {
     if (!item) return;
 
-    activeIndex = index;
+    currentStep = item;
     var render = function () {
-      stepEl.textContent = item.final ? 'Primeira etapa concluída' : 'Pergunta ' + item.step + ' de 05';
+      var baseIndex = getBaseIndex(item);
+      stepEl.textContent = item.label || (baseIndex > -1 ? 'Pergunta ' + item.step + ' de 05' : '');
       questionEl.textContent = item.question;
       optionsEl.innerHTML = '';
+      optionsEl.className = 'tc-onboard__options';
 
-      item.options.forEach(function (label) {
-        var button = document.createElement('button');
-        button.className = 'tc-onboard__option';
-        button.type = 'button';
-        button.setAttribute('data-value', label);
-        button.innerHTML = '<span>' + label + '</span><i aria-hidden="true"></i>';
-        optionsEl.appendChild(button);
-      });
+      if (item.type === 'options') {
+        item.options.forEach(function (label) {
+          optionsEl.insertAdjacentHTML('beforeend', renderOption(label));
+        });
+      }
 
-      progressEl.style.width = Math.min(((index + 1) / flow.length) * 100, 100) + '%';
+      if (item.type === 'choiceGroups') {
+        optionsEl.classList.add('tc-onboard__options--wide');
+        optionsEl.innerHTML = renderChoiceGroups(item);
+      }
+
+      if (item.type === 'slots') {
+        optionsEl.classList.add('tc-onboard__options--wide');
+        optionsEl.innerHTML = renderSlots(item);
+      }
+
+      if (item.type === 'leadForm') {
+        optionsEl.classList.add('tc-onboard__options--wide');
+        optionsEl.innerHTML = renderLeadForm();
+      }
+
+      if (item.type === 'confirmation') {
+        optionsEl.classList.add('tc-onboard__options--wide');
+        optionsEl.innerHTML = renderConfirmation(item);
+      }
+
+      if (item.type === 'info') {
+        optionsEl.classList.add('tc-onboard__options--wide');
+        optionsEl.innerHTML = renderInfo(item);
+      }
+
+      if (item.type === 'plans') {
+        optionsEl.classList.add('tc-onboard__options--wide');
+        optionsEl.innerHTML = renderPlans(item);
+      }
+
+      if (item.type === 'planConfirmed') {
+        optionsEl.classList.add('tc-onboard__options--wide');
+        optionsEl.innerHTML = renderPlanConfirmed();
+      }
+
+      progressEl.style.width = Math.min(getProgress(item), 100) + '%';
+      backButton.hidden = history.length === 0;
       stage.classList.remove('is-fading');
+      stage.classList.remove('is-entering');
+      window.requestAnimationFrame(function () {
+        window.requestAnimationFrame(function () {
+          stage.classList.add('is-entering');
+        });
+      });
       isAnimating = false;
     };
 
@@ -632,23 +965,113 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     window.setTimeout(render, 210);
   }
 
-  form.addEventListener('click', function (event) {
-    var option = event.target.closest('.tc-onboard__option');
-    if (!option || isAnimating) return;
+  function goTo(item, immediate) {
+    if (currentStep && !immediate) {
+      history.push(currentStep);
+    }
+    renderStep(item, immediate);
+  }
 
-    var current = flow[activeIndex];
+  function routeFromStartChoice(value) {
+    if (value === 'Quero falar com um médico hoje') return steps.scheduleStart;
+    if (value === 'Prefiro conhecer melhor o programa primeiro') return steps.learnIntro;
+    return steps.plans;
+  }
+
+  form.addEventListener('click', function (event) {
+    if (isAnimating || !currentStep) return;
+
+    var groupOption = event.target.closest('[data-group-option]');
+    if (groupOption) {
+      var groupId = groupOption.getAttribute('data-group-option');
+      var group = groupOption.closest('[data-group]');
+      if (group) {
+        group.querySelectorAll('[data-group-option]').forEach(function (button) {
+          button.classList.remove('is-selected');
+          button.setAttribute('aria-pressed', 'false');
+        });
+      }
+      groupOption.classList.add('is-selected');
+      groupOption.setAttribute('aria-pressed', 'true');
+      answers[groupId] = groupOption.getAttribute('data-value') || '';
+      return;
+    }
+
+    var nextAction = event.target.closest('[data-action="next"]');
+    if (nextAction && currentStep.next) {
+      if (currentStep.type === 'choiceGroups') {
+        currentStep.groups.forEach(function (group) {
+          if (!answers[group.id]) answers[group.id] = group.options[0];
+        });
+      }
+      goTo(steps[currentStep.next]);
+      return;
+    }
+
+    var closeAction = event.target.closest('[data-action="close"]');
+    if (closeAction) {
+      closeModal();
+      return;
+    }
+
+    var slotButton = event.target.closest('[data-slot-index]');
+    if (slotButton && currentStep.type === 'slots') {
+      answers.slot = scheduleSlots[Number(slotButton.getAttribute('data-slot-index'))] || scheduleSlots[0];
+      slotButton.classList.add('is-selected');
+      window.setTimeout(function () {
+        goTo(steps[currentStep.next]);
+      }, 180);
+      return;
+    }
+
+    var planButton = event.target.closest('[data-plan-index]');
+    if (planButton && currentStep.type === 'plans') {
+      answers.plan = planCards[Number(planButton.getAttribute('data-plan-index'))] || planCards[1];
+      planButton.classList.add('is-selected');
+      window.setTimeout(function () {
+        goTo(steps.planConfirmed);
+      }, 180);
+      return;
+    }
+
+    var option = event.target.closest('.tc-onboard__option');
+    if (!option || currentStep.type !== 'options') return;
+
     var value = option.getAttribute('data-value') || '';
     option.classList.add('is-selected');
-    answers[current.id] = value;
+    answers[currentStep.id] = value;
 
     window.setTimeout(function () {
-      if (current.final) {
+      if (currentStep.id === 'inicio') {
         modal.setAttribute('data-result', answers.inicio || '');
-        closeModal();
+        goTo(routeFromStartChoice(value));
         return;
       }
-      renderStep(activeIndex + 1);
+      goTo(getNextBaseStep(currentStep));
     }, 180);
+  });
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    if (isAnimating || !currentStep || currentStep.type !== 'leadForm') return;
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+    answers.lead = {
+      name: form.elements.name.value,
+      email: form.elements.email.value,
+      phone: form.elements.phone.value,
+      birthDate: form.elements.birthDate.value
+    };
+    goTo(steps[currentStep.next]);
+  });
+
+  backButton.addEventListener('click', function () {
+    if (isAnimating || history.length === 0) return;
+
+    if (currentStep && currentStep.id) delete answers[currentStep.id];
+    renderStep(history.pop());
   });
 
   document.addEventListener('click', function (event) {
