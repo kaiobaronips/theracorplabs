@@ -895,7 +895,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
               '<option value="+57">🇨🇴 +57</option>' +
               '<option value="+52">🇲🇽 +52</option>' +
             '</select>' +
-            '<input name="phone" type="tel" autocomplete="tel" placeholder="(11) 99999-9999" required>' +
+            '<input name="phone" type="tel" autocomplete="tel" placeholder="(11) 99999-9999" minlength="14" maxlength="15" required>' +
           '</div>' +
         '</label>' +
         '<label>Data de nascimento<input name="birthDate" type="date" required></label>' +
@@ -990,6 +990,24 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       if (item.type === 'leadForm') {
         optionsEl.classList.add('tc-onboard__options--wide');
         optionsEl.innerHTML = renderLeadForm();
+      }
+
+      if (item.type === 'leadForm') {
+        (function () {
+          var phoneInput = optionsEl.querySelector('input[name="phone"]');
+          if (phoneInput) {
+            phoneInput.addEventListener('input', function () {
+              var digits = this.value.replace(/\D/g, '').slice(0, 11);
+              var masked = '';
+              if (digits.length > 0) {
+                masked = '(' + digits.slice(0, 2);
+                if (digits.length > 2) masked += ') ' + digits.slice(2, 7);
+                if (digits.length > 7) masked += '-' + digits.slice(7, 11);
+              }
+              this.value = masked;
+            });
+          }
+        }());
       }
 
       if (item.type === 'confirmation') {
@@ -1223,8 +1241,9 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       return;
     }
     answers.lead = {
-      name: form.elements.name.value,
+      name: form.elements.name.value.replace(/\b\w/g, function (c) { return c.toUpperCase(); }),
       email: form.elements.email.value,
+      ddi: form.elements.ddi ? form.elements.ddi.value : '+55',
       phone: form.elements.phone.value,
       birthDate: form.elements.birthDate.value
     };

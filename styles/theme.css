@@ -4268,6 +4268,39 @@ img[alt] { color: transparent; font-size: 0; }
     line-height: 1;
 }
 
+.tc-onboard__capitalize-input {
+    text-transform: capitalize;
+}
+
+.tc-onboard__fields label:has(.tc-onboard__phone-wrapper) {
+    grid-column: span 1;
+}
+
+.tc-onboard__phone-wrapper {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+}
+
+.tc-onboard__ddi-select {
+    flex-shrink: 0;
+    height: 50px;
+    padding: 0 10px;
+    border: 1px solid #d3d6d8;
+    border-radius: 13px;
+    color: #241f1b;
+    background: #ffffff;
+    font-family: "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.tc-onboard__phone-wrapper input {
+    flex: 1;
+    min-width: 0;
+}
+
 .tc-onboard__privacy {
     margin: 6px 0 0;
     text-align: center;
