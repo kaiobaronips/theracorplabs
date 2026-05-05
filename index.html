@@ -739,6 +739,10 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
   };
 
   var answers = {};
+  function isMasc() {
+    return answers.genero === 'Homem' ||
+      (answers.genero === 'Personalizar' && answers.pronome === 'Masculino');
+  }
   var currentStep = null;
   var history = [];
   var lastFocus = null;
@@ -905,7 +909,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
   }
 
   function renderConfirmation(item) {
-    var pronome = answers.genero === 'Homem' ? 'mesmo' : 'mesma';
+    var pronome = isMasc() ? 'mesmo' : 'mesma';
     var slot = answers.slot || scheduleSlots[0];
     return '' +
       '<p class="tc-onboard__subtitle">Você acabou de fazer algo importante por si ' + pronome + '.<br>A Theracorp estará com você a partir de agora.</p>' +
@@ -971,7 +975,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       optionsEl.className = 'tc-onboard__options';
 
       if (item.type === 'options') {
-        var opts = (answers.genero === 'Homem' && item.optionsMasc) ? item.optionsMasc : item.options;
+        var opts = (isMasc() && item.optionsMasc) ? item.optionsMasc : item.options;
         opts.forEach(function (label) {
           optionsEl.insertAdjacentHTML('beforeend', renderOption(label));
         });
@@ -1064,6 +1068,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
 
           var genderGrid = document.createElement('div');
           genderGrid.className = 'tc-onboard__gender-options';
+          if (answers.genero === 'Personalizar') genderGrid.style.display = 'none';
           ['Homem', 'Mulher', 'Personalizar', 'Prefiro não dizer'].forEach(function (label) {
             var btn = document.createElement('button');
             btn.className = 'tc-onboard__gender-option' + (answers.genero === label ? ' is-selected' : '');
@@ -1073,6 +1078,60 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
             genderGrid.appendChild(btn);
           });
           frag.appendChild(genderGrid);
+
+          var personalizarPanel = document.createElement('div');
+          personalizarPanel.className = 'tc-onboard__personalizar-panel';
+          if (answers.genero !== 'Personalizar') personalizarPanel.style.display = 'none';
+
+          var voltarBtn = document.createElement('button');
+          voltarBtn.className = 'tc-onboard__personalizar-back';
+          voltarBtn.type = 'button';
+          voltarBtn.setAttribute('data-tc-personalizar-back', '');
+          var voltarSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+          voltarSvg.setAttribute('viewBox', '0 0 24 24');
+          voltarSvg.setAttribute('aria-hidden', 'true');
+          voltarSvg.setAttribute('width', '13');
+          voltarSvg.setAttribute('height', '13');
+          var voltarPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          voltarPath.setAttribute('d', 'M14.7 5.3 8 12l6.7 6.7-1.4 1.4L5.2 12l8.1-8.1 1.4 1.4z');
+          voltarPath.setAttribute('fill', 'currentColor');
+          voltarSvg.appendChild(voltarPath);
+          voltarBtn.appendChild(voltarSvg);
+          voltarBtn.appendChild(document.createTextNode(' Voltar'));
+          personalizarPanel.appendChild(voltarBtn);
+
+          var generoCustomLabel = document.createElement('p');
+          generoCustomLabel.className = 'tc-onboard__field-label';
+          generoCustomLabel.style.marginBottom = '8px';
+          generoCustomLabel.textContent = 'Qual seu gênero?';
+          personalizarPanel.appendChild(generoCustomLabel);
+          var generoCustomInput = document.createElement('input');
+          generoCustomInput.className = 'tc-onboard__name-input';
+          generoCustomInput.type = 'text';
+          generoCustomInput.name = 'custom-gender';
+          generoCustomInput.placeholder = 'Digite aqui';
+          generoCustomInput.value = answers.generoCustom || '';
+          personalizarPanel.appendChild(generoCustomInput);
+
+          var tratarLabel = document.createElement('p');
+          tratarLabel.className = 'tc-onboard__field-label';
+          tratarLabel.style.marginTop = '18px';
+          tratarLabel.style.marginBottom = '10px';
+          tratarLabel.textContent = 'Pode me tratar como';
+          personalizarPanel.appendChild(tratarLabel);
+
+          var pronounGrid = document.createElement('div');
+          pronounGrid.className = 'tc-onboard__pronoun-options';
+          ['Masculino', 'Feminino'].forEach(function (pl) {
+            var pb = document.createElement('button');
+            pb.className = 'tc-onboard__pronoun-option' + (answers.pronome === pl ? ' is-selected' : '');
+            pb.type = 'button';
+            pb.setAttribute('data-pronoun', pl);
+            pb.textContent = pl;
+            pronounGrid.appendChild(pb);
+          });
+          personalizarPanel.appendChild(pronounGrid);
+          frag.appendChild(personalizarPanel);
 
           var continueBtn = document.createElement('button');
           continueBtn.className = 'tc-onboard__continue';
@@ -1124,6 +1183,30 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     if (isAnimating || !currentStep) return;
 
     if (currentStep.type === 'welcome') {
+      if (event.target.closest('[data-tc-personalizar-back]')) {
+        answers.genero = '';
+        answers.pronome = '';
+        var backPanel = optionsEl.querySelector('.tc-onboard__personalizar-panel');
+        var backGrid = optionsEl.querySelector('.tc-onboard__gender-options');
+        if (backPanel) backPanel.style.display = 'none';
+        if (backGrid) {
+          backGrid.style.display = '';
+          backGrid.classList.remove('is-valid', 'is-invalid');
+          backGrid.querySelectorAll('.tc-onboard__gender-option').forEach(function (b) {
+            b.classList.remove('is-selected');
+          });
+        }
+        return;
+      }
+      var pronounOpt = event.target.closest('.tc-onboard__pronoun-option');
+      if (pronounOpt) {
+        optionsEl.querySelectorAll('.tc-onboard__pronoun-option').forEach(function (b) {
+          b.classList.remove('is-selected');
+        });
+        pronounOpt.classList.add('is-selected');
+        answers.pronome = pronounOpt.getAttribute('data-pronoun');
+        return;
+      }
       var genderOpt = event.target.closest('.tc-onboard__gender-option');
       if (genderOpt) {
         optionsEl.querySelectorAll('.tc-onboard__gender-option').forEach(function (b) {
@@ -1131,15 +1214,21 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
         });
         genderOpt.classList.add('is-selected');
         answers.genero = genderOpt.getAttribute('data-value');
+        var isPersonalizar = answers.genero === 'Personalizar';
         var gGrid = optionsEl.querySelector('.tc-onboard__gender-options');
         if (gGrid) {
-          gGrid.classList.remove('is-invalid');
-          gGrid.classList.add('is-valid');
+          gGrid.style.display = isPersonalizar ? 'none' : '';
+          if (!isPersonalizar) {
+            gGrid.classList.remove('is-invalid');
+            gGrid.classList.add('is-valid');
+          }
         }
+        var panel = optionsEl.querySelector('.tc-onboard__personalizar-panel');
+        if (panel) panel.style.display = isPersonalizar ? '' : 'none';
         return;
       }
       if (event.target.closest('[data-tc-onboard-continue]')) {
-        var nameInput = optionsEl.querySelector('.tc-onboard__name-input');
+        var nameInput = optionsEl.querySelector('input[name="welcome-name"]');
         var genderGrid = optionsEl.querySelector('.tc-onboard__gender-options');
         var nome = nameInput ? nameInput.value.trim() : '';
         var valid = true;
@@ -1154,6 +1243,24 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
           valid = false;
         } else {
           if (genderGrid) genderGrid.classList.remove('is-invalid');
+        }
+        if (answers.genero === 'Personalizar') {
+          var customInput = optionsEl.querySelector('input[name="custom-gender"]');
+          var pronounGrid = optionsEl.querySelector('.tc-onboard__pronoun-options');
+          var customVal = customInput ? customInput.value.trim() : '';
+          if (!customVal) {
+            if (customInput) customInput.classList.add('is-invalid');
+            valid = false;
+          } else {
+            if (customInput) customInput.classList.remove('is-invalid');
+            answers.generoCustom = customVal;
+          }
+          if (!answers.pronome) {
+            if (pronounGrid) pronounGrid.classList.add('is-invalid');
+            valid = false;
+          } else {
+            if (pronounGrid) pronounGrid.classList.remove('is-invalid');
+          }
         }
         if (!valid) return;
         var primeiroNome = nome.split(' ')[0];
