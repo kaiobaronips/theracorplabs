@@ -1,0 +1,339 @@
+.pageShell {
+  background:
+    radial-gradient(circle at 14% 8%, rgba(0, 212, 170, 0.2), transparent 28rem),
+    linear-gradient(180deg, #ffffff 0%, #f4f5f7 48%, #ffffff 100%);
+}
+
+.heroMedia {
+  position: relative;
+  min-height: 520px;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #071c18;
+  box-shadow: 0 24px 70px rgba(4, 33, 28, 0.18);
+}
+
+.heroMedia::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(120deg, rgba(0, 212, 170, 0.28), transparent 42%),
+    radial-gradient(circle at 75% 18%, rgba(123, 234, 214, 0.3), transparent 22rem);
+}
+
+.heroPhone {
+  position: absolute;
+  right: 8%;
+  top: 50%;
+  width: min(310px, 72%);
+  transform: translateY(-50%) rotate(-4deg);
+}
+
+.floatingPanel {
+  position: absolute;
+  left: 7%;
+  bottom: 10%;
+  width: min(310px, 58%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  padding: 20px;
+  backdrop-filter: blur(20px);
+}
+
+.floatingPanel strong,
+.floatingPanel span {
+  display: block;
+}
+
+.floatingPanel strong {
+  margin-top: 10px;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.floatingPanel span {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 13px;
+}
+
+.experienceGrid {
+  display: grid;
+  grid-template-columns: minmax(280px, 430px) minmax(0, 1fr);
+  gap: 48px;
+  align-items: center;
+}
+
+.phoneShell {
+  min-height: 620px;
+  border: 10px solid #121a18;
+  border-radius: 42px;
+  background: #f7faf9;
+  padding: 22px;
+  box-shadow: 0 28px 80px rgba(10, 30, 25, 0.16);
+}
+
+.phoneStatus,
+.phoneHeader,
+.resultCard,
+.doctorNote,
+.nextAction {
+  border-radius: 18px;
+}
+
+.phoneStatus {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #63706c;
+  font-size: 12px;
+}
+
+.phoneHeader {
+  margin-top: 28px;
+  padding: 24px;
+  background: linear-gradient(145deg, #00d4aa, #7bead6);
+  color: #05352b;
+}
+
+.phoneHeader p,
+.phoneHeader h2 {
+  margin: 0;
+}
+
+.phoneHeader p {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.phoneHeader h2 {
+  margin-top: 10px;
+  font-size: 31px;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+.progressTrack {
+  display: flex;
+  gap: 8px;
+  margin: 22px 0;
+}
+
+.progressDot,
+.progressDotActive {
+  height: 8px;
+  flex: 1;
+  border-radius: 999px;
+  background: #dfe8e5;
+}
+
+.progressDotActive {
+  background: #00a88a;
+}
+
+.resultCard,
+.doctorNote,
+.nextAction {
+  background: #ffffff;
+  border: 1px solid #e3ece9;
+  padding: 18px;
+}
+
+.resultCard span,
+.doctorNote span,
+.nextAction span {
+  display: block;
+  color: #66736f;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.resultCard strong,
+.nextAction strong {
+  display: block;
+  margin-top: 8px;
+  color: #14231f;
+  font-size: 20px;
+  line-height: 1.15;
+}
+
+.resultCard small {
+  display: inline-flex;
+  margin-top: 14px;
+  border-radius: 999px;
+  background: rgba(0, 212, 170, 0.12);
+  color: #007c66;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.doctorNote,
+.nextAction {
+  margin-top: 14px;
+}
+
+.doctorNote p {
+  margin: 10px 0 0;
+  color: #34423e;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.controlPanel {
+  display: grid;
+  gap: 28px;
+}
+
+.stepList {
+  display: grid;
+  gap: 10px;
+}
+
+.stepButton,
+.stepButtonActive {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 4px 14px;
+  width: 100%;
+  border: 1px solid #dce5e2;
+  border-radius: 14px;
+  background: #ffffff;
+  padding: 16px;
+  text-align: left;
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.stepButton:hover,
+.stepButtonActive {
+  border-color: rgba(0, 168, 138, 0.55);
+  box-shadow: 0 10px 28px rgba(6, 36, 31, 0.08);
+}
+
+.stepButtonActive {
+  transform: translateY(-1px);
+}
+
+.stepButton span,
+.stepButtonActive span {
+  grid-row: 1 / span 2;
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #eef6f4;
+  color: #007c66;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.stepButton strong,
+.stepButtonActive strong {
+  color: #16231f;
+  font-size: 17px;
+}
+
+.stepButton small,
+.stepButtonActive small {
+  color: #56635f;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.panelTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.panelTab,
+.panelTabActive {
+  border: 1px solid #dce5e2;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #42504c;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.panelTabActive {
+  border-color: #00a88a;
+  background: #00d4aa;
+  color: #05352b;
+}
+
+.workflowLine {
+  position: relative;
+}
+
+.workflowLine::before {
+  content: "";
+  position: absolute;
+  left: 19px;
+  top: 24px;
+  bottom: 24px;
+  width: 2px;
+  background: #d8e3df;
+}
+
+@media (max-width: 900px) {
+  .experienceGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .phoneShell {
+    min-height: auto;
+  }
+
+  .heroMedia {
+    min-height: 440px;
+  }
+}
+
+@media (max-width: 640px) {
+  .heroMedia {
+    min-height: 420px;
+    border-radius: 18px;
+  }
+
+  .heroPhone {
+    right: 50%;
+    top: 52%;
+    width: min(270px, 78%);
+    transform: translate(50%, -50%) rotate(-3deg);
+  }
+
+  .floatingPanel {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    width: auto;
+    padding: 16px;
+  }
+
+  .floatingPanel strong {
+    font-size: 24px;
+  }
+
+  .phoneShell {
+    border-width: 8px;
+    border-radius: 34px;
+    padding: 18px;
+  }
+
+  .phoneHeader h2 {
+    font-size: 27px;
+  }
+
+  .stepButton,
+  .stepButtonActive {
+    grid-template-columns: 38px 1fr;
+    padding: 14px;
+  }
+}

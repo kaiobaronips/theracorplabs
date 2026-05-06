@@ -1,8 +1,22 @@
 /** @type {import('next').NextConfig} */
+const isDevelopment = process.env.NODE_ENV === 'development';
+
 const nextConfig = {
   reactStrictMode: true,
+  async rewrites() {
+    return [{ source: '/', destination: '/index.html' }];
+  },
   async headers() {
     return [
+      // Allow Live Server (5501), file://, and other local origins to call the API in development
+      ...(isDevelopment ? [{
+        source: '/api/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'Access-Control-Allow-Methods', value: 'GET, POST, OPTIONS' },
+          { key: 'Access-Control-Allow-Headers', value: 'Content-Type' },
+        ],
+      }] : []),
       {
         source: '/(.*)',
         headers: [
@@ -14,7 +28,7 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline'",
+              `script-src 'self' 'unsafe-inline'${isDevelopment ? " 'unsafe-eval'" : ''}`,
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob:",
               "font-src 'self'",

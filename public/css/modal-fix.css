@@ -1,0 +1,43 @@
+/* Correção do comportamento do modal */
+/* Impedir que cliques no fundo (scrim) fechem o modal */
+.tc-onboard__scrim {
+  pointer-events: none !important;
+  cursor: default !important;
+}
+
+/* Garantir que o conteúdo do modal ainda receba cliques */
+.tc-onboard__sheet {
+  pointer-events: auto !important;
+}
+
+/* Garantir que o botão de fechar funcione */
+.tc-onboard__close {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  z-index: 9999 !important;
+  position: relative !important;
+}
+
+/* Impedir que o modal feche ao clicar fora */
+.tc-onboard[aria-hidden="false"] .tc-onboard__scrim {
+  pointer-events: none !important;
+}
+
+/* Garantir que o modal permaneça visível quando aberto */
+.tc-onboard[aria-hidden="false"] {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Garantir que o modal permaneça visível quando aberto */
+.tc-onboard[aria-hidden="false"] {
+  display: block !important;
+  visibility: visible !important;
+}
+
+/* Garantir que o modal fique visível quando aria-hidden=false */
+.tc-onboard[aria-hidden="false"] {
+  display: block !important;
+  visibility: visible !important;
+}
