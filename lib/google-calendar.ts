@@ -105,25 +105,21 @@ export async function findAvailableSlots(doctors: Doctor[]): Promise<AvailableSl
   const doctor = doctors.find((d) => d.calendarId);
   if (!doctor) return [];
 
-  const [calendarName, busy] = await Promise.all([
-    getCalendarDisplayName(doctor.calendarId),
-    (async () => {
-      const now = new Date();
-      const timeMin = new Date(now);
-      timeMin.setMinutes(Math.ceil(timeMin.getMinutes() / 30) * 30, 0, 0);
-      const timeMax = new Date(now);
-      timeMax.setDate(timeMax.getDate() + SEARCH_DAYS_AHEAD);
-      timeMax.setHours(WORKING_HOURS_END + 3, 0, 0, 0);
-      return getBusyPeriods(doctor.calendarId, timeMin, timeMax);
-    })(),
-  ]);
-
   const now = new Date();
+
+  // Slots start from tomorrow 08:00 BRT — never show same-day availability.
   const timeMin = new Date(now);
-  timeMin.setMinutes(Math.ceil(timeMin.getMinutes() / 30) * 30, 0, 0);
+  timeMin.setDate(timeMin.getDate() + 1);
+  timeMin.setHours(WORKING_HOURS_START + 3, 0, 0, 0); // 08:00 BRT = UTC+3
+
   const timeMax = new Date(now);
   timeMax.setDate(timeMax.getDate() + SEARCH_DAYS_AHEAD);
   timeMax.setHours(WORKING_HOURS_END + 3, 0, 0, 0);
+
+  const [calendarName, busy] = await Promise.all([
+    getCalendarDisplayName(doctor.calendarId),
+    getBusyPeriods(doctor.calendarId, timeMin, timeMax),
+  ]);
 
   const slotMs = SLOT_DURATION_MINUTES * 60 * 1000;
   const slots: AvailableSlot[] = [];

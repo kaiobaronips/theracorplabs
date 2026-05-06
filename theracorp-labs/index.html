@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Theracorp Labs | Biomarcadores no app Theracorp</title>
+  <meta name="description" content="Entenda como funciona o acompanhamento de biomarcadores, exames e resultados pelo app Theracorp.">
+  <link rel="icon" href="../favicon.png">
+  <style>
+    :root {
+      --teal: #00d4aa;
+      --teal-dark: #008f7f;
+      --ink: #10211f;
+      --muted: #60706c;
+      --cream: #f6f3ed;
+      --paper: #fffaf2;
+      --line: rgba(16, 33, 31, .16);
+      --soft: #e5f5ef;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 72px;
+      padding: 18px clamp(20px, 4vw, 56px);
+      background: rgba(255, 250, 242, .92);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(14px);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    .brand img {
+      width: 138px;
+      height: auto;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      color: rgba(16, 33, 31, .76);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 22px;
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      background: var(--ink);
+      color: var(--white);
+      font-weight: 800;
+      font-size: 14px;
+      white-space: nowrap;
+      transition: transform .2s ease, background .2s ease, border-color .2s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      background: var(--teal-dark);
+      border-color: var(--teal-dark);
+    }
+
+    .button.light {
+      background: var(--white);
+      color: var(--ink);
+      border-color: rgba(255, 255, 255, .6);
+    }
+
+    .section {
+      padding: clamp(64px, 9vw, 120px) clamp(20px, 4vw, 56px);
+    }
+
+    .section-inner {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      margin: 0 0 18px;
+      color: var(--teal-dark);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .hero {
+      padding: 18px clamp(16px, 3vw, 32px) clamp(32px, 5vw, 56px);
+    }
+
+    .hero-frame {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      min-height: clamp(620px, 82vh, 820px);
+      border-radius: 0 0 28px 28px;
+      background: #172b28;
+      color: var(--white);
+    }
+
+    .hero-media {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .hero-media::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(9, 24, 22, .9), rgba(9, 24, 22, .48) 48%, rgba(9, 24, 22, .18));
+    }
+
+    .hero-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: .82;
+      filter: saturate(.9);
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 1;
+      align-self: end;
+      width: min(720px, 100%);
+      padding: clamp(32px, 7vw, 86px);
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 24px;
+      font-size: clamp(50px, 8vw, 106px);
+      line-height: .92;
+      font-weight: 900;
+    }
+
+    h2 {
+      margin-bottom: 22px;
+      font-size: clamp(38px, 6vw, 82px);
+      line-height: .94;
+      font-weight: 900;
+    }
+
+    h3 {
+      margin-bottom: 12px;
+      font-size: clamp(24px, 3vw, 38px);
+      line-height: 1;
+      font-weight: 900;
+    }
+
+    p {
+      color: var(--muted);
+      font-size: clamp(17px, 2vw, 20px);
+      line-height: 1.45;
+    }
+
+    .hero-copy p {
+      width: min(520px, 100%);
+      color: rgba(255, 255, 255, .86);
+      font-size: clamp(19px, 2.2vw, 24px);
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 32px;
+    }
+
+    .notice {
+      margin-top: 28px;
+      color: rgba(255, 255, 255, .68);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .intro {
+      background: var(--paper);
+    }
+
+    .intro-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: clamp(28px, 5vw, 72px);
+      align-items: center;
+    }
+
+    .intro-visual {
+      overflow: hidden;
+      min-height: 520px;
+      border-radius: 24px;
+      background: var(--soft);
+    }
+
+    .intro-visual img {
+      width: 100%;
+      height: 100%;
+      min-height: 520px;
+      object-fit: cover;
+    }
+
+    .step-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 34px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      gap: 18px;
+      padding: 22px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .step:last-child {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .step-number {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--ink);
+      color: var(--white);
+      font-weight: 900;
+    }
+
+    .step h3 {
+      font-size: clamp(22px, 2.5vw, 31px);
+    }
+
+    .step p {
+      margin-bottom: 0;
+      font-size: 16px;
+    }
+
+    .signal-section {
+      overflow: hidden;
+      background: #e9f3ec;
+    }
+
+    .centered-heading {
+      width: min(860px, 100%);
+      margin: 0 auto 50px;
+      text-align: center;
+    }
+
+    .signal-board {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr minmax(280px, 460px) 1fr;
+      align-items: center;
+      gap: 24px;
+      min-height: 560px;
+    }
+
+    .signal-stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .signal-pill {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 16px 18px;
+      border: 1px solid rgba(0, 143, 127, .18);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .7);
+      color: rgba(16, 33, 31, .72);
+      font-weight: 700;
+      box-shadow: 0 16px 46px rgba(16, 33, 31, .06);
+    }
+
+    .signal-pill strong {
+      color: var(--ink);
+    }
+
+    .phone-card {
+      position: relative;
+      overflow: hidden;
+      align-self: stretch;
+      min-height: 560px;
+      border-radius: 28px;
+      background: #dceee7;
+      box-shadow: 0 30px 90px rgba(16, 33, 31, .12);
+    }
+
+    .phone-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .feature-band {
+      background: #132824;
+      color: var(--white);
+    }
+
+    .feature-band p {
+      color: rgba(255, 255, 255, .74);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: .95fr 1.05fr;
+      gap: clamp(32px, 6vw, 90px);
+      align-items: center;
+    }
+
+    .feature-panel {
+      overflow: hidden;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, .08);
+    }
+
+    .feature-panel img {
+      width: 100%;
+      min-height: 580px;
+      object-fit: cover;
+    }
+
+    .checks {
+      display: grid;
+      gap: 18px;
+      margin: 32px 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .checks li {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 14px;
+      color: rgba(255, 255, 255, .86);
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    .checks li::before {
+      content: "";
+      width: 22px;
+      height: 22px;
+      margin-top: 1px;
+      border-radius: 50%;
+      background: var(--teal);
+      box-shadow: inset 0 0 0 6px rgba(19, 40, 36, .45);
+    }
+
+    .compare {
+      background: var(--paper);
+    }
+
+    .comparison-table {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: var(--white);
+    }
+
+    .comparison-row {
+      display: grid;
+      grid-template-columns: 1.2fr .9fr .9fr;
+      min-height: 78px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .comparison-row:last-child {
+      border-bottom: 0;
+    }
+
+    .comparison-row > div {
+      display: flex;
+      align-items: center;
+      padding: 20px 24px;
+      font-weight: 800;
+    }
+
+    .comparison-row > div:not(:last-child) {
+      border-right: 1px solid var(--line);
+    }
+
+    .comparison-row.header {
+      background: var(--ink);
+      color: var(--white);
+    }
+
+    .comparison-row .muted {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .cancer {
+      background: #e9f3ec;
+    }
+
+    .cancer-card {
+      display: grid;
+      grid-template-columns: 1fr .9fr;
+      gap: 34px;
+      align-items: center;
+      overflow: hidden;
+      border-radius: 32px;
+      background: var(--ink);
+      color: var(--white);
+    }
+
+    .cancer-copy {
+      padding: clamp(32px, 6vw, 70px);
+    }
+
+    .cancer-copy p {
+      color: rgba(255, 255, 255, .74);
+    }
+
+    .cancer-visual {
+      min-height: 520px;
+      background: radial-gradient(circle at 40% 40%, rgba(0, 212, 170, .4), transparent 34%), #25423d;
+    }
+
+    .cancer-visual img {
+      width: 100%;
+      height: 100%;
+      min-height: 520px;
+      object-fit: cover;
+      mix-blend-mode: screen;
+      opacity: .82;
+    }
+
+    .experts {
+      background: var(--paper);
+    }
+
+    .experts-header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 34px;
+    }
+
+    .expert-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .expert-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--white);
+    }
+
+    .expert-photo {
+      min-height: 260px;
+      background: linear-gradient(145deg, #d9efe9, #f8f0df);
+    }
+
+    .expert-body {
+      padding: 22px;
+    }
+
+    .expert-body h3 {
+      font-size: 22px;
+      line-height: 1.05;
+    }
+
+    .expert-body p {
+      margin-bottom: 0;
+      font-size: 15px;
+    }
+
+    .faq {
+      background: #f1eee6;
+    }
+
+    .faq-grid {
+      display: grid;
+      grid-template-columns: .65fr 1fr;
+      gap: clamp(28px, 6vw, 80px);
+      align-items: start;
+    }
+
+    details {
+      border-top: 1px solid var(--line);
+    }
+
+    details:last-child {
+      border-bottom: 1px solid var(--line);
+    }
+
+    summary {
+      cursor: pointer;
+      padding: 24px 0;
+      font-size: clamp(20px, 2vw, 26px);
+      font-weight: 900;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details p {
+      margin-bottom: 24px;
+      font-size: 16px;
+    }
+
+    .final-cta {
+      position: relative;
+      overflow: hidden;
+      min-height: 520px;
+      display: grid;
+      place-items: center;
+      padding: clamp(64px, 10vw, 120px) 20px;
+      background: #132824;
+      color: var(--white);
+      text-align: center;
+    }
+
+    .final-cta img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: .28;
+    }
+
+    .final-cta-content {
+      position: relative;
+      z-index: 1;
+      width: min(760px, 100%);
+    }
+
+    .final-cta p {
+      color: rgba(255, 255, 255, .76);
+    }
+
+    .site-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 34px clamp(20px, 4vw, 56px);
+      background: var(--ink);
+      color: rgba(255, 255, 255, .74);
+      font-size: 13px;
+    }
+
+    .site-footer strong {
+      color: var(--white);
+    }
+
+    @media (max-width: 980px) {
+      .nav-links {
+        display: none;
+      }
+
+      .intro-grid,
+      .feature-grid,
+      .cancer-card,
+      .faq-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .signal-board {
+        grid-template-columns: 1fr;
+      }
+
+      .expert-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .comparison-row {
+        grid-template-columns: 1fr;
+      }
+
+      .comparison-row > div:not(:last-child) {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .site-header {
+        min-height: 64px;
+      }
+
+      .brand img {
+        width: 118px;
+      }
+
+      .header-actions .button {
+        min-height: 40px;
+        padding: 0 14px;
+        font-size: 13px;
+      }
+
+      .hero {
+        padding: 0;
+      }
+
+      .hero-frame {
+        min-height: 720px;
+        border-radius: 0;
+      }
+
+      .hero-media::after {
+        background: linear-gradient(180deg, rgba(9, 24, 22, .34), rgba(9, 24, 22, .86) 58%, rgba(9, 24, 22, .92));
+      }
+
+      .hero-copy {
+        padding: 34px 22px;
+      }
+
+      .step {
+        grid-template-columns: 42px 1fr;
+      }
+
+      .expert-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .site-footer {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html" aria-label="Theracorp">
+      <img src="../logo-theracorp.png" alt="Theracorp">
+    </a>
+    <nav class="nav-links" aria-label="Navegação Theracorp Labs">
+      <a href="#biomarcadores">Biomarcadores</a>
+      <a href="#como-funciona">Como funciona</a>
+      <a href="#plano">Plano de ação</a>
+      <a href="#especialistas">Especialistas</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="header-actions">
+      <a class="button" href="../index.html#wm-quiz">Começar</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="labs">
+      <div class="hero-frame">
+        <div class="hero-media" aria-hidden="true">
+          <img src="../biomarcador-digital.png" alt="">
+        </div>
+        <div class="hero-copy">
+          <p class="eyebrow">Theracorp Labs</p>
+          <h1>Teste sinais importantes da sua saúde.</h1>
+          <p>Coleta de exames, interpretação clínica e acompanhamento dos seus biomarcadores em tempo real pelo app Theracorp.</p>
+          <div class="hero-actions">
+            <a class="button light" href="../index.html#wm-quiz">Começar agora</a>
+            <a class="button" href="#como-funciona">Como funciona</a>
+          </div>
+          <p class="notice">Resultados laboratoriais ajudam a orientar decisões de saúde, mas não substituem avaliação médica individual.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section intro" id="como-funciona">
+      <div class="section-inner intro-grid">
+        <div>
+          <p class="eyebrow">Processo simples</p>
+          <h2>Paz de espírito em 3 etapas.</h2>
+          <p>O Theracorp Labs organiza a jornada do paciente desde a solicitação dos exames até o recebimento dos resultados no aplicativo.</p>
+          <div class="step-list">
+            <article class="step">
+              <span class="step-number">1</span>
+              <div>
+                <h3>Agende a coleta</h3>
+                <p>Você recebe a orientação para realizar os exames indicados pelo plano de acompanhamento.</p>
+              </div>
+            </article>
+            <article class="step">
+              <span class="step-number">2</span>
+              <div>
+                <h3>Faça os exames</h3>
+                <p>A coleta gera dados laboratoriais que alimentam sua linha de base clínica.</p>
+              </div>
+            </article>
+            <article class="step">
+              <span class="step-number">3</span>
+              <div>
+                <h3>Acompanhe pelo app</h3>
+                <p>Resultados, tendências e próximos passos ficam organizados no app Theracorp.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+        <div class="intro-visual">
+          <img src="../app-push.png" alt="Tela do app Theracorp exibindo acompanhamento de saúde">
+        </div>
+      </div>
+    </section>
+
+    <section class="section signal-section" id="biomarcadores">
+      <div class="section-inner">
+        <div class="centered-heading">
+          <p class="eyebrow">Biomarcadores</p>
+          <h2>Sinais de saúde que contam a sua história.</h2>
+          <p>Acompanhe marcadores metabólicos, hormonais, cardiovasculares, inflamatórios e nutricionais em uma visão clara.</p>
+        </div>
+        <div class="signal-board">
+          <div class="signal-stack" aria-label="Categorias de biomarcadores">
+            <div class="signal-pill"><strong>Metabolismo</strong><span>Glicose, HbA1c, insulina</span></div>
+            <div class="signal-pill"><strong>Coração</strong><span>LDL, HDL, ApoB</span></div>
+            <div class="signal-pill"><strong>Hormônios</strong><span>TSH, T3, testosterona</span></div>
+            <div class="signal-pill"><strong>Inflamação</strong><span>PCR, cortisol</span></div>
+          </div>
+          <div class="phone-card">
+            <img src="../signal.webp" alt="Visual de acompanhamento de biomarcadores">
+          </div>
+          <div class="signal-stack" aria-label="Mais categorias de biomarcadores">
+            <div class="signal-pill"><strong>Nutrientes</strong><span>Vitamina D, ferro, magnésio</span></div>
+            <div class="signal-pill"><strong>Fígado</strong><span>ALT, AST, GGT</span></div>
+            <div class="signal-pill"><strong>Rins</strong><span>Creatinina, ureia</span></div>
+            <div class="signal-pill"><strong>Sangue</strong><span>Hemograma e plaquetas</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section feature-band" id="plano">
+      <div class="section-inner feature-grid">
+        <div class="feature-panel">
+          <img src="../celphonehand.png" alt="Paciente usando o app Theracorp">
+        </div>
+        <div>
+          <p class="eyebrow">Plano de ação</p>
+          <h2>Transforme resultado em acompanhamento.</h2>
+          <p>Depois da coleta, o app ajuda a organizar seus resultados e a conectar cada indicador aos próximos passos de cuidado.</p>
+          <ul class="checks">
+            <li>Resultados centralizados em uma experiência simples de consultar.</li>
+            <li>Histórico para comparar evolução entre ciclos de exames.</li>
+            <li>Orientação nutracêutica e clínica conforme o seu plano de saúde.</li>
+            <li>Acompanhamento contínuo para metas metabólicas e preventivas.</li>
+          </ul>
+          <a class="button light" href="../index.html#wm-quiz">Iniciar acompanhamento</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section compare">
+      <div class="section-inner">
+        <div class="centered-heading">
+          <p class="eyebrow">Mais clareza</p>
+          <h2>Mais contexto do que exames soltos.</h2>
+          <p>O objetivo é reunir dados, interpretação e próximos passos em um único fluxo de gestão de saúde.</p>
+        </div>
+        <div class="comparison-table" role="table" aria-label="Comparação entre exames avulsos e Theracorp Labs">
+          <div class="comparison-row header" role="row">
+            <div role="columnheader">Recurso</div>
+            <div role="columnheader">Theracorp Labs</div>
+            <div role="columnheader">Exame avulso</div>
+          </div>
+          <div class="comparison-row" role="row">
+            <div role="cell">Resultados no aplicativo</div>
+            <div role="cell">Sim</div>
+            <div class="muted" role="cell">Nem sempre</div>
+          </div>
+          <div class="comparison-row" role="row">
+            <div role="cell">Linha de base de biomarcadores</div>
+            <div role="cell">Sim</div>
+            <div class="muted" role="cell">Limitado</div>
+          </div>
+          <div class="comparison-row" role="row">
+            <div role="cell">Plano de ação conectado ao resultado</div>
+            <div role="cell">Sim</div>
+            <div class="muted" role="cell">Separado</div>
+          </div>
+          <div class="comparison-row" role="row">
+            <div role="cell">Acompanhamento de evolução</div>
+            <div role="cell">Contínuo</div>
+            <div class="muted" role="cell">Pontual</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section cancer">
+      <div class="section-inner cancer-card">
+        <div class="cancer-copy">
+          <p class="eyebrow">Prevenção</p>
+          <h2>Indicadores para uma visão mais completa.</h2>
+          <p>O Theracorp Labs pode apoiar estratégias de prevenção ao reunir exames, tendências e orientação profissional em um fluxo único.</p>
+          <a class="button light" href="../index.html#wm-quiz">Conhecer planos</a>
+        </div>
+        <div class="cancer-visual">
+          <img src="../background01.png" alt="Visual abstrato de tecnologia em saúde">
+        </div>
+      </div>
+    </section>
+
+    <section class="section experts" id="especialistas">
+      <div class="section-inner">
+        <div class="experts-header">
+          <div>
+            <p class="eyebrow">Equipe clínica</p>
+            <h2>Cuidado desenhado por especialistas.</h2>
+          </div>
+          <a class="button" href="../index.html#wm-quiz">Começar</a>
+        </div>
+        <div class="expert-grid">
+          <article class="expert-card">
+            <div class="expert-photo"></div>
+            <div class="expert-body">
+              <h3>Dr. Fernando Monteiro</h3>
+              <p>Chefe de assuntos medicos Theracorp.</p>
+            </div>
+          </article>
+          <article class="expert-card">
+            <div class="expert-photo"></div>
+            <div class="expert-body">
+              <h3>Dr. Leonardo Vieira</h3>
+              <p>Chefe de Análises clínicas, Theracorp.</p>
+            </div>
+          </article>
+          <article class="expert-card">
+            <div class="expert-photo"></div>
+            <div class="expert-body">
+              <h3>Time de Nutrição</h3>
+              <p>Suporte nutracêutico para melhores resultados metabólicos.</p>
+            </div>
+          </article>
+          <article class="expert-card">
+            <div class="expert-photo"></div>
+            <div class="expert-body">
+              <h3>Equipe Theracorp</h3>
+              <p>Acompanhamento digital para organizar sua jornada de saúde.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section faq" id="faq">
+      <div class="section-inner faq-grid">
+        <div>
+          <p class="eyebrow">Perguntas frequentes</p>
+          <h2>Tudo em um só lugar.</h2>
+        </div>
+        <div>
+          <details open>
+            <summary>Para quem o Theracorp Labs é indicado?</summary>
+            <p>Para pacientes que querem acompanhar biomarcadores, entender tendências do próprio organismo e conectar exames a um plano de gestão de saúde.</p>
+          </details>
+          <details>
+            <summary>Como funciona o processo de exames?</summary>
+            <p>O paciente recebe a orientação, realiza a coleta indicada e acompanha os resultados organizados no app Theracorp.</p>
+          </details>
+          <details>
+            <summary>Preciso ir presencialmente para a coleta?</summary>
+            <p>Quando houver exame laboratorial com coleta, o processo será orientado conforme a disponibilidade e o plano definido para o paciente.</p>
+          </details>
+          <details>
+            <summary>Os resultados ficam disponíveis no app?</summary>
+            <p>Sim. A proposta da página é apresentar o fluxo de resultados, biomarcadores e acompanhamento centralizados no aplicativo Theracorp.</p>
+          </details>
+          <details>
+            <summary>O app substitui consulta médica?</summary>
+            <p>Não. O app organiza informações e acompanhamento, mas decisões clínicas devem ser conduzidas por profissionais habilitados.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <img src="../footer.png" alt="">
+      <div class="final-cta-content">
+        <p class="eyebrow">Theracorp Labs</p>
+        <h2>Saúde melhor começa por dentro.</h2>
+        <p>Comece a acompanhar seus biomarcadores e receba seus resultados no app Theracorp.</p>
+        <a class="button light" href="../index.html#wm-quiz">Começar agora</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div><strong>Theracorp</strong> Labs</div>
+    <div>Resultados laboratoriais não são diagnóstico isolado. Consulte um profissional de saúde.</div>
+  </footer>
+</body>
+</html>

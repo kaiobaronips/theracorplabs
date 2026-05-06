@@ -72,7 +72,9 @@ export function confirmAndRelease(
 ): { valid: boolean; otherSlots: string[] } {
   pruneExpired();
   const lock = store.get(key(calendarId, isoStart));
-  const valid = !!lock && lock.lockId === lockId && lock.lockedUntil >= Date.now();
+  // Reject only when another session actively holds the slot.
+  // No lock found (expired / server restarted) → let freebusy decide.
+  const valid = !lock || lock.lockId === lockId;
 
   const prefix = `${calendarId}::`;
   const otherSlots: string[] = [];
