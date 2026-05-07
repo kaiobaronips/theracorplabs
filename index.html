@@ -16,7 +16,7 @@
       
       
       <!-- BLOCO 2: CSS EXTERNO -->
-      <link rel="stylesheet" href="./styles/theme.css">
+      <link rel="stylesheet" href="./styles/theme.css?v=20260507-bp-apple-glass">
       <link rel="stylesheet" href="/css/modal-fix.css">
       <!-- BLOCO 3: JS ANALYTICS EXTERNO -->
       <script src="./styles/analytics.js" defer></script>
@@ -670,7 +670,6 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       options: [
         'Quero agendar uma consulta hoje',
         'Quero meu plano pelo formulário, sem teleconsulta',
-        'Prefiro conhecer melhor o programa primeiro',
         'Quero ver os planos disponíveis'
       ],
       type: 'options'
@@ -844,6 +843,34 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     formularioBloco2: {
       id: 'formularioBloco2',
       type: 'formularioBloco2',
+      label: 'Formulário',
+      question: '',
+      next: 'formularioBloco3'
+    },
+    formularioBloco3: {
+      id: 'formularioBloco3',
+      type: 'formularioBloco3',
+      label: 'Formulário',
+      question: '',
+      next: 'formularioBloco4'
+    },
+    formularioBloco4: {
+      id: 'formularioBloco4',
+      type: 'formularioBloco4',
+      label: 'Formulário',
+      question: '',
+      next: 'formularioBloco5'
+    },
+    formularioBloco5: {
+      id: 'formularioBloco5',
+      type: 'formularioBloco5',
+      label: 'Formulário',
+      question: '',
+      next: 'formularioBloco6'
+    },
+    formularioBloco6: {
+      id: 'formularioBloco6',
+      type: 'formularioBloco6',
       label: 'Formulário',
       question: '',
       next: 'plans'
@@ -1218,6 +1245,47 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     'Nenhuma das acima'
   ];
 
+  var FORMULARIO_CONDITIONS_EXTRA = [
+    'Hipertireoidismo não tratado',
+    'Doença de vesícula biliar',
+    'Hipertensão',
+    'Convulsão',
+    'Glaucoma',
+    'Apneia do sono',
+    'Diabete tipo 2',
+    'Diabete tipo 1',
+    'Retinopatia diabética (doença ocular diabética), danos ao nervo óptico causados por trauma ou redução do fluxo sanguíneo, ou cegueira',
+    'Uso do anticoagulante varfarina (Coumadin/Jantoven)',
+    'Histórico ou presença atual de pancreatite',
+    'Histórico pessoal ou familiar de cisto/nódulo tireoidiano, câncer de tireoide, carcinoma medular da tireoide ou síndrome de neoplasia endócrina múltipla tipo 2.',
+    'Gota',
+    'Colesterol alto ou triglicerídeos',
+    'Depressão',
+    'Traumatismo craniano',
+    'Tumor/infecção no cérebro/medula espinhal',
+    'Baixo teor de sódio'
+  ];
+
+  var FORMULARIO_CONDITIONS_EXTRA_2 = [
+    'Doença hepática, incluindo fígado gorduroso.',
+    'Doença renal',
+    'Frequência cardíaca em repouso elevada (taquicardia)',
+    'Doença arterial coronariana ou ataque cardíaco/AVC nos últimos 2 anos',
+    'Alérgico a qualquer medicamento',
+    'Insuficiência cardíaca congestiva',
+    'Prolongamento do intervalo QT ou outro distúrbio do ritmo cardíaco',
+    'Hospitalização no último ano',
+    'Vírus da imunodeficiência humana (HIV)',
+    'Refluxo Ácido',
+    'Asma/doença reativa das vias aéreas',
+    'Incontinência urinária de esforço',
+    'Sindrome dos ovários policisticos (SOP)',
+    'Baixa testosterona clinicamente comprovada',
+    'Osteoartrite',
+    'Constipação',
+    'Nenhuma das alternativas'
+  ];
+
   function renderFormularioBloco1() {
     return '' +
       '<p class="tc-onboard__fbloco-subtitle">Por favor, responda às seguintes perguntas para que possamos avaliar sua elegibilidade para o programa de emagrecimento com acompanhamento médico.</p>' +
@@ -1259,14 +1327,136 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     return html;
   }
 
+  function renderFormularioBloco3() {
+    var selected = answers.formularioCondicoesExtra || [];
+    var html = '' +
+      '<div class="tc-onboard__fbloco-header">' +
+        '<p class="tc-onboard__fbloco-title">Sobre sua saúde</p>' +
+      '</div>' +
+      '<p class="tc-onboard__fbloco-question">Alguma dessas condições se aplica a você?</p>' +
+      '<div class="tc-onboard__check-list tc-onboard__check-list--extra">';
+    FORMULARIO_CONDITIONS_EXTRA.forEach(function (label, idx) {
+      var isSel = selected.indexOf(idx) !== -1;
+      html += '<button class="tc-onboard__check-item' + (isSel ? ' is-selected' : '') + '" type="button" data-check-extra-idx="' + idx + '">' +
+        '<span class="tc-onboard__check-box">' +
+          '<svg class="tc-onboard__check-tick" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><polyline points="2 9 6 13 14 3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        '</span>' +
+        '<span class="tc-onboard__check-label">' + escapeHtml(label) + '</span>' +
+      '</button>';
+    });
+    html += '</div>' +
+      '<div class="tc-onboard__form-nav">' +
+        '<button class="tc-onboard__primary tc-onboard__primary--nav" type="button" data-action="formulario-next">Próximo</button>' +
+      '</div>';
+    return html;
+  }
+
+  function renderFormularioBloco4() {
+    var selected = answers.formularioCondicoesExtra2 || [];
+    var html = '' +
+      '<div class="tc-onboard__fbloco-header">' +
+        '<p class="tc-onboard__fbloco-title">Sobre sua saúde</p>' +
+      '</div>' +
+      '<p class="tc-onboard__fbloco-question">Alguma dessas condições se aplica a você?</p>' +
+      '<div class="tc-onboard__check-list tc-onboard__check-list--extra">';
+    FORMULARIO_CONDITIONS_EXTRA_2.forEach(function (label, idx) {
+      var isSel = selected.indexOf(idx) !== -1;
+      var isNenhuma = idx === FORMULARIO_CONDITIONS_EXTRA_2.length - 1;
+      html += '<button class="tc-onboard__check-item' + (isSel ? ' is-selected' : '') + '" type="button" data-check-extra2-idx="' + idx + '" data-nenhuma="' + (isNenhuma ? '1' : '0') + '">' +
+        '<span class="tc-onboard__check-box">' +
+          '<svg class="tc-onboard__check-tick" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><polyline points="2 9 6 13 14 3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        '</span>' +
+        '<span class="tc-onboard__check-label">' + escapeHtml(label) + '</span>' +
+      '</button>';
+    });
+    html += '</div>' +
+      '<div class="tc-onboard__form-nav">' +
+        '<button class="tc-onboard__primary tc-onboard__primary--nav" type="button" data-action="formulario-next">Próximo</button>' +
+      '</div>';
+    return html;
+  }
+
+  var FORMULARIO_YES_NO = [
+    {
+      id: 'opiaceos',
+      question: 'Nos últimos 3 meses, você utilizou analgésicos opiáceos e/ou drogas ilícitas à base de opiáceos?'
+    },
+    {
+      id: 'cirurgiaPeso',
+      question: 'Você já se submeteu a cirurgias para perda de peso anteriormente?'
+    },
+    {
+      id: 'medicamentoReceita',
+      question: 'Você está tomando algum medicamento com receita médica atualmente?'
+    }
+  ];
+
+  function renderFormularioBloco5() {
+    var html = '' +
+      '<div class="tc-onboard__fbloco-header">' +
+        '<p class="tc-onboard__fbloco-title">Sobre sua saúde</p>' +
+      '</div>' +
+      '<div class="tc-onboard__yesno-list">';
+    FORMULARIO_YES_NO.forEach(function (item) {
+      html += '<fieldset class="tc-onboard__yesno-group" data-yesno-group="' + escapeHtml(item.id) + '">' +
+        '<legend>' + escapeHtml(item.question) + '</legend>' +
+        '<div class="tc-onboard__yesno-options">' +
+          '<button class="tc-onboard__yesno-option' + (answers[item.id] === 'Sim' ? ' is-selected' : '') + '" type="button" data-yesno-id="' + escapeHtml(item.id) + '" data-value="Sim">SIM</button>' +
+          '<button class="tc-onboard__yesno-option' + (answers[item.id] === 'Não' ? ' is-selected' : '') + '" type="button" data-yesno-id="' + escapeHtml(item.id) + '" data-value="Não">NÃO</button>' +
+        '</div>' +
+        (answers[item.id] === 'Sim' ? '<textarea class="tc-onboard__yesno-detail" data-yesno-detail="' + escapeHtml(item.id) + '" rows="2" placeholder="Descreva sua resposta aqui">' + escapeHtml(answers[item.id + 'Descricao'] || '') + '</textarea>' : '') +
+      '</fieldset>';
+    });
+    html += '</div>' +
+      '<div class="tc-onboard__form-nav">' +
+        '<button class="tc-onboard__primary tc-onboard__primary--nav" type="button" data-action="formulario-next">Próximo</button>' +
+      '</div>';
+    return html;
+  }
+
+  var FORMULARIO_BLOOD_PRESSURE = [
+    { value: '< 120 / 80', label: 'Normal', status: 'normal' },
+    { value: '120 - 129 / < 80', label: 'Elevado', status: 'elevado' },
+    { value: '130 - 139 / 80 - 89', label: 'Hipertensão Estágio I', status: 'hipertensao' },
+    { value: '> 140 / 90', label: 'Hipertensão Estágio II', status: 'hipertensao' }
+  ];
+
+  function renderBloodPressureIcon() {
+    return '<img class="tc-onboard__bp-icon" src="./heart.png" alt="" aria-hidden="true">';
+  }
+
+  function renderFormularioBloco6() {
+    var html = '' +
+      '<div class="tc-onboard__fbloco-header">' +
+        '<p class="tc-onboard__fbloco-title">Sobre sua saúde</p>' +
+        '<p class="tc-onboard__fbloco-question">Qual é a sua faixa de pressão arterial?</p>' +
+      '</div>' +
+      '<div class="tc-onboard__bp-grid">';
+    FORMULARIO_BLOOD_PRESSURE.forEach(function (item) {
+      var selected = answers.formularioPressaoArterial === item.value;
+      html += '<button class="tc-onboard__bp-card tc-onboard__bp-card--' + escapeHtml(item.status) + (selected ? ' is-selected' : '') + '" type="button" data-bp-value="' + escapeHtml(item.value) + '" aria-pressed="' + (selected ? 'true' : 'false') + '">' +
+        '<span class="tc-onboard__bp-main">' +
+          renderBloodPressureIcon() +
+          '<span class="tc-onboard__bp-value">' + escapeHtml(item.value) + '</span>' +
+        '</span>' +
+        '<span class="tc-onboard__bp-status tc-onboard__bp-status--' + escapeHtml(item.status) + '">' + escapeHtml(item.label) + '</span>' +
+      '</button>';
+    });
+    html += '</div>' +
+      '<div class="tc-onboard__form-nav">' +
+        '<button class="tc-onboard__primary tc-onboard__primary--nav" type="button" data-action="formulario-next">Próximo</button>' +
+      '</div>';
+    return html;
+  }
+
   function renderStep(item, immediate) {
     if (!item) return;
 
     currentStep = item;
     var render = function () {
       clearSearchingTimers();
-      stage.classList.remove('is-searching', 'is-plans', 'is-formulario', 'is-formulario-health');
-      sheet.classList.remove('is-plans', 'is-formulario-hero', 'is-formulario-health');
+      stage.classList.remove('is-searching', 'is-plans', 'is-formulario', 'is-formulario-health', 'is-formulario-health-extra');
+      sheet.classList.remove('is-plans', 'is-formulario-hero', 'is-formulario-health', 'is-formulario-health-extra');
       var baseIndex = getBaseIndex(item);
       stepEl.textContent = item.label || (baseIndex > -1 ? 'Pergunta ' + item.step + ' de 05' : '');
       questionEl.textContent = typeof item.question === 'function'
@@ -1369,7 +1559,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
         }());
       }
 
-      if (item.type === 'formularioBloco1' || item.type === 'formularioBloco2') {
+      if (item.type === 'formularioBloco1' || item.type === 'formularioBloco2' || item.type === 'formularioBloco3' || item.type === 'formularioBloco4' || item.type === 'formularioBloco5' || item.type === 'formularioBloco6') {
         optionsEl.classList.add('tc-onboard__options--wide');
         stage.classList.add('is-formulario');
         if (item.type === 'formularioBloco1') {
@@ -1386,11 +1576,31 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
           heroOverlay.innerHTML = '<div class="tc-onboard__fbloco-overlay-content"><h2 class="tc-onboard__fbloco-overlay-title">Assuma o controle<br>da sua saúde.</h2><p class="tc-onboard__fbloco-overlay-sub">Estamos facilitando o acesso aos exames laboratoriais que você precisa. Tome as rédeas da situação e comece a viver a sua melhor vida.</p></div>';
           sheet.insertBefore(heroOverlay, heroImg.nextSibling);
           optionsEl.insertAdjacentHTML('beforeend', renderFormularioBloco1());
-        } else {
+        } else if (item.type === 'formularioBloco2') {
           stage.classList.add('is-formulario-health');
           sheet.classList.add('is-formulario-health');
           optionsEl.classList.add('tc-onboard__options--formulario-health');
           optionsEl.insertAdjacentHTML('beforeend', renderFormularioBloco2());
+        } else if (item.type === 'formularioBloco3') {
+          stage.classList.add('is-formulario-health', 'is-formulario-health-extra');
+          sheet.classList.add('is-formulario-health', 'is-formulario-health-extra');
+          optionsEl.classList.add('tc-onboard__options--formulario-health', 'tc-onboard__options--formulario-health-extra');
+          optionsEl.insertAdjacentHTML('beforeend', renderFormularioBloco3());
+        } else if (item.type === 'formularioBloco4') {
+          stage.classList.add('is-formulario-health', 'is-formulario-health-extra');
+          sheet.classList.add('is-formulario-health', 'is-formulario-health-extra');
+          optionsEl.classList.add('tc-onboard__options--formulario-health', 'tc-onboard__options--formulario-health-extra');
+          optionsEl.insertAdjacentHTML('beforeend', renderFormularioBloco4());
+        } else if (item.type === 'formularioBloco5') {
+          stage.classList.add('is-formulario-health', 'is-formulario-health-extra');
+          sheet.classList.add('is-formulario-health', 'is-formulario-health-extra');
+          optionsEl.classList.add('tc-onboard__options--formulario-health', 'tc-onboard__options--formulario-health-extra');
+          optionsEl.insertAdjacentHTML('beforeend', renderFormularioBloco5());
+        } else {
+          stage.classList.add('is-formulario-health', 'is-formulario-health-extra', 'is-formulario-bp');
+          sheet.classList.add('is-formulario-health', 'is-formulario-health-extra');
+          optionsEl.classList.add('tc-onboard__options--formulario-health', 'tc-onboard__options--formulario-health-extra');
+          optionsEl.insertAdjacentHTML('beforeend', renderFormularioBloco6());
         }
       }
 
@@ -1536,7 +1746,6 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
   function routeFromStartChoice(value) {
     if (value === 'Quero agendar uma consulta hoje') return steps.leadForm;
     if (value === 'Quero meu plano pelo formulário, sem teleconsulta') return steps.formularioBloco1;
-    if (value === 'Prefiro conhecer melhor o programa primeiro') return steps.learnIntro;
     return steps.plans;
   }
 
@@ -1667,6 +1876,88 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       return;
     }
 
+    var extraCheckItem = event.target.closest('[data-check-extra-idx]');
+    if (extraCheckItem && currentStep.id === 'formularioBloco3') {
+      var eidx = Number(extraCheckItem.getAttribute('data-check-extra-idx'));
+      var extraSel = answers.formularioCondicoesExtra ? answers.formularioCondicoesExtra.slice() : [];
+      var extraPos = extraSel.indexOf(eidx);
+      if (extraPos !== -1) { extraSel.splice(extraPos, 1); } else { extraSel.push(eidx); }
+      answers.formularioCondicoesExtra = extraSel;
+      optionsEl.querySelectorAll('[data-check-extra-idx]').forEach(function (btn) {
+        btn.classList.toggle('is-selected', extraSel.indexOf(Number(btn.getAttribute('data-check-extra-idx'))) !== -1);
+      });
+      return;
+    }
+
+    var extra2CheckItem = event.target.closest('[data-check-extra2-idx]');
+    if (extra2CheckItem && currentStep.id === 'formularioBloco4') {
+      var e2idx = Number(extra2CheckItem.getAttribute('data-check-extra2-idx'));
+      var isNenhumaExtra2 = extra2CheckItem.getAttribute('data-nenhuma') === '1';
+      var extra2Sel = answers.formularioCondicoesExtra2 ? answers.formularioCondicoesExtra2.slice() : [];
+      var nenhumaExtra2Idx = FORMULARIO_CONDITIONS_EXTRA_2.length - 1;
+      if (isNenhumaExtra2) {
+        extra2Sel = extra2Sel.indexOf(e2idx) !== -1 ? [] : [e2idx];
+      } else {
+        extra2Sel = extra2Sel.filter(function (i) { return i !== nenhumaExtra2Idx; });
+        var extra2Pos = extra2Sel.indexOf(e2idx);
+        if (extra2Pos !== -1) { extra2Sel.splice(extra2Pos, 1); } else { extra2Sel.push(e2idx); }
+      }
+      answers.formularioCondicoesExtra2 = extra2Sel;
+      optionsEl.querySelectorAll('[data-check-extra2-idx]').forEach(function (btn) {
+        btn.classList.toggle('is-selected', extra2Sel.indexOf(Number(btn.getAttribute('data-check-extra2-idx'))) !== -1);
+      });
+      return;
+    }
+
+    var yesNoButton = event.target.closest('[data-yesno-id]');
+    if (yesNoButton && currentStep.id === 'formularioBloco5') {
+      var yesNoId = yesNoButton.getAttribute('data-yesno-id');
+      var yesNoValue = yesNoButton.getAttribute('data-value') || '';
+      answers[yesNoId] = yesNoValue;
+      var groupEl = yesNoButton.closest('[data-yesno-group]');
+      if (groupEl) {
+        groupEl.querySelectorAll('[data-yesno-id]').forEach(function (btn) {
+          btn.classList.toggle('is-selected', btn === yesNoButton);
+        });
+        var detailEl = groupEl.querySelector('[data-yesno-detail]');
+        if (yesNoValue === 'Sim') {
+          if (!detailEl) {
+            detailEl = document.createElement('textarea');
+            detailEl.className = 'tc-onboard__yesno-detail';
+            detailEl.setAttribute('data-yesno-detail', yesNoId);
+            detailEl.setAttribute('rows', '2');
+            detailEl.setAttribute('placeholder', 'Descreva sua resposta aqui');
+            detailEl.value = answers[yesNoId + 'Descricao'] || '';
+            groupEl.appendChild(detailEl);
+          }
+          detailEl.focus();
+        } else if (detailEl) {
+          answers[yesNoId + 'Descricao'] = '';
+          detailEl.remove();
+        }
+      }
+      return;
+    }
+
+    var yesNoDetail = event.target.closest('[data-yesno-detail]');
+    if (yesNoDetail && currentStep.id === 'formularioBloco5') {
+      answers[yesNoDetail.getAttribute('data-yesno-detail') + 'Descricao'] = yesNoDetail.value;
+      return;
+    }
+
+    var bpCard = event.target.closest('[data-bp-value]');
+    if (bpCard && currentStep.id === 'formularioBloco6') {
+      answers.formularioPressaoArterial = bpCard.getAttribute('data-bp-value') || '';
+      optionsEl.querySelectorAll('[data-bp-value]').forEach(function (button) {
+        var selected = button === bpCard;
+        button.classList.toggle('is-selected', selected);
+        button.setAttribute('aria-pressed', selected ? 'true' : 'false');
+      });
+      var bpGrid = optionsEl.querySelector('.tc-onboard__bp-grid');
+      if (bpGrid) bpGrid.classList.remove('is-invalid');
+      return;
+    }
+
     var formularioNext = event.target.closest('[data-action="formulario-next"]');
     if (formularioNext) {
       if (currentStep.id === 'formularioBloco1') {
@@ -1685,6 +1976,23 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       }
       if (currentStep.id === 'formularioBloco2') {
         if (!answers.formularioCondicoes || answers.formularioCondicoes.length === 0) return;
+      }
+      if (currentStep.id === 'formularioBloco5') {
+        var missingYesNo = FORMULARIO_YES_NO.some(function (item) { return !answers[item.id]; });
+        if (missingYesNo) {
+          optionsEl.querySelectorAll('[data-yesno-group]').forEach(function (group) {
+            var id = group.getAttribute('data-yesno-group');
+            group.classList.toggle('is-invalid', !answers[id]);
+          });
+          return;
+        }
+      }
+      if (currentStep.id === 'formularioBloco6') {
+        var bpGrid = optionsEl.querySelector('.tc-onboard__bp-grid');
+        if (!answers.formularioPressaoArterial) {
+          if (bpGrid) bpGrid.classList.add('is-invalid');
+          return;
+        }
       }
       goTo(steps[currentStep.next]);
       return;
@@ -1807,6 +2115,13 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       }
       goTo(getNextBaseStep(currentStep));
     }, 180);
+  });
+
+  form.addEventListener('input', function (event) {
+    var yesNoDetail = event.target.closest('[data-yesno-detail]');
+    if (yesNoDetail && currentStep && currentStep.id === 'formularioBloco5') {
+      answers[yesNoDetail.getAttribute('data-yesno-detail') + 'Descricao'] = yesNoDetail.value;
+    }
   });
 
   form.addEventListener('submit', function (event) {
