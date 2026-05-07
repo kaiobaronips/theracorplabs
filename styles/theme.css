@@ -3584,7 +3584,7 @@ img[alt] { color: transparent; font-size: 0; }
 .tc-labs-card__age-item {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     font-size: 8px;
     color: #374151;
 }
@@ -3627,6 +3627,7 @@ img[alt] { color: transparent; font-size: 0; }
     background: rgba(16, 14, 12, 0.38);
     opacity: 0;
     transition: opacity 360ms ease;
+    pointer-events: none;
 }
 
 .tc-onboard__sheet {
@@ -3645,6 +3646,10 @@ img[alt] { color: transparent; font-size: 0; }
     transform: translate3d(0, 104%, 0);
     transition: transform 560ms cubic-bezier(0.19, 1, 0.22, 1);
     outline: none;
+}
+
+.tc-onboard__sheet.is-plans {
+    width: 920px;
 }
 
 .tc-onboard.is-open {
@@ -3930,6 +3935,10 @@ img[alt] { color: transparent; font-size: 0; }
     letter-spacing: 0;
 }
 
+.tc-onboard__stage.is-plans .tc-onboard__question {
+    display: none;
+}
+
 .tc-onboard__options--searching {
     display: flex;
     flex-direction: column;
@@ -3991,6 +4000,11 @@ img[alt] { color: transparent; font-size: 0; }
     overflow-y: auto;
     padding: 0 4px 6px;
     scrollbar-width: thin;
+}
+
+.tc-onboard__options--plans {
+    width: min(100%, 776px);
+    max-height: 660px;
 }
 
 .tc-onboard__option {
@@ -4104,7 +4118,7 @@ img[alt] { color: transparent; font-size: 0; }
 .tc-onboard__gender-options {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 6px;
     max-width: 280px;
     margin: 0 auto 14px;
 }
@@ -4357,6 +4371,179 @@ img[alt] { color: transparent; font-size: 0; }
     font-size: 15px;
 }
 
+.tc-onboard__primary--nav {
+    margin-top: 0;
+    flex: 2;
+}
+
+/* ── Formulário path ─────────────────────────── */
+.tc-onboard__sheet.is-formulario-hero .tc-onboard__form {
+    margin-top: calc(10px + 320px + 20px - 52px - 1px);
+}
+
+@media (max-width: 759px) {
+    .tc-onboard__sheet.is-formulario-hero .tc-onboard__form {
+        margin-top: calc(10px + 320px + 20px - 54px - 1px);
+    }
+}
+
+.tc-onboard__stage.is-formulario [data-tc-onboard-question],
+.tc-onboard__stage.is-formulario [data-tc-onboard-step],
+.tc-onboard__stage.is-formulario .tc-onboard__orb {
+    display: none;
+}
+
+.tc-onboard__fbloco-header {
+    margin-bottom: 4px;
+}
+
+.tc-onboard__fbloco-hero {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: calc(100% - 20px);
+    height: 320px;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 30px;
+    z-index: 0;
+}
+
+.tc-onboard__fbloco-title {
+    font-family: "SofiaProBold", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 21px;
+    line-height: 1.25;
+    color: #241f1b;
+    margin: 0 0 10px;
+}
+
+.tc-onboard__fbloco-subtitle {
+    font-family: "SofiaPro-Light", "SofiaProLight", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    color: rgba(36, 31, 27, 0.6);
+    margin: 0 0 22px;
+}
+
+.tc-onboard__fbloco-question {
+    font-family: "SofiaProMedium", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    color: #241f1b;
+    margin: 0 0 12px;
+}
+
+.tc-onboard__fields-row {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.tc-onboard__field-group {
+    flex: 1;
+}
+
+.tc-onboard__field-group .tc-onboard__name-input {
+    width: 100%;
+    margin-top: 6px;
+}
+
+.tc-onboard__check-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 16px;
+    overflow-y: auto;
+    max-height: 320px;
+}
+
+.tc-onboard__check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 11px 13px;
+    border-radius: 12px;
+    border: 1.5px solid rgba(36, 31, 27, 0.13);
+    background: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    text-align: left;
+    font-family: "SofiaProMedium", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    color: #241f1b;
+    line-height: 1.45;
+    transition: border-color 140ms, background 140ms;
+    width: 100%;
+}
+
+.tc-onboard__check-item:hover {
+    border-color: rgba(0, 212, 170, 0.5);
+}
+
+.tc-onboard__check-item.is-selected {
+    border-color: #00d4aa;
+    background: rgba(0, 212, 170, 0.08);
+}
+
+.tc-onboard__check-box {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1.5px solid rgba(36, 31, 27, 0.22);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+    transition: border-color 140ms, background 140ms;
+    color: #fff;
+}
+
+.tc-onboard__check-item.is-selected .tc-onboard__check-box {
+    border-color: #00d4aa;
+    background: #00d4aa;
+}
+
+.tc-onboard__check-tick {
+    opacity: 0;
+    transition: opacity 140ms;
+}
+
+.tc-onboard__check-item.is-selected .tc-onboard__check-tick {
+    opacity: 1;
+}
+
+.tc-onboard__check-label {
+    flex: 1;
+}
+
+.tc-onboard__form-nav {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 4px;
+}
+
+.tc-onboard__secondary {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: 999px;
+    border: 1.5px solid rgba(36, 31, 27, 0.2);
+    background: transparent;
+    color: #241f1b;
+    font-family: "SofiaProMedium", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    cursor: pointer;
+    transition: border-color 160ms, background 160ms;
+}
+
+.tc-onboard__secondary:hover {
+    border-color: rgba(36, 31, 27, 0.35);
+    background: rgba(36, 31, 27, 0.04);
+}
+
 .tc-onboard__card-button,
 .tc-onboard__info-card,
 .tc-onboard__plan,
@@ -4387,8 +4574,7 @@ img[alt] { color: transparent; font-size: 0; }
     transform: translateY(-1px);
 }
 
-.tc-onboard__card-button strong,
-.tc-onboard__plan strong {
+.tc-onboard__card-button strong {
     color: #00a987;
     font-family: "SofiaProMedium", "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
     font-size: 18px;
@@ -4563,25 +4749,29 @@ img[alt] { color: transparent; font-size: 0; }
 
 .tc-onboard__plans {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 10px;
+    gap: 16px;
 }
 
 .tc-onboard__plan {
     position: relative;
     display: flex;
     flex-direction: column;
-    min-height: 348px;
-    padding: 18px 14px 14px;
+    min-height: 386px;
+    padding: 20px 18px 18px;
+    font-family: "SofiaProMedium", "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    border-color: #00d4aa;
+    box-shadow: none;
 }
 
 .tc-onboard__plan--featured {
     border-color: #00d4aa;
-    box-shadow: 0 18px 42px rgba(0, 160, 128, 0.14);
+    box-shadow: none;
 }
 
 .tc-onboard__plan-badge {
-    align-self: flex-start;
-    margin: 0 0 10px;
+    align-self: center;
+    margin: 0 0 14px;
     padding: 6px 8px;
     border-radius: 999px;
     color: #007a62;
@@ -4591,6 +4781,17 @@ img[alt] { color: transparent; font-size: 0; }
     font-weight: 700;
     line-height: 1;
     letter-spacing: 0;
+}
+
+.tc-onboard__plan-logo {
+    width: 124px;
+    height: auto;
+    margin: 0 auto 4px;
+}
+
+.tc-onboard__plan h3 {
+    margin-bottom: 10px;
+    color: #00d4aa;
 }
 
 .tc-onboard__plan ul {
@@ -4603,9 +4804,11 @@ img[alt] { color: transparent; font-size: 0; }
 
 .tc-onboard__plan li {
     position: relative;
-    padding-left: 13px;
-    font-size: 12.5px;
-    line-height: 1.25;
+    padding-left: 15px;
+    font-size: 13px;
+    font-family: "SofiaProMedium", "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    line-height: 1.32;
 }
 
 .tc-onboard__plan li::before {
@@ -4619,14 +4822,49 @@ img[alt] { color: transparent; font-size: 0; }
     background: #00d4aa;
 }
 
-.tc-onboard__plan strong {
-    margin-top: auto;
-    font-size: 18px;
-}
-
 .tc-onboard__plan p {
     margin: 6px 0 0;
-    font-size: 12px;
+    color: rgba(110, 117, 122, .58);
+    font-size: 10px;
+    text-align: center;
+}
+
+.tc-onboard__plan-price {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: auto;
+    color: #2b2b2b;
+}
+
+.tc-onboard__plan-price strong {
+    color: #2b2b2b;
+    font-family: "SofiaProBold", "SofiaProMedium", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: clamp(22px, 1.85vw, 23px);
+    font-weight: 700;
+    line-height: .92;
+    letter-spacing: 0;
+    white-space: nowrap;
+}
+
+.tc-onboard__plan-price span {
+    color: rgba(43, 43, 43, .62);
+    font-family: "SofiaProLight", "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 9px;
+    font-weight: 300;
+    line-height: 1.08;
+    letter-spacing: 0;
+    min-width: 58px;
+}
+
+.tc-onboard__plan-button {
+    align-self: center;
+    min-width: 190px;
+    min-height: 46px;
+    margin: 12px auto 0;
+    padding: 0 26px;
 }
 
 @media (max-width: 767px) {
@@ -4637,6 +4875,10 @@ img[alt] { color: transparent; font-size: 0; }
         max-height: calc(100vh - 16px);
         padding: 54px 22px 34px;
         border-radius: 32px 32px 0 0;
+    }
+
+    .tc-onboard__sheet.is-plans {
+        width: 100%;
     }
 
     .tc-onboard__close,
@@ -4743,11 +4985,29 @@ img[alt] { color: transparent; font-size: 0; }
 
     .tc-onboard__plan {
         min-height: 0;
-        padding: 18px 16px 16px;
+        padding: 22px 18px 18px;
     }
 
     .tc-onboard__plan li {
         font-size: 13px;
+    }
+
+    .tc-onboard__plan-button {
+        width: min(240px, 100%);
+        min-height: 52px;
+    }
+
+    .tc-onboard__plan-price {
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .tc-onboard__plan-price strong {
+        font-size: 34px;
+    }
+
+    .tc-onboard__plan-price span {
+        font-size: 11px;
     }
 
 }
