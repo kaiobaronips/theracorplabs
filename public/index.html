@@ -750,6 +750,14 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       question: 'Só precisamos dos dados essenciais para reservar sua consulta.',
       next: 'scheduleStart'
     },
+    planLeadForm: {
+      id: 'planLeadForm',
+      type: 'leadForm',
+      label: 'Cadastro',
+      question: 'Complete seu cadastro para continuar.',
+      actionLabel: 'Continuar',
+      next: 'planConfirmed'
+    },
     bookingConfirmed: {
       id: 'bookingConfirmed',
       type: 'confirmation',
@@ -982,7 +990,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     return html;
   }
 
-  function renderLeadForm() {
+  function renderLeadForm(item) {
     return '' +
       '<div class="tc-onboard__fields">' +
         '<label>Nome completo<input name="name" autocomplete="name" required class="tc-onboard__capitalize-input"></label>' +
@@ -1006,8 +1014,8 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
         '</label>' +
         '<label>Data de nascimento<input name="birthDate" type="date" required></label>' +
       '</div>' +
-      '<p class="tc-onboard__privacy">Usaremos esses dados apenas para reservar sua consulta gratuita e manter seu atendimento organizado, conforme a LGPD.</p>' +
-      '<button class="tc-onboard__primary" type="submit">Ver horários disponíveis</button>';
+      '<p class="tc-onboard__privacy">Usaremos esses dados apenas para manter seu atendimento organizado, conforme a LGPD.</p>' +
+      '<button class="tc-onboard__primary" type="submit">' + escapeHtml(item && item.actionLabel ? item.actionLabel : 'Ver horários disponíveis') + '</button>';
   }
 
   function renderConfirmation(item) {
@@ -1039,16 +1047,15 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     var html = '<div class="tc-onboard__plans">';
     item.plans.forEach(function (plan, index) {
       html += '<article class="tc-onboard__plan' + (plan.featured ? ' tc-onboard__plan--featured' : '') + '">';
-      html += '<img class="tc-onboard__plan-logo" src="./logo-theracorp.png" alt="Theracorp">';
-      html += '<h3>' + escapeHtml(plan.displayName || plan.name.replace(/^THERACORP\\s+/i, '')) + '</h3>';
-      if (plan.badge) html += '<span class="tc-onboard__plan-badge">' + escapeHtml(plan.badge) + '</span>';
+      html += '<div class="tc-onboard__plan-head"><img class="tc-onboard__plan-logo" src="./logo-theracorp.png" alt="Theracorp">';
+      html += '<h3>' + escapeHtml(plan.displayName || plan.name.replace(/^THERACORP\\s+/i, '')) + '</h3></div>';
       html += '<ul>';
       plan.benefits.forEach(function (benefit) {
         html += '<li>' + escapeHtml(benefit) + '</li>';
       });
-      html += '</ul><div class="tc-onboard__plan-price"><strong>' + escapeHtml(plan.priceValue || plan.price) + '</strong><span>BRL/mês<br>cobrado mensalmente</span></div>';
+      html += '</ul><div class="tc-onboard__plan-footer"><div class="tc-onboard__plan-price"><strong>' + escapeHtml(plan.priceValue || plan.price) + '</strong><span>BRL/mês<br>cobrado mensalmente</span></div>';
       html += '<p>Cancele quando quiser.</p>';
-      html += '<button class="tc-onboard__primary tc-onboard__plan-button" type="button" data-plan-index="' + index + '">Escolher plano</button>';
+      html += '<button class="tc-onboard__primary tc-onboard__plan-button" type="button" data-plan-index="' + index + '">Escolher plano</button></div>';
       html += '</article>';
     });
     html += '</div>';
@@ -1210,7 +1217,6 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     });
     html += '</div>' +
       '<div class="tc-onboard__form-nav">' +
-        '<button class="tc-onboard__secondary" type="button" data-action="form-prev">Anterior</button>' +
         '<button class="tc-onboard__primary tc-onboard__primary--nav" type="button" data-action="formulario-next">Próximo</button>' +
       '</div>';
     return html;
@@ -1222,8 +1228,8 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     currentStep = item;
     var render = function () {
       clearSearchingTimers();
-      stage.classList.remove('is-searching', 'is-plans', 'is-formulario');
-      sheet.classList.remove('is-plans', 'is-formulario-hero');
+      stage.classList.remove('is-searching', 'is-plans', 'is-formulario', 'is-formulario-health');
+      sheet.classList.remove('is-plans', 'is-formulario-hero', 'is-formulario-health');
       var baseIndex = getBaseIndex(item);
       stepEl.textContent = item.label || (baseIndex > -1 ? 'Pergunta ' + item.step + ' de 05' : '');
       questionEl.textContent = typeof item.question === 'function'
@@ -1231,6 +1237,8 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
         : item.question;
       var existingHero = sheet.querySelector('.tc-onboard__fbloco-hero');
       if (existingHero) existingHero.remove();
+      var existingOverlay = sheet.querySelector('.tc-onboard__fbloco-overlay');
+      if (existingOverlay) existingOverlay.remove();
       while (optionsEl.firstChild) { optionsEl.removeChild(optionsEl.firstChild); }
       optionsEl.className = 'tc-onboard__options';
 
@@ -1260,7 +1268,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
 
       if (item.type === 'leadForm') {
         optionsEl.classList.add('tc-onboard__options--wide');
-        optionsEl.innerHTML = renderLeadForm();
+        optionsEl.innerHTML = renderLeadForm(item);
       }
 
       if (item.type === 'leadForm') {
@@ -1314,8 +1322,16 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
           heroImg.alt = '';
           heroImg.setAttribute('aria-hidden', 'true');
           sheet.insertBefore(heroImg, sheet.firstChild);
+          var heroOverlay = document.createElement('div');
+          heroOverlay.className = 'tc-onboard__fbloco-overlay';
+          heroOverlay.setAttribute('aria-hidden', 'true');
+          heroOverlay.innerHTML = '<div class="tc-onboard__fbloco-overlay-content"><h2 class="tc-onboard__fbloco-overlay-title">Assuma o controle<br>da sua saúde.</h2><p class="tc-onboard__fbloco-overlay-sub">Estamos facilitando o acesso aos exames laboratoriais que você precisa. Tome as rédeas da situação e comece a viver a sua melhor vida.</p></div>';
+          sheet.insertBefore(heroOverlay, heroImg.nextSibling);
           optionsEl.insertAdjacentHTML('beforeend', renderFormularioBloco1());
         } else {
+          stage.classList.add('is-formulario-health');
+          sheet.classList.add('is-formulario-health');
+          optionsEl.classList.add('tc-onboard__options--formulario-health');
           optionsEl.insertAdjacentHTML('beforeend', renderFormularioBloco2());
         }
       }
@@ -1431,7 +1447,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       }
 
       progressEl.style.width = Math.min(getProgress(item), 100) + '%';
-      backButton.hidden = history.length === 0 || item.id === 'bookingConfirmed' || item.id === 'scheduleSlots' || item.id === 'formularioBloco2';
+      backButton.hidden = history.length === 0 || item.id === 'bookingConfirmed' || item.id === 'scheduleSlots';
       stage.classList.remove('is-fading');
       stage.classList.remove('is-entering');
       window.requestAnimationFrame(function () {
@@ -1686,7 +1702,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       answers.plan = planCards[Number(planButton.getAttribute('data-plan-index'))] || planCards[1];
       planButton.classList.add('is-selected');
       window.setTimeout(function () {
-        goTo(steps.planConfirmed);
+        goTo(steps.planLeadForm);
       }, 180);
       return;
     }
@@ -1733,7 +1749,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       birthDate: birthInput ? birthInput.value  : ''
     };
 
-    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Ver horários disponíveis'; }
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = currentStep.actionLabel || 'Ver horários disponíveis'; }
     goTo(steps[currentStep.next]);
   });
 
