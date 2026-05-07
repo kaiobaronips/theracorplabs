@@ -16,7 +16,7 @@
       
       
       <!-- BLOCO 2: CSS EXTERNO -->
-      <link rel="stylesheet" href="./styles/theme.css?v=20260507-bp-apple-glass">
+      <link rel="stylesheet" href="./styles/theme.css?v=20260507-yesno-textarea-compact">
       <link rel="stylesheet" href="/css/modal-fix.css">
       <!-- BLOCO 3: JS ANALYTICS EXTERNO -->
       <script src="./styles/analytics.js" defer></script>
@@ -753,7 +753,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       id: 'planLeadForm',
       type: 'leadForm',
       label: 'Cadastro',
-      question: 'Complete seu cadastro para continuar.',
+      question: 'Complete seu cadastro\npara continuar.',
       actionLabel: 'Continuar',
       next: 'planCheckout'
     },
@@ -761,8 +761,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       id: 'planCheckout',
       type: 'checkout',
       label: 'Pagamento',
-      question: 'Insira os dados do seu cartão para finalizar.',
-      next: 'scheduleStart'
+      question: 'Insira os dados do seu cartão para finalizar.'
     },
     bookingConfirmed: {
       id: 'bookingConfirmed',
@@ -873,6 +872,50 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       type: 'formularioBloco6',
       label: 'Formulário',
       question: '',
+      next: 'formularioBloco7'
+    },
+    formularioBloco7: {
+      id: 'formularioBloco7',
+      type: 'formularioBloco7',
+      label: 'Formulário',
+      question: '',
+      next: 'formularioCadastro'
+    },
+    formularioCadastro: {
+      id: 'formularioCadastro',
+      type: 'leadForm',
+      label: 'Cadastro',
+      question: 'Complete seu cadastro\npara continuar.',
+      actionLabel: 'Continuar',
+      next: 'formularioAnalise'
+    },
+    formularioSucesso: {
+      id: 'formularioSucesso',
+      type: 'formularioSucesso',
+      label: 'Próximo passo',
+      question: 'Ótima Decisão, estamos orgulhosos de você.',
+      subtitle: 'Os médicos Theracorp analisam todos os formulários em até 24 horas.',
+      actionLabel: 'Ver planos',
+      next: 'plans'
+    },
+    formularioAnalise: {
+      id: 'formularioAnalise',
+      type: 'searching',
+      label: 'Formulário',
+      question: function (nome) {
+        return 'Ótima decisão' + (nome ? ' ' + nome : '') + ',\nestamos orgulhosos de você!';
+      },
+      staticText: 'Os médicos Theracorp analisam\ntodos os formulários em até\n24 horas',
+      messages: [
+        'Registrando suas respostas...',
+        'Preparando sua análise clínica...',
+        'Enviando sua análise...',
+        'Quase pronto...',
+        'Pronto! Sua análise foi enviada para Theracorp Center Labs.'
+      ],
+      messageInterval: 2500,
+      advanceDelay: 500,
+      skipFetch: true,
       next: 'plans'
     }
   };
@@ -1096,18 +1139,25 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     return html;
   }
 
+  function renderFormularioSucesso(item) {
+    return '<p class="tc-onboard__subtitle">' + escapeHtml(item.subtitle || '') + '</p>' +
+           '<button class="tc-onboard__primary" type="button" data-action="next">' + escapeHtml(item.actionLabel || 'Continuar') + '</button>';
+  }
+
   var searchingTimer = null;
   var searchingMsgTimer = null;
   var searchingAbortCtrl = null;
 
-  function renderSearching() {
-    var msgs = [
+  function renderSearching(item) {
+    var msgs = item && item.messages ? item.messages : [
       'Estamos consultando as agendas...',
       'Verificando disponibilidade dos médicos...',
       'Em breve você terá o horário mais próximo...',
       'Quase pronto...'
     ];
-    var html = '<div class="tc-onboard__searching-msgs" aria-live="polite" aria-atomic="true">';
+    var html = item && item.staticText
+      ? '<p class="tc-onboard__searching-static">' + escapeHtml(item.staticText) + '</p><div class="tc-onboard__searching-msgs" aria-live="polite" aria-atomic="true">'
+      : '<div class="tc-onboard__searching-msgs" aria-live="polite" aria-atomic="true">';
     msgs.forEach(function (text, i) {
       html += '<p class="tc-onboard__searching-msg' + (i === 0 ? ' is-active' : '') + '">' + escapeHtml(text) + '</p>';
     });
@@ -1118,7 +1168,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
   function startSearchingSequence(item) {
     var msgEls = optionsEl.querySelectorAll('.tc-onboard__searching-msg');
     var idx = 0;
-    var interval = 1100;
+    var interval = item.messageInterval || 1100;
     var apiDone = false;
     var animDone = false;
 
@@ -1127,7 +1177,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       if (apiDone && animDone) {
         searchingTimer = window.setTimeout(function () {
           goTo(steps[item.next]);
-        }, 400);
+        }, item.advanceDelay || 400);
       }
     }
 
@@ -1147,6 +1197,11 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     }
 
     searchingMsgTimer = window.setTimeout(showNext, interval);
+
+    if (item.skipFetch) {
+      apiDone = true;
+      return;
+    }
 
     // Fetch real slots from the Next.js API
     if (window.AbortController) {
@@ -1222,7 +1277,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
           '</div>' +
         '</div>' +
       '</div>' +
-      '<button class="tc-onboard__primary" type="button" data-action="checkout-pay">Pagar e continuar</button>';
+      '<button class="tc-onboard__primary" type="button" data-action="checkout-pay">Finalizar pagamento</button>';
   }
 
   function renderPlanConfirmed() {
@@ -1254,10 +1309,10 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     'Apneia do sono',
     'Diabete tipo 2',
     'Diabete tipo 1',
-    'Retinopatia diabética (doença ocular diabética), danos ao nervo óptico causados por trauma ou redução do fluxo sanguíneo, ou cegueira',
+    'Retinopatia diabética (doença ocular diabética)',
     'Uso do anticoagulante varfarina (Coumadin/Jantoven)',
     'Histórico ou presença atual de pancreatite',
-    'Histórico pessoal ou familiar de cisto/nódulo tireoidiano, câncer de tireoide, carcinoma medular da tireoide ou síndrome de neoplasia endócrina múltipla tipo 2.',
+    'Histórico pessoal ou familiar de cisto/nódulo tireoidiano, câncer de tireoide, carcinoma medular da tireoide.',
     'Gota',
     'Colesterol alto ou triglicerídeos',
     'Depressão',
@@ -1449,13 +1504,48 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     return html;
   }
 
+  var FORMULARIO_HEART_RATE = [
+    { value: '< 60 bpm', label: 'Lento', status: 'lento' },
+    { value: '60 a 100 bpm', label: 'Normal', status: 'normal' },
+    { value: '101 - 110 bpm', label: 'Ligeiramente Rápido', status: 'ligeiro' },
+    { value: '> 110 bpm', label: 'Rápido', status: 'rapido' }
+  ];
+
+  function renderHeartRateIcon() {
+    return '<img class="tc-onboard__bp-icon tc-onboard__hr-icon" src="./heart.webp" alt="" aria-hidden="true">';
+  }
+
+  function renderFormularioBloco7() {
+    var html = '' +
+      '<div class="tc-onboard__fbloco-header">' +
+        '<p class="tc-onboard__fbloco-title">Sobre sua saúde</p>' +
+        '<p class="tc-onboard__fbloco-question">Qual é a sua frequência cardíaca média em repouso?</p>' +
+      '</div>' +
+      '<div class="tc-onboard__bp-grid tc-onboard__hr-grid">';
+    FORMULARIO_HEART_RATE.forEach(function (item) {
+      var selected = answers.formularioFrequenciaCardiaca === item.value;
+      html += '<button class="tc-onboard__bp-card tc-onboard__bp-card--' + escapeHtml(item.status) + (selected ? ' is-selected' : '') + '" type="button" data-hr-value="' + escapeHtml(item.value) + '" aria-pressed="' + (selected ? 'true' : 'false') + '">' +
+        '<span class="tc-onboard__bp-main">' +
+          renderHeartRateIcon() +
+          '<span class="tc-onboard__bp-value">' + escapeHtml(item.value) + '</span>' +
+        '</span>' +
+        '<span class="tc-onboard__bp-status tc-onboard__bp-status--' + escapeHtml(item.status) + '">' + escapeHtml(item.label) + '</span>' +
+      '</button>';
+    });
+    html += '</div>' +
+      '<div class="tc-onboard__form-nav">' +
+        '<button class="tc-onboard__primary tc-onboard__primary--nav" type="button" data-action="formulario-next">Próximo</button>' +
+      '</div>';
+    return html;
+  }
+
   function renderStep(item, immediate) {
     if (!item) return;
 
     currentStep = item;
     var render = function () {
       clearSearchingTimers();
-      stage.classList.remove('is-searching', 'is-plans', 'is-formulario', 'is-formulario-health', 'is-formulario-health-extra');
+      stage.classList.remove('is-searching', 'is-formulario-analise', 'is-plans', 'is-formulario', 'is-formulario-health', 'is-formulario-health-extra');
       sheet.classList.remove('is-plans', 'is-formulario-hero', 'is-formulario-health', 'is-formulario-health-extra');
       var baseIndex = getBaseIndex(item);
       stepEl.textContent = item.label || (baseIndex > -1 ? 'Pergunta ' + item.step + ' de 05' : '');
@@ -1483,8 +1573,11 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
 
       if (item.type === 'searching') {
         optionsEl.classList.add('tc-onboard__options--searching');
-        optionsEl.innerHTML = renderSearching();
+        optionsEl.innerHTML = renderSearching(item);
         stage.classList.add('is-searching');
+        if (item.id === 'formularioAnalise') {
+          stage.classList.add('is-formulario-analise');
+        }
         startSearchingSequence(item);
       }
 
@@ -1521,9 +1614,9 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
         optionsEl.innerHTML = renderConfirmation(item);
       }
 
-      if (item.type === 'info') {
+      if (item.type === 'info' || item.type === 'formularioSucesso') {
         optionsEl.classList.add('tc-onboard__options--wide');
-        optionsEl.innerHTML = renderInfo(item);
+        optionsEl.innerHTML = item.type === 'formularioSucesso' ? renderFormularioSucesso(item) : renderInfo(item);
       }
 
       if (item.type === 'plans') {
@@ -1559,7 +1652,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
         }());
       }
 
-      if (item.type === 'formularioBloco1' || item.type === 'formularioBloco2' || item.type === 'formularioBloco3' || item.type === 'formularioBloco4' || item.type === 'formularioBloco5' || item.type === 'formularioBloco6') {
+      if (item.type === 'formularioBloco1' || item.type === 'formularioBloco2' || item.type === 'formularioBloco3' || item.type === 'formularioBloco4' || item.type === 'formularioBloco5' || item.type === 'formularioBloco6' || item.type === 'formularioBloco7') {
         optionsEl.classList.add('tc-onboard__options--wide');
         stage.classList.add('is-formulario');
         if (item.type === 'formularioBloco1') {
@@ -1594,13 +1687,18 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
         } else if (item.type === 'formularioBloco5') {
           stage.classList.add('is-formulario-health', 'is-formulario-health-extra');
           sheet.classList.add('is-formulario-health', 'is-formulario-health-extra');
-          optionsEl.classList.add('tc-onboard__options--formulario-health', 'tc-onboard__options--formulario-health-extra');
+          optionsEl.classList.add('tc-onboard__options--formulario-health', 'tc-onboard__options--formulario-health-extra', 'tc-onboard__options--yesno');
           optionsEl.insertAdjacentHTML('beforeend', renderFormularioBloco5());
-        } else {
+        } else if (item.type === 'formularioBloco6') {
           stage.classList.add('is-formulario-health', 'is-formulario-health-extra', 'is-formulario-bp');
           sheet.classList.add('is-formulario-health', 'is-formulario-health-extra');
           optionsEl.classList.add('tc-onboard__options--formulario-health', 'tc-onboard__options--formulario-health-extra');
           optionsEl.insertAdjacentHTML('beforeend', renderFormularioBloco6());
+        } else {
+          stage.classList.add('is-formulario-health', 'is-formulario-health-extra', 'is-formulario-bp', 'is-formulario-hr');
+          sheet.classList.add('is-formulario-health', 'is-formulario-health-extra');
+          optionsEl.classList.add('tc-onboard__options--formulario-health', 'tc-onboard__options--formulario-health-extra');
+          optionsEl.insertAdjacentHTML('beforeend', renderFormularioBloco7());
         }
       }
 
@@ -1958,6 +2056,19 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       return;
     }
 
+    var hrCard = event.target.closest('[data-hr-value]');
+    if (hrCard && currentStep.id === 'formularioBloco7') {
+      answers.formularioFrequenciaCardiaca = hrCard.getAttribute('data-hr-value') || '';
+      optionsEl.querySelectorAll('[data-hr-value]').forEach(function (button) {
+        var selected = button === hrCard;
+        button.classList.toggle('is-selected', selected);
+        button.setAttribute('aria-pressed', selected ? 'true' : 'false');
+      });
+      var hrGrid = optionsEl.querySelector('.tc-onboard__hr-grid');
+      if (hrGrid) hrGrid.classList.remove('is-invalid');
+      return;
+    }
+
     var formularioNext = event.target.closest('[data-action="formulario-next"]');
     if (formularioNext) {
       if (currentStep.id === 'formularioBloco1') {
@@ -1991,6 +2102,13 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
         var bpGrid = optionsEl.querySelector('.tc-onboard__bp-grid');
         if (!answers.formularioPressaoArterial) {
           if (bpGrid) bpGrid.classList.add('is-invalid');
+          return;
+        }
+      }
+      if (currentStep.id === 'formularioBloco7') {
+        var hrGrid = optionsEl.querySelector('.tc-onboard__hr-grid');
+        if (!answers.formularioFrequenciaCardiaca) {
+          if (hrGrid) hrGrid.classList.add('is-invalid');
           return;
         }
       }
@@ -2086,7 +2204,15 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
         last4: (cardNumEl ? cardNumEl.value.replace(/\s/g, '').slice(-4) : ''),
         name:  cardNameEl ? cardNameEl.value.trim() : ''
       };
-      window.setTimeout(function () { goTo(steps[currentStep.next]); }, 180);
+      if (currentStep.next) {
+        window.setTimeout(function () { goTo(steps[currentStep.next]); }, 180);
+      } else {
+        var checkoutBtn = event.target.closest('[data-action="checkout-pay"]');
+        if (checkoutBtn) {
+          checkoutBtn.disabled = true;
+          checkoutBtn.textContent = 'Pagamento enviado';
+        }
+      }
       return;
     }
 
@@ -2095,7 +2221,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       answers.plan = planCards[Number(planButton.getAttribute('data-plan-index'))] || planCards[1];
       planButton.classList.add('is-selected');
       window.setTimeout(function () {
-        goTo(steps.planLeadForm);
+        goTo(steps.planCheckout);
       }, 180);
       return;
     }
