@@ -756,7 +756,14 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       label: 'Cadastro',
       question: 'Complete seu cadastro para continuar.',
       actionLabel: 'Continuar',
-      next: 'planConfirmed'
+      next: 'planCheckout'
+    },
+    planCheckout: {
+      id: 'planCheckout',
+      type: 'checkout',
+      label: 'Pagamento',
+      question: 'Insira os dados do seu cartão para finalizar.',
+      next: 'scheduleStart'
     },
     bookingConfirmed: {
       id: 'bookingConfirmed',
@@ -1161,6 +1168,36 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     if (searchingAbortCtrl) { searchingAbortCtrl.abort(); searchingAbortCtrl = null; }
   }
 
+  function renderCheckout() {
+    var plan = answers.plan || planCards[1];
+    return '' +
+      '<div class="tc-onboard__checkout-plan-banner">' +
+        '<span class="tc-onboard__checkout-plan-name">' + escapeHtml(plan.name) + '</span>' +
+        '<span class="tc-onboard__checkout-plan-price">' + escapeHtml(plan.price) + '</span>' +
+      '</div>' +
+      '<div class="tc-onboard__checkout-fields">' +
+        '<div class="tc-onboard__field-group">' +
+          '<p class="tc-onboard__field-label">Número do cartão</p>' +
+          '<input class="tc-onboard__name-input" name="card-number" type="text" inputmode="numeric" placeholder="0000 0000 0000 0000" maxlength="19" autocomplete="cc-number">' +
+        '</div>' +
+        '<div class="tc-onboard__field-group">' +
+          '<p class="tc-onboard__field-label">Nome no cartão</p>' +
+          '<input class="tc-onboard__name-input" name="card-name" type="text" placeholder="Nome como está no cartão" autocomplete="cc-name">' +
+        '</div>' +
+        '<div class="tc-onboard__fields-row">' +
+          '<div class="tc-onboard__field-group">' +
+            '<p class="tc-onboard__field-label">Validade</p>' +
+            '<input class="tc-onboard__name-input" name="card-expiry" type="text" inputmode="numeric" placeholder="MM/AA" maxlength="5" autocomplete="cc-exp">' +
+          '</div>' +
+          '<div class="tc-onboard__field-group">' +
+            '<p class="tc-onboard__field-label">CVV</p>' +
+            '<input class="tc-onboard__name-input" name="card-cvv" type="text" inputmode="numeric" placeholder="000" maxlength="4" autocomplete="cc-csc">' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<button class="tc-onboard__primary" type="button" data-action="checkout-pay">Pagar e continuar</button>';
+  }
+
   function renderPlanConfirmed() {
     var selectedPlan = answers.plan || planCards[1];
     return '' +
@@ -1309,6 +1346,27 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       if (item.type === 'planConfirmed') {
         optionsEl.classList.add('tc-onboard__options--wide');
         optionsEl.innerHTML = renderPlanConfirmed();
+      }
+
+      if (item.type === 'checkout') {
+        optionsEl.classList.add('tc-onboard__options--wide');
+        optionsEl.innerHTML = renderCheckout();
+        (function () {
+          var cardNum = optionsEl.querySelector('input[name="card-number"]');
+          var cardExp = optionsEl.querySelector('input[name="card-expiry"]');
+          if (cardNum) {
+            cardNum.addEventListener('input', function () {
+              var digits = this.value.replace(/\D/g, '').slice(0, 16);
+              this.value = digits.replace(/(.{4})(?=.)/g, '$1 ');
+            });
+          }
+          if (cardExp) {
+            cardExp.addEventListener('input', function (e) {
+              var digits = this.value.replace(/\D/g, '').slice(0, 4);
+              this.value = digits.length > 2 ? digits.slice(0, 2) + '/' + digits.slice(2) : digits;
+            });
+          }
+        }());
       }
 
       if (item.type === 'formularioBloco1' || item.type === 'formularioBloco2') {
@@ -1694,6 +1752,33 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       } else {
         window.setTimeout(function () { goTo(steps[currentStep.next]); }, 180);
       }
+      return;
+    }
+
+    if (event.target.closest('[data-action="checkout-pay"]') && currentStep && currentStep.type === 'checkout') {
+      var cardNumEl  = optionsEl.querySelector('input[name="card-number"]');
+      var cardNameEl = optionsEl.querySelector('input[name="card-name"]');
+      var cardExpEl  = optionsEl.querySelector('input[name="card-expiry"]');
+      var cardCvvEl  = optionsEl.querySelector('input[name="card-cvv"]');
+      var isValid = true;
+      [cardNumEl, cardNameEl, cardExpEl, cardCvvEl].forEach(function (el) {
+        if (!el) return;
+        var v = el.value.trim();
+        var ok = false;
+        if (el.name === 'card-number') ok = v.replace(/\s/g, '').length === 16;
+        else if (el.name === 'card-name') ok = v.length > 1;
+        else if (el.name === 'card-expiry') ok = /^\d{2}\/\d{2}$/.test(v);
+        else if (el.name === 'card-cvv') ok = v.length >= 3;
+        el.classList.toggle('is-invalid', !ok);
+        el.classList.toggle('is-valid', ok);
+        if (!ok) isValid = false;
+      });
+      if (!isValid) return;
+      answers.cardPayment = {
+        last4: (cardNumEl ? cardNumEl.value.replace(/\s/g, '').slice(-4) : ''),
+        name:  cardNameEl ? cardNameEl.value.trim() : ''
+      };
+      window.setTimeout(function () { goTo(steps[currentStep.next]); }, 180);
       return;
     }
 

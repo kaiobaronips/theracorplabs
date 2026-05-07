@@ -5175,3 +5175,46 @@ img[alt] { color: transparent; font-size: 0; }
         animation: none;
     }
 }
+
+/* ── Checkout (pagamento) ── */
+.tc-onboard__checkout-plan-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f5f3f0;
+    border-radius: 14px;
+    padding: 14px 18px;
+    margin-bottom: 22px;
+}
+
+.tc-onboard__checkout-plan-name {
+    font-family: "SofiaProBold", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #241f1b;
+}
+
+.tc-onboard__checkout-plan-price {
+    font-family: "SofiaProBold", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #3a7a57;
+}
+
+.tc-onboard__checkout-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.tc-onboard__checkout-fields .tc-onboard__field-group {
+    margin-bottom: 16px;
+}
+
+.tc-onboard__checkout-fields .tc-onboard__fields-row {
+    margin-bottom: 0;
+}
+
+.tc-onboard__checkout-fields .tc-onboard__fields-row .tc-onboard__field-group {
+    margin-bottom: 16px;
+}
