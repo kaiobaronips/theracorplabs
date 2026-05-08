@@ -3756,12 +3756,12 @@ img[alt] { color: transparent; font-size: 0; }
     width: 100%;
     opacity: 1;
     transform: translate3d(0, 0, 0);
-    transition: opacity 210ms ease, transform 210ms ease;
+    transition: opacity 280ms ease, transform 280ms ease;
 }
 
 .tc-onboard__stage.is-fading {
     opacity: 0;
-    transform: translate3d(0, 8px, 0);
+    transform: translate3d(0, 6px, 0);
 }
 
 .tc-onboard__stage.is-loading {
@@ -4967,6 +4967,39 @@ img[alt] { color: transparent; font-size: 0; }
     }
 }
 
+@keyframes tc-checkout-sheet-enter {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 16px, 0) scale(0.985);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+}
+
+@keyframes tc-checkout-content-enter {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 12px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes tc-plans-fade-enter {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 12px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
 .tc-onboard__stage.is-entering .tc-onboard__question {
     animation: tc-onboard-slide-in 680ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
@@ -4995,18 +5028,35 @@ img[alt] { color: transparent; font-size: 0; }
     animation-delay: 260ms;
 }
 
-/* ── Plans page: staggered fade-from-right on each card ── */
+.tc-onboard__stage.is-entering.is-plans .tc-onboard__options--plans {
+    animation: tc-plans-fade-enter 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ── Plans page: soft staggered fade on each card ── */
 .tc-onboard__stage.is-entering.is-plans .tc-onboard__card-button {
-    animation: tc-onboard-slide-in 580ms cubic-bezier(0.16, 1, 0.3, 1) both;
-    animation-delay: 40ms;
+    animation: tc-plans-fade-enter 920ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 100ms;
 }
 
 .tc-onboard__stage.is-entering.is-plans .tc-onboard__card-button:nth-child(2) {
-    animation-delay: 130ms;
+    animation-delay: 240ms;
 }
 
 .tc-onboard__stage.is-entering.is-plans .tc-onboard__card-button:nth-child(3) {
-    animation-delay: 220ms;
+    animation-delay: 380ms;
+}
+
+.tc-onboard__sheet.is-checkout {
+    animation: tc-checkout-sheet-enter 460ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.tc-onboard__stage.is-entering.is-checkout .tc-checkout__summary,
+.tc-onboard__stage.is-entering.is-checkout .tc-checkout__payment {
+    animation: tc-checkout-content-enter 560ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.tc-onboard__stage.is-entering.is-checkout .tc-checkout__payment {
+    animation-delay: 90ms;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -5023,6 +5073,8 @@ img[alt] { color: transparent; font-size: 0; }
     .tc-onboard__name-input,
     .tc-onboard__gender-option,
     .tc-onboard__continue,
+    .tc-checkout__summary,
+    .tc-checkout__payment,
     .tc-onboard__close,
     .tc-onboard__back {
         transition: none;
@@ -5034,7 +5086,10 @@ img[alt] { color: transparent; font-size: 0; }
     .tc-onboard__stage.is-entering .tc-onboard__name-input,
     .tc-onboard__stage.is-entering .tc-onboard__gender-options,
     .tc-onboard__stage.is-entering .tc-onboard__continue,
-    .tc-onboard__stage.is-entering.is-plans .tc-onboard__card-button {
+    .tc-onboard__stage.is-entering.is-plans .tc-onboard__options--plans,
+    .tc-onboard__stage.is-entering.is-plans .tc-onboard__card-button,
+    .tc-onboard__stage.is-entering.is-checkout .tc-checkout__summary,
+    .tc-onboard__stage.is-entering.is-checkout .tc-checkout__payment {
         animation: none;
     }
 }
@@ -5979,9 +6034,9 @@ img[alt] { color: transparent; font-size: 0; }
     border: 0;
     outline: 0;
     overflow: hidden;
-    color: #303030;
+    color: #6a6a6a;
     background: transparent;
-    font-family: "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 26px;
     font-weight: 500;
     line-height: 1.2;
@@ -6069,9 +6124,9 @@ img[alt] { color: transparent; font-size: 0; }
     padding: 0 22px;
     border: 1px solid #dddddd;
     border-radius: 32px;
-    color: #303030;
+    color: #6a6a6a;
     background: #ffffff;
-    font-family: "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 26px;
     font-weight: 500;
     line-height: 1;
@@ -6248,10 +6303,10 @@ img[alt] { color: transparent; font-size: 0; }
     padding: 0 24px;
     border: 1px solid #dddddd;
     border-radius: 32px;
-    color: #303030;
+    color: #6a6a6a;
     background: #ffffff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
-    font-family: "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 26px;
     font-weight: 500;
     cursor: pointer;
@@ -6287,7 +6342,7 @@ img[alt] { color: transparent; font-size: 0; }
 .tc-checkout__terms {
     max-width: 650px;
     margin: 24px auto 0;
-    font-size: 24px;
+    font-size: 12px;
     font-weight: 500;
     line-height: 1.28;
     text-align: center;
@@ -6299,13 +6354,18 @@ img[alt] { color: transparent; font-size: 0; }
     justify-content: center;
     gap: 27px;
     margin-top: 34px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 22px;
-    font-weight: 500;
+    font-weight: 300;
 }
 
-.tc-checkout__footer strong {
-    font-family: "SofiaProBold", SofiaProWeb, Helvetica, Arial, sans-serif;
-    font-weight: 700;
+.tc-checkout__stripe-logo {
+    display: inline-block;
+    width: auto;
+    height: 1.35em;
+    vertical-align: middle;
+    margin-left: 4px;
+    margin-bottom: 1px;
 }
 
 .tc-checkout__footer i {
@@ -6495,7 +6555,7 @@ img[alt] { color: transparent; font-size: 0; }
 
 .tc-checkout__terms {
     margin-top: 12px;
-    font-size: 15px;
+    font-size: 11px;
     line-height: 1.18;
 }
 
@@ -6618,12 +6678,13 @@ img[alt] { color: transparent; font-size: 0; }
 }
 
 .tc-checkout__payment {
-    justify-content: flex-start;
+    justify-content: center;
     padding: 30px 46px 28px 54px;
 }
 
 .tc-checkout__payment-inner {
-    width: min(100%, 440px);
+    width: min(100%, 380px);
+    margin-right: 28px;
 }
 
 .tc-checkout__payment h2 {
@@ -6756,14 +6817,14 @@ img[alt] { color: transparent; font-size: 0; }
 .tc-checkout__terms {
     max-width: 390px;
     margin-top: 10px;
-    font-size: 12px;
+    font-size: 10px;
     line-height: 1.25;
 }
 
 .tc-checkout__footer {
     gap: 12px;
     margin-top: 10px;
-    font-size: 12px;
+    font-size: 9px;
 }
 
 .tc-checkout__footer i {
@@ -6776,6 +6837,7 @@ img[alt] { color: transparent; font-size: 0; }
 .tc-checkout button,
 .tc-checkout select {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    font-weight: 500 !important;
 }
 
 .tc-checkout__eyebrow,
@@ -6786,15 +6848,36 @@ img[alt] { color: transparent; font-size: 0; }
 .tc-checkout .tc-onboard__name-input::placeholder,
 .tc-checkout__line dt span,
 .tc-checkout__muted,
-.tc-checkout__terms,
-.tc-checkout__footer,
-.tc-checkout__footer strong {
+.tc-checkout__terms {
     font-weight: 500 !important;
+}
+
+.tc-checkout__price strong {
+    font-weight: 700 !important;
 }
 
 .tc-checkout__billing {
     font-size: 12px;
     font-weight: 500 !important;
+}
+
+.tc-checkout__contact input,
+.tc-checkout .tc-onboard__name-input {
+    color: #000000 !important;
+    font-family: "Helvetica Neue Medium", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+}
+
+.tc-checkout__contact input::placeholder,
+.tc-checkout .tc-onboard__name-input::placeholder {
+    color: rgba(120, 120, 120, 0.45) !important;
+    font-weight: 500 !important;
+    opacity: 1;
+}
+
+.tc-checkout__select {
+    color: #000000 !important;
 }
 
 @media (max-width: 980px) {
@@ -6857,7 +6940,7 @@ img[alt] { color: transparent; font-size: 0; }
 
     .tc-checkout__exchange,
     .tc-checkout__terms {
-        font-size: 18px;
+        font-size: 12px;
     }
 
     .tc-checkout__contact {
@@ -6902,6 +6985,6 @@ img[alt] { color: transparent; font-size: 0; }
     .tc-checkout__footer {
         flex-wrap: wrap;
         gap: 16px;
-        font-size: 18px;
+        font-size: 9px;
     }
 }

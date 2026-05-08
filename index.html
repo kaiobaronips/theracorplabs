@@ -16,7 +16,7 @@
       
       
       <!-- BLOCO 2: CSS EXTERNO -->
-      <link rel="stylesheet" href="./styles/theme.css?v=20260508-stripe-split">
+      <link rel="stylesheet" href="./styles/theme.css?v=20260509-stripe-wordmark">
       <link rel="stylesheet" href="/css/modal-fix.css">
       <!-- BLOCO 3: JS ANALYTICS EXTERNO -->
       <script src="./styles/analytics.js" defer></script>
@@ -970,6 +970,15 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     }, 360);
   }
 
+  function handleCloseTrigger() {
+    if (currentStep && currentStep.type === 'checkout') {
+      destroyStripeCardElements();
+      renderStep(steps.plans);
+      return;
+    }
+    closeModal();
+  }
+
   function initOnboardOrb() {
     if (!orb || reduceMotion || orbFrame) return;
 
@@ -1329,11 +1338,11 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
 
   var STRIPE_CARD_STYLE = {
     base: {
-      color: '#303030',
-      fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-      fontSize: '15px',
+      color: '#000000',
+      fontFamily: '"Helvetica Neue Medium", "Helvetica Neue", Helvetica, Arial, sans-serif',
+      fontSize: '12px',
       fontWeight: '500',
-      '::placeholder': { color: '#9a9a9a' }
+      '::placeholder': { color: 'rgba(120, 120, 120, 0.45)' }
     },
     invalid: { color: '#c24141' }
   };
@@ -1652,7 +1661,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
             '</div>' +
             '<button class="tc-checkout__pay" type="button" data-action="checkout-pay">Assinar</button>' +
             '<p class="tc-checkout__terms" data-checkout-terms>Ao assinar, você autoriza THERACORP HEALTHCARE a cobrar você em ' + escapeHtml(currency) + ' de acordo com os termos, até que você cancele.</p>' +
-            '<div class="tc-checkout__footer"><span>Powered by <strong>stripe</strong></span><i></i><span>Jurídico</span><span>Contato</span></div>' +
+            '<div class="tc-checkout__footer"><span>Powered by <svg class="tc-checkout__stripe-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 214" aria-label="Stripe"><path fill="#635BFF" d="M512,110.08 C512,73.671 494.364,44.942 460.658,44.942 C426.809,44.942 406.329,73.671 406.329,109.796 C406.329,152.604 430.507,174.222 465.209,174.222 C482.133,174.222 494.933,170.382 504.604,164.978 L504.604,136.533 C494.933,141.369 483.84,144.356 469.76,144.356 C455.964,144.356 443.733,139.52 442.169,122.738 L511.716,122.738 C511.716,120.889 512,113.493 512,110.08 Z M441.742,96.569 C441.742,80.498 451.556,73.813 460.516,73.813 C469.191,73.813 478.436,80.498 478.436,96.569 L441.742,96.569 Z M351.431,44.942 C337.493,44.942 328.533,51.484 323.556,56.036 L321.707,47.218 L290.418,47.218 L290.418,213.049 L325.973,205.511 L326.116,165.262 C331.236,168.96 338.773,174.222 351.289,174.222 C376.747,174.222 399.929,153.742 399.929,108.658 C399.787,67.413 376.32,44.942 351.431,44.942 Z M342.898,142.933 C334.507,142.933 329.529,139.947 326.116,136.249 L325.973,83.484 C329.671,79.36 334.791,76.516 342.898,76.516 C355.84,76.516 364.8,91.022 364.8,109.653 C364.8,128.711 355.982,142.933 342.898,142.933 Z M241.493,36.551 L277.191,28.871 L277.191,0 L241.493,7.538 L241.493,36.551 Z M241.493,47.36 L277.191,47.36 L277.191,171.804 L241.493,171.804 L241.493,47.36 Z M203.236,57.884 L200.96,47.36 L170.24,47.36 L170.24,171.804 L205.796,171.804 L205.796,87.467 C214.187,76.516 228.409,78.507 232.818,80.071 L232.818,47.36 C228.267,45.653 211.627,42.524 203.236,57.884 Z M132.124,16.498 L97.422,23.893 L97.28,137.813 C97.28,158.862 113.067,174.364 134.116,174.364 C145.778,174.364 154.311,172.231 159.004,169.671 L159.004,140.8 C154.453,142.649 131.982,149.191 131.982,128.142 L131.982,77.653 L159.004,77.653 L159.004,47.36 L131.982,47.36 L132.124,16.498 Z M35.982,83.484 C35.982,77.938 40.533,75.804 48.071,75.804 C58.88,75.804 72.533,79.076 83.342,84.907 L83.342,51.484 C71.538,46.791 59.876,44.942 48.071,44.942 C19.2,44.942 0,60.018 0,85.191 C0,124.444 54.044,118.187 54.044,135.111 C54.044,141.653 48.356,143.787 40.391,143.787 C28.587,143.787 13.511,138.951 1.564,132.409 L1.564,166.258 C14.791,171.947 28.16,174.364 40.391,174.364 C69.973,174.364 90.311,159.716 90.311,134.258 C90.169,91.876 35.982,99.413 35.982,83.484 Z"/></svg></span></div>' +
           '</div>' +
         '</section>' +
       '</div>';
@@ -2199,7 +2208,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
 
     isAnimating = true;
     stage.classList.add('is-fading');
-    window.setTimeout(render, 210);
+    window.setTimeout(render, 280);
   }
 
   function goTo(item, immediate) {
@@ -2721,7 +2730,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
   });
 
   closeTriggers.forEach(function (trigger) {
-    trigger.addEventListener('click', closeModal);
+    trigger.addEventListener('click', handleCloseTrigger);
   });
 
   document.addEventListener('keydown', function (event) {
