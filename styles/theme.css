@@ -6094,8 +6094,8 @@ img[alt] { color: transparent; font-size: 0; }
 }
 
 .tc-stripe-element {
-    min-height: 130px;
-    padding: 10px;
+    min-height: 56px;
+    padding: 10px 14px;
     border: 1px solid #dddddd;
     border-radius: 18px;
     background: #ffffff;
@@ -6651,9 +6651,9 @@ img[alt] { color: transparent; font-size: 0; }
 }
 
 .tc-stripe-element {
-    min-height: 112px;
-    padding: 8px;
-    border-radius: 14px;
+    min-height: 42px;
+    padding: 4px 12px;
+    border-radius: 17px;
 }
 
 .tc-checkout__card-fields .tc-onboard__name-input {

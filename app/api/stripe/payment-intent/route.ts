@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
   const params = new URLSearchParams();
   params.set('amount', String(amount));
   params.set('currency', currency);
-  params.set('automatic_payment_methods[enabled]', 'true');
+  params.append('payment_method_types[]', 'card');
   params.set('metadata[plan]', planName);
   params.set('metadata[source]', 'theracorp_checkout_modal');
 
@@ -71,11 +71,20 @@ export async function POST(req: NextRequest) {
 
   if (!response.ok) {
     console.error('[stripe/payment-intent]', data);
-    return NextResponse.json({ error: 'payment_intent_failed' }, { status: 502 });
+    const stripeError = data?.error;
+    return NextResponse.json(
+      {
+        error: 'payment_intent_failed',
+        code: stripeError?.code || stripeError?.type || 'stripe_error',
+        message: stripeError?.message || 'Falha ao criar a intenção de pagamento.',
+      },
+      { status: 502 }
+    );
   }
 
   return NextResponse.json({
     clientSecret: data.client_secret,
+    paymentIntentId: data.id,
     amount,
     currency,
     rate,
