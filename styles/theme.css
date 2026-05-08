@@ -6102,6 +6102,47 @@ img[alt] { color: transparent; font-size: 0; }
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
+.tc-stripe-card {
+    border: 1px solid #dddddd;
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.tc-stripe-card__number {
+    padding: 14px 16px;
+    border-bottom: 1px solid #e6e6e6;
+}
+
+.tc-stripe-card__row {
+    display: flex;
+}
+
+.tc-stripe-card__expiry,
+.tc-stripe-card__cvc {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 14px 16px;
+}
+
+.tc-stripe-card__expiry {
+    border-right: 1px solid #e6e6e6;
+}
+
+.tc-stripe-card .StripeElement {
+    width: 100%;
+}
+
+.tc-stripe-card .StripeElement--focus {
+    outline: none;
+}
+
+.tc-stripe-card:focus-within {
+    border-color: #303030;
+    box-shadow: 0 0 0 3px rgba(48, 48, 48, 0.08), 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
 .tc-stripe-message {
     min-height: 16px;
     margin: 7px 0 0;
@@ -6654,6 +6695,16 @@ img[alt] { color: transparent; font-size: 0; }
     min-height: 42px;
     padding: 4px 12px;
     border-radius: 17px;
+}
+
+.tc-stripe-card {
+    border-radius: 17px;
+}
+
+.tc-stripe-card__number,
+.tc-stripe-card__expiry,
+.tc-stripe-card__cvc {
+    padding: 10px 12px;
 }
 
 .tc-checkout__card-fields .tc-onboard__name-input {

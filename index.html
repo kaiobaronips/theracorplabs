@@ -16,7 +16,7 @@
       
       
       <!-- BLOCO 2: CSS EXTERNO -->
-      <link rel="stylesheet" href="./styles/theme.css?v=20260507-yesno-textarea-compact">
+      <link rel="stylesheet" href="./styles/theme.css?v=20260508-stripe-split">
       <link rel="stylesheet" href="/css/modal-fix.css">
       <!-- BLOCO 3: JS ANALYTICS EXTERNO -->
       <script src="./styles/analytics.js" defer></script>
@@ -1257,7 +1257,9 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
   var checkoutRatePromise = null;
   var stripeInstance = null;
   var stripeElements = null;
-  var stripeCardElement = null;
+  var stripeCardNumber = null;
+  var stripeCardExpiry = null;
+  var stripeCardCvc = null;
   var stripeClientSecret = '';
   var stripeIntentKey = '';
   var stripeInitPromise = null;
@@ -1331,28 +1333,77 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
       fontSize: '15px',
       fontWeight: '500',
-      '::placeholder': { color: '#777777' }
+      '::placeholder': { color: '#9a9a9a' }
     },
     invalid: { color: '#c24141' }
   };
 
   function isCardElementMounted(mountEl) {
-    return !!(mountEl && mountEl.querySelector('iframe'));
+    if (!mountEl) return false;
+    var num = mountEl.querySelector('#tc-stripe-card-number iframe');
+    var exp = mountEl.querySelector('#tc-stripe-card-expiry iframe');
+    var cvc = mountEl.querySelector('#tc-stripe-card-cvc iframe');
+    return !!(num && exp && cvc);
   }
 
-  function buildStripeCardElement() {
-    var element = stripeElements.create('card', {
-      hidePostalCode: true,
-      style: STRIPE_CARD_STYLE
-    });
-    stripeCardReadyPromise = new Promise(function (resolve) {
-      element.on('ready', resolve);
-    });
+  function bindStripeChangeHandler(element) {
     element.on('change', function (event) {
       if (event.error) setStripeMessage(event.error.message, true);
       else setStripeMessage('', false);
     });
-    return element;
+  }
+
+  function buildStripeCardElements() {
+    var number = stripeElements.create('cardNumber', {
+      style: STRIPE_CARD_STYLE,
+      showIcon: true,
+      placeholder: '1234 1234 1234 1234'
+    });
+    var expiry = stripeElements.create('cardExpiry', {
+      style: STRIPE_CARD_STYLE,
+      placeholder: 'MM / AA'
+    });
+    var cvc = stripeElements.create('cardCvc', {
+      style: STRIPE_CARD_STYLE,
+      placeholder: 'CVC'
+    });
+    bindStripeChangeHandler(number);
+    bindStripeChangeHandler(expiry);
+    bindStripeChangeHandler(cvc);
+    stripeCardReadyPromise = Promise.all([
+      new Promise(function (resolve) { number.on('ready', resolve); }),
+      new Promise(function (resolve) { expiry.on('ready', resolve); }),
+      new Promise(function (resolve) { cvc.on('ready', resolve); })
+    ]);
+    return { number: number, expiry: expiry, cvc: cvc };
+  }
+
+  function mountStripeCardElements() {
+    if (!stripeCardNumber) return;
+    stripeCardNumber.mount('#tc-stripe-card-number');
+    stripeCardExpiry.mount('#tc-stripe-card-expiry');
+    stripeCardCvc.mount('#tc-stripe-card-cvc');
+  }
+
+  function unmountStripeCardElements() {
+    [stripeCardNumber, stripeCardExpiry, stripeCardCvc].forEach(function (el) {
+      if (!el) return;
+      try { el.unmount(); } catch (e) {}
+    });
+  }
+
+  function destroyStripeCardElements() {
+    [stripeCardNumber, stripeCardExpiry, stripeCardCvc].forEach(function (el) {
+      if (!el) return;
+      try { el.destroy(); }
+      catch (e) {
+        try { el.unmount(); } catch (e2) {}
+      }
+    });
+    stripeCardNumber = null;
+    stripeCardExpiry = null;
+    stripeCardCvc = null;
+    stripeCardReadyPromise = null;
   }
 
   function initStripePayment(force) {
@@ -1365,14 +1416,13 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     var intentKey = (plan.displayName || plan.name) + '|' + currency;
     var sameIntent = stripeIntentKey === intentKey && !!stripeClientSecret;
 
-    if (!force && sameIntent && stripeCardElement && isCardElementMounted(mountEl)) {
+    if (!force && sameIntent && stripeCardNumber && isCardElementMounted(mountEl)) {
       return Promise.resolve();
     }
 
-    if (!force && sameIntent && stripeInstance && stripeElements) {
-      try { if (stripeCardElement) stripeCardElement.unmount(); } catch (e) {}
-      stripeCardElement = buildStripeCardElement();
-      stripeCardElement.mount('#tc-stripe-payment-element');
+    if (!force && sameIntent && stripeCardNumber) {
+      unmountStripeCardElements();
+      mountStripeCardElements();
       setStripeMessage('', false);
       return stripeCardReadyPromise || Promise.resolve();
     }
@@ -1382,6 +1432,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     setStripeMessage('Carregando pagamento seguro...', false);
     stripeIntentKey = intentKey;
     stripeClientSecret = '';
+    destroyStripeCardElements();
 
     stripeInitPromise = loadStripeJs()
       .then(function () {
@@ -1401,11 +1452,13 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       .then(function (data) {
         if (stripeIntentKey !== intentKey) return;
         stripeClientSecret = data.clientSecret;
-        try { if (stripeCardElement) stripeCardElement.unmount(); } catch (e) {}
-        stripeCardElement = null;
-        stripeElements = stripeInstance.elements();
-        stripeCardElement = buildStripeCardElement();
-        stripeCardElement.mount('#tc-stripe-payment-element');
+        destroyStripeCardElements();
+        if (!stripeElements) stripeElements = stripeInstance.elements();
+        var built = buildStripeCardElements();
+        stripeCardNumber = built.number;
+        stripeCardExpiry = built.expiry;
+        stripeCardCvc = built.cvc;
+        mountStripeCardElements();
         setStripeMessage('', false);
         return stripeCardReadyPromise;
       })
@@ -1575,7 +1628,13 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
               '<div class="tc-checkout__method"><span class="tc-checkout__card-icon" aria-hidden="true"></span><strong>Cartão</strong></div>' +
               '<div class="tc-checkout__field-group tc-checkout__field-group--card">' +
                 '<p class="tc-onboard__field-label">Dados do cartão</p>' +
-                '<div class="tc-stripe-element" id="tc-stripe-payment-element"></div>' +
+                '<div class="tc-stripe-card" id="tc-stripe-payment-element">' +
+                  '<div class="tc-stripe-card__number" id="tc-stripe-card-number"></div>' +
+                  '<div class="tc-stripe-card__row">' +
+                    '<div class="tc-stripe-card__expiry" id="tc-stripe-card-expiry"></div>' +
+                    '<div class="tc-stripe-card__cvc" id="tc-stripe-card-cvc"></div>' +
+                  '</div>' +
+                '</div>' +
                 '<p class="tc-stripe-message" data-stripe-message></p>' +
               '</div>' +
               '<div class="tc-checkout__field-group">' +
@@ -1958,7 +2017,6 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
         sheet.classList.add('is-checkout');
         optionsEl.innerHTML = renderCheckout();
         loadCheckoutUsdRate();
-        try { if (stripeCardElement) stripeCardElement.unmount(); } catch (e) {}
         initStripePayment(false);
       }
 
@@ -2527,14 +2585,14 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       var paymentSucceeded = false;
 
       initStripePayment(false).then(function () {
-        if (!stripeInstance || !stripeElements || !stripeCardElement || !stripeClientSecret) {
+        if (!stripeInstance || !stripeElements || !stripeCardNumber || !stripeClientSecret) {
           throw new Error('stripe_not_ready');
         }
         return stripeCardReadyPromise || Promise.resolve();
       }).then(function () {
         return stripeInstance.confirmCardPayment(stripeClientSecret, {
           payment_method: {
-            card: stripeCardElement,
+            card: stripeCardNumber,
             billing_details: {
               name: cardName,
               email: emailValue
