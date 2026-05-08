@@ -28,12 +28,14 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              `script-src 'self' 'unsafe-inline'${isDevelopment ? " 'unsafe-eval'" : ''}`,
+              `script-src 'self' 'unsafe-inline' https://js.stripe.com${isDevelopment ? " 'unsafe-eval'" : ''}`,
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob:",
               "font-src 'self'",
-              "connect-src 'self'",
+              "connect-src 'self' https://api.stripe.com https://api.frankfurter.dev https://r.stripe.com https://m.stripe.network",
               "media-src 'self'",
+              "frame-src https://js.stripe.com https://hooks.stripe.com https://m.stripe.network",
+              "worker-src 'self' blob:",
               "frame-ancestors 'none'"
             ].join('; ')
           }

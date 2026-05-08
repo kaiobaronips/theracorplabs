@@ -704,7 +704,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       featured: true,
       benefits: [
         'Tudo do Smart Care',
-        '01 consulta mensal com endocrinologista',
+        '01 consulta mensal com medico Theracorp',
         'Prescrição eletrônica ICP-Brasil',
         'Coleta domiciliar de sangue',
         '8 exames de rotina trimestrais',
@@ -1250,34 +1250,308 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     if (searchingAbortCtrl) { searchingAbortCtrl.abort(); searchingAbortCtrl = null; }
   }
 
+  var CHECKOUT_USD_RATE_FALLBACK = 5.1243;
+  var checkoutUsdRate = CHECKOUT_USD_RATE_FALLBACK;
+  var checkoutRateLoaded = false;
+  var checkoutRatePromise = null;
+  var stripeInstance = null;
+  var stripeElements = null;
+  var stripePaymentElement = null;
+  var stripeClientSecret = '';
+  var stripeIntentKey = '';
+  var stripeInitPromise = null;
+
+  function getCheckoutApiBase() {
+    if (
+      window.location.protocol === 'file:' ||
+      ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') &&
+        window.location.port !== '3000' && window.location.port !== '3001')
+    ) {
+      return 'http://localhost:3000';
+    }
+    return '';
+  }
+
+  function setStripeMessage(message, isError) {
+    var messageEl = optionsEl.querySelector('[data-stripe-message]');
+    if (!messageEl) return;
+    messageEl.textContent = message || '';
+    messageEl.classList.toggle('is-error', Boolean(isError));
+  }
+
+  function loadStripeJs() {
+    if (window.Stripe) return Promise.resolve();
+    return new Promise(function (resolve, reject) {
+      var existing = document.querySelector('script[src="https://js.stripe.com/v3/"]');
+      if (existing) {
+        existing.addEventListener('load', resolve);
+        existing.addEventListener('error', reject);
+        return;
+      }
+      var script = document.createElement('script');
+      script.src = 'https://js.stripe.com/v3/';
+      script.async = true;
+      script.onload = resolve;
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  }
+
+  function getCheckoutEmail() {
+    var emailEl = optionsEl.querySelector('input[name="checkout-email"]');
+    return emailEl ? emailEl.value.trim() : '';
+  }
+
+  function createStripePaymentIntent(plan, currency, email) {
+    return fetch(getCheckoutApiBase() + '/api/stripe/payment-intent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        planName: plan.displayName || plan.name,
+        currency: currency,
+        email: email
+      })
+    }).then(function (response) {
+      return response.json().then(function (data) {
+        if (!response.ok) throw new Error(data && data.error ? data.error : 'payment_intent_failed');
+        return data;
+      });
+    });
+  }
+
+  function initStripePayment(force) {
+    var mountEl = optionsEl.querySelector('#tc-stripe-payment-element');
+    if (!mountEl || !currentStep || currentStep.type !== 'checkout') return Promise.resolve();
+
+    var plan = answers.plan || planCards[1];
+    var currency = answers.checkoutCurrency === 'USD' ? 'USD' : 'BRL';
+    var email = getCheckoutEmail();
+    var intentKey = (plan.displayName || plan.name) + '|' + currency + '|' + email;
+
+    if (!force && stripeElements && stripeIntentKey === intentKey) return Promise.resolve();
+    if (stripeInitPromise && !force) return stripeInitPromise;
+
+    setStripeMessage('Carregando pagamento seguro...', false);
+    stripeIntentKey = intentKey;
+
+    stripeInitPromise = loadStripeJs()
+      .then(function () {
+        return fetch(getCheckoutApiBase() + '/api/stripe/config');
+      })
+      .then(function (response) {
+        return response.json().then(function (data) {
+          if (!response.ok) throw new Error(data && data.error ? data.error : 'stripe_config_failed');
+          return data.publishableKey;
+        });
+      })
+      .then(function (publishableKey) {
+        stripeInstance = window.Stripe(publishableKey);
+        return createStripePaymentIntent(plan, currency, email);
+      })
+      .then(function (data) {
+        if (stripeIntentKey !== intentKey) return;
+        stripeClientSecret = data.clientSecret;
+        if (stripePaymentElement) {
+          stripePaymentElement.unmount();
+          stripePaymentElement = null;
+        }
+        stripeElements = stripeInstance.elements({
+          clientSecret: stripeClientSecret,
+          appearance: {
+            theme: 'stripe',
+            variables: {
+              borderRadius: '14px',
+              colorPrimary: '#111111',
+              fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'
+            }
+          }
+        });
+        stripePaymentElement = stripeElements.create('payment', {
+          layout: 'tabs',
+          defaultValues: {
+            billingDetails: {
+              email: email
+            }
+          }
+        });
+        stripePaymentElement.mount('#tc-stripe-payment-element');
+        setStripeMessage('', false);
+      })
+      .catch(function (error) {
+        console.error('[stripe]', error);
+        setStripeMessage('Pagamento indisponível. Verifique as chaves Stripe do ambiente.', true);
+      })
+      .finally(function () {
+        stripeInitPromise = null;
+      });
+
+    return stripeInitPromise;
+  }
+
+  function parseCheckoutBRL(value) {
+    var raw = String(value || '').replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.');
+    var amount = Number(raw);
+    return Number.isFinite(amount) ? amount : 0;
+  }
+
+  function formatCheckoutBRL(amount) {
+    return 'R$ ' + amount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function formatCheckoutUSD(amount) {
+    return 'US$ ' + amount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function formatCheckoutRate(rate) {
+    return Number(rate || CHECKOUT_USD_RATE_FALLBACK).toLocaleString('pt-BR', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+  }
+
+  function getCheckoutExchangeText() {
+    return '1 USD = ' + formatCheckoutRate(checkoutUsdRate) + ' BRL. As cobranças irão variar com base nas taxas de câmbio.';
+  }
+
+  function getCheckoutPrice(plan, currency) {
+    var brl = parseCheckoutBRL((plan && (plan.priceValue || plan.price)) || 'R$ 797,00');
+    return currency === 'USD' ? formatCheckoutUSD(brl / checkoutUsdRate) : formatCheckoutBRL(brl);
+  }
+
+  function getCheckoutTax(currency) {
+    return currency === 'USD' ? formatCheckoutUSD(0) : formatCheckoutBRL(0);
+  }
+
+  function updateCheckoutCurrency(currency) {
+    var selectedCurrency = currency === 'USD' ? 'USD' : 'BRL';
+    var plan = answers.plan || planCards[1];
+    var price = getCheckoutPrice(plan, selectedCurrency);
+    answers.checkoutCurrency = selectedCurrency;
+
+    optionsEl.querySelectorAll('[data-checkout-currency]').forEach(function (button) {
+      var isSelected = button.getAttribute('data-checkout-currency') === selectedCurrency;
+      button.classList.toggle('is-selected', isSelected);
+      button.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+    });
+
+    optionsEl.querySelectorAll('[data-checkout-price]').forEach(function (el) {
+      el.textContent = price;
+    });
+
+    var taxEl = optionsEl.querySelector('[data-checkout-tax]');
+    if (taxEl) taxEl.textContent = getCheckoutTax(selectedCurrency);
+
+    var termsEl = optionsEl.querySelector('[data-checkout-terms]');
+    if (termsEl) {
+      termsEl.textContent = 'Ao assinar, você autoriza THERACORP HEALTHCARE a cobrar você em ' + selectedCurrency + ' de acordo com os termos, até que você cancele.';
+    }
+
+    initStripePayment(true);
+  }
+
+  function updateCheckoutExchangeText() {
+    var exchangeEl = optionsEl.querySelector('[data-checkout-exchange]');
+    if (exchangeEl) exchangeEl.textContent = getCheckoutExchangeText();
+  }
+
+  function loadCheckoutUsdRate() {
+    if (checkoutRatePromise) return checkoutRatePromise;
+    checkoutRatePromise = fetch('https://api.frankfurter.dev/v1/latest?base=USD&symbols=BRL', { cache: 'no-store' })
+      .then(function (response) {
+        if (!response.ok) throw new Error('Nao foi possivel carregar a cotacao');
+        return response.json();
+      })
+      .then(function (data) {
+        var rate = data && data.rates ? Number(data.rates.BRL) : 0;
+        if (!Number.isFinite(rate) || rate <= 0) throw new Error('Cotacao invalida');
+        checkoutUsdRate = rate;
+        checkoutRateLoaded = true;
+        updateCheckoutExchangeText();
+        updateCheckoutCurrency(answers.checkoutCurrency || 'BRL');
+      })
+      .catch(function () {
+        checkoutUsdRate = CHECKOUT_USD_RATE_FALLBACK;
+        checkoutRateLoaded = false;
+        updateCheckoutExchangeText();
+        updateCheckoutCurrency(answers.checkoutCurrency || 'BRL');
+      })
+      .finally(function () {
+        checkoutRatePromise = null;
+      });
+    return checkoutRatePromise;
+  }
+
   function renderCheckout() {
     var plan = answers.plan || planCards[1];
+    var lead = answers.lead || {};
+    var displayPlan = plan.displayName || plan.name.replace(/^THERACORP\s+/i, '');
+    var currency = answers.checkoutCurrency === 'USD' ? 'USD' : 'BRL';
+    var price = getCheckoutPrice(plan, currency);
+    var email = lead.email || '';
+    var brlSelected = currency === 'BRL';
+    var usdSelected = currency === 'USD';
+
     return '' +
-      '<div class="tc-onboard__checkout-plan-banner">' +
-        '<span class="tc-onboard__checkout-plan-name">' + escapeHtml(plan.name) + '</span>' +
-        '<span class="tc-onboard__checkout-plan-price">' + escapeHtml(plan.price) + '</span>' +
-      '</div>' +
-      '<div class="tc-onboard__checkout-fields">' +
-        '<div class="tc-onboard__field-group">' +
-          '<p class="tc-onboard__field-label">Número do cartão</p>' +
-          '<input class="tc-onboard__name-input" name="card-number" type="text" inputmode="numeric" placeholder="0000 0000 0000 0000" maxlength="19" autocomplete="cc-number">' +
-        '</div>' +
-        '<div class="tc-onboard__field-group">' +
-          '<p class="tc-onboard__field-label">Nome no cartão</p>' +
-          '<input class="tc-onboard__name-input" name="card-name" type="text" placeholder="Nome como está no cartão" autocomplete="cc-name">' +
-        '</div>' +
-        '<div class="tc-onboard__fields-row">' +
-          '<div class="tc-onboard__field-group">' +
-            '<p class="tc-onboard__field-label">Validade</p>' +
-            '<input class="tc-onboard__name-input" name="card-expiry" type="text" inputmode="numeric" placeholder="MM/AA" maxlength="5" autocomplete="cc-exp">' +
+      '<div class="tc-checkout">' +
+        '<section class="tc-checkout__summary" aria-label="Resumo do plano">' +
+          '<div class="tc-checkout__brand" aria-hidden="true"><img src="./logo-theracorp.png" alt=""></div>' +
+          '<div class="tc-checkout__price-block">' +
+            '<p class="tc-checkout__eyebrow">Assinar ' + escapeHtml(displayPlan) + '</p>' +
+            '<div class="tc-checkout__price"><strong data-checkout-price>' + escapeHtml(price) + '</strong><span>por<br>mês</span></div>' +
+            '<p class="tc-checkout__billing">Cobrado mensalmente</p>' +
           '</div>' +
-          '<div class="tc-onboard__field-group">' +
-            '<p class="tc-onboard__field-label">CVV</p>' +
-            '<input class="tc-onboard__name-input" name="card-cvv" type="text" inputmode="numeric" placeholder="000" maxlength="4" autocomplete="cc-csc">' +
+          '<div class="tc-checkout__currency" role="group" aria-label="Moeda">' +
+            '<button class="tc-checkout__currency-btn' + (brlSelected ? ' is-selected' : '') + '" type="button" data-checkout-currency="BRL" aria-pressed="' + (brlSelected ? 'true' : 'false') + '"><span>🇧🇷</span> BRL</button>' +
+            '<button class="tc-checkout__currency-btn' + (usdSelected ? ' is-selected' : '') + '" type="button" data-checkout-currency="USD" aria-pressed="' + (usdSelected ? 'true' : 'false') + '"><span>🇺🇸</span> USD</button>' +
           '</div>' +
-        '</div>' +
-      '</div>' +
-      '<button class="tc-onboard__primary" type="button" data-action="checkout-pay">Finalizar pagamento</button>';
+          '<p class="tc-checkout__exchange" data-checkout-exchange>' + escapeHtml(getCheckoutExchangeText()) + '</p>' +
+          '<dl class="tc-checkout__totals">' +
+            '<div class="tc-checkout__line">' +
+              '<dt><strong>' + escapeHtml(displayPlan) + '</strong><span>Cobrado mensalmente</span></dt>' +
+              '<dd data-checkout-price>' + escapeHtml(price) + '</dd>' +
+            '</div>' +
+            '<div class="tc-checkout__line tc-checkout__line--border">' +
+              '<dt>Subtotal</dt>' +
+              '<dd data-checkout-price>' + escapeHtml(price) + '</dd>' +
+            '</div>' +
+            '<div class="tc-checkout__line">' +
+              '<dt>Imposto</dt>' +
+              '<dd class="tc-checkout__muted" data-checkout-tax>' + escapeHtml(getCheckoutTax(currency)) + '</dd>' +
+            '</div>' +
+            '<div class="tc-checkout__line tc-checkout__line--total">' +
+              '<dt>Total devido hoje</dt>' +
+              '<dd data-checkout-price>' + escapeHtml(price) + '</dd>' +
+            '</div>' +
+          '</dl>' +
+        '</section>' +
+        '<section class="tc-checkout__payment" aria-label="Pagamento">' +
+          '<div class="tc-checkout__payment-inner">' +
+            '<h2>Dados para contato</h2>' +
+            '<label class="tc-checkout__contact"><span>E-mail</span><input name="checkout-email" type="email" autocomplete="email" placeholder="hello@exemplo.com" value="' + escapeHtml(email) + '"></label>' +
+            '<h2>Forma de pagamento</h2>' +
+            '<div class="tc-checkout__card">' +
+              '<div class="tc-checkout__method"><span class="tc-checkout__card-icon" aria-hidden="true"></span><strong>Cartão</strong></div>' +
+              '<div class="tc-checkout__field-group tc-checkout__field-group--card">' +
+                '<p class="tc-onboard__field-label">Dados do cartão</p>' +
+                '<div class="tc-stripe-element" id="tc-stripe-payment-element"></div>' +
+                '<p class="tc-stripe-message" data-stripe-message></p>' +
+              '</div>' +
+              '<div class="tc-checkout__field-group">' +
+                '<p class="tc-onboard__field-label">Nome do titular do cartão</p>' +
+                '<input class="tc-onboard__name-input" name="card-name" type="text" placeholder="Nome completo" autocomplete="cc-name">' +
+              '</div>' +
+              '<div class="tc-checkout__field-group">' +
+                '<p class="tc-onboard__field-label">País ou região</p>' +
+                '<select class="tc-checkout__select" name="checkout-country" autocomplete="country-name">' +
+                  '<option value="Brasil">Brasil</option>' +
+                  '<option value="Estados Unidos">Estados Unidos</option>' +
+                  '<option value="Portugal">Portugal</option>' +
+                '</select>' +
+              '</div>' +
+            '</div>' +
+            '<button class="tc-checkout__pay" type="button" data-action="checkout-pay">Assinar</button>' +
+            '<p class="tc-checkout__terms" data-checkout-terms>Ao assinar, você autoriza THERACORP HEALTHCARE a cobrar você em ' + escapeHtml(currency) + ' de acordo com os termos, até que você cancele.</p>' +
+            '<div class="tc-checkout__footer"><span>Powered by <strong>stripe</strong></span><i></i><span>Jurídico</span><span>Contato</span></div>' +
+          '</div>' +
+        '</section>' +
+      '</div>';
   }
 
   function renderPlanConfirmed() {
@@ -1545,8 +1819,9 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     currentStep = item;
     var render = function () {
       clearSearchingTimers();
-      stage.classList.remove('is-searching', 'is-formulario-analise', 'is-plans', 'is-formulario', 'is-formulario-health', 'is-formulario-health-extra');
-      sheet.classList.remove('is-plans', 'is-formulario-hero', 'is-formulario-health', 'is-formulario-health-extra');
+      modal.classList.remove('is-checkout');
+      stage.classList.remove('is-searching', 'is-formulario-analise', 'is-plans', 'is-checkout', 'is-formulario', 'is-formulario-health', 'is-formulario-health-extra');
+      sheet.classList.remove('is-plans', 'is-checkout', 'is-formulario-hero', 'is-formulario-health', 'is-formulario-health-extra');
       var baseIndex = getBaseIndex(item);
       stepEl.textContent = item.label || (baseIndex > -1 ? 'Pergunta ' + item.step + ' de 05' : '');
       questionEl.textContent = typeof item.question === 'function'
@@ -1633,23 +1908,12 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
 
       if (item.type === 'checkout') {
         optionsEl.classList.add('tc-onboard__options--wide');
+        modal.classList.add('is-checkout');
+        stage.classList.add('is-checkout');
+        sheet.classList.add('is-checkout');
         optionsEl.innerHTML = renderCheckout();
-        (function () {
-          var cardNum = optionsEl.querySelector('input[name="card-number"]');
-          var cardExp = optionsEl.querySelector('input[name="card-expiry"]');
-          if (cardNum) {
-            cardNum.addEventListener('input', function () {
-              var digits = this.value.replace(/\D/g, '').slice(0, 16);
-              this.value = digits.replace(/(.{4})(?=.)/g, '$1 ');
-            });
-          }
-          if (cardExp) {
-            cardExp.addEventListener('input', function (e) {
-              var digits = this.value.replace(/\D/g, '').slice(0, 4);
-              this.value = digits.length > 2 ? digits.slice(0, 2) + '/' + digits.slice(2) : digits;
-            });
-          }
-        }());
+        loadCheckoutUsdRate();
+        initStripePayment(false);
       }
 
       if (item.type === 'formularioBloco1' || item.type === 'formularioBloco2' || item.type === 'formularioBloco3' || item.type === 'formularioBloco4' || item.type === 'formularioBloco5' || item.type === 'formularioBloco6' || item.type === 'formularioBloco7') {
@@ -1954,6 +2218,12 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       return;
     }
 
+    var checkoutCurrencyButton = event.target.closest('[data-checkout-currency]');
+    if (checkoutCurrencyButton && currentStep.type === 'checkout') {
+      updateCheckoutCurrency(checkoutCurrencyButton.getAttribute('data-checkout-currency'));
+      return;
+    }
+
     var checkItem = event.target.closest('[data-check-idx]');
     if (checkItem && currentStep.id === 'formularioBloco2') {
       var cidx = Number(checkItem.getAttribute('data-check-idx'));
@@ -2182,37 +2452,54 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     }
 
     if (event.target.closest('[data-action="checkout-pay"]') && currentStep && currentStep.type === 'checkout') {
-      var cardNumEl  = optionsEl.querySelector('input[name="card-number"]');
+      var checkoutBtn = event.target.closest('[data-action="checkout-pay"]');
       var cardNameEl = optionsEl.querySelector('input[name="card-name"]');
-      var cardExpEl  = optionsEl.querySelector('input[name="card-expiry"]');
-      var cardCvvEl  = optionsEl.querySelector('input[name="card-cvv"]');
-      var isValid = true;
-      [cardNumEl, cardNameEl, cardExpEl, cardCvvEl].forEach(function (el) {
-        if (!el) return;
-        var v = el.value.trim();
-        var ok = false;
-        if (el.name === 'card-number') ok = v.replace(/\s/g, '').length === 16;
-        else if (el.name === 'card-name') ok = v.length > 1;
-        else if (el.name === 'card-expiry') ok = /^\d{2}\/\d{2}$/.test(v);
-        else if (el.name === 'card-cvv') ok = v.length >= 3;
-        el.classList.toggle('is-invalid', !ok);
-        el.classList.toggle('is-valid', ok);
-        if (!ok) isValid = false;
-      });
-      if (!isValid) return;
-      answers.cardPayment = {
-        last4: (cardNumEl ? cardNumEl.value.replace(/\s/g, '').slice(-4) : ''),
-        name:  cardNameEl ? cardNameEl.value.trim() : ''
-      };
-      if (currentStep.next) {
-        window.setTimeout(function () { goTo(steps[currentStep.next]); }, 180);
-      } else {
-        var checkoutBtn = event.target.closest('[data-action="checkout-pay"]');
-        if (checkoutBtn) {
-          checkoutBtn.disabled = true;
+      var emailEl = optionsEl.querySelector('input[name="checkout-email"]');
+      if (checkoutBtn) {
+        checkoutBtn.disabled = true;
+        checkoutBtn.textContent = 'Processando...';
+      }
+      setStripeMessage('', false);
+      initStripePayment(false).then(function () {
+        if (!stripeInstance || !stripeElements || !stripeClientSecret) {
+          throw new Error('stripe_not_ready');
+        }
+        return stripeInstance.confirmPayment({
+          elements: stripeElements,
+          confirmParams: {
+            return_url: window.location.href,
+            payment_method_data: {
+              billing_details: {
+                name: cardNameEl ? cardNameEl.value.trim() : '',
+                email: emailEl ? emailEl.value.trim() : ''
+              }
+            }
+          },
+          redirect: 'if_required'
+        });
+      }).then(function (result) {
+        if (result && result.error) {
+          setStripeMessage(result.error.message || 'Não foi possível confirmar o pagamento.', true);
+          return;
+        }
+        answers.cardPayment = {
+          provider: 'stripe',
+          paymentIntent: result && result.paymentIntent ? result.paymentIntent.id : ''
+        };
+        if (currentStep.next) {
+          window.setTimeout(function () { goTo(steps[currentStep.next]); }, 180);
+        } else if (checkoutBtn) {
           checkoutBtn.textContent = 'Pagamento enviado';
         }
-      }
+      }).catch(function (error) {
+        console.error('[stripe-confirm]', error);
+        setStripeMessage('Pagamento indisponível. Tente novamente em instantes.', true);
+      }).finally(function () {
+        if (checkoutBtn && (!answers.cardPayment || !answers.cardPayment.paymentIntent)) {
+          checkoutBtn.disabled = false;
+          checkoutBtn.textContent = 'Assinar';
+        }
+      });
       return;
     }
 

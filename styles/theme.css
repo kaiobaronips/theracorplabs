@@ -5668,44 +5668,1190 @@ img[alt] { color: transparent; font-size: 0; }
 }
 
 /* ── Checkout (pagamento) ── */
-.tc-onboard__checkout-plan-banner {
+.tc-onboard.is-checkout {
+    align-items: center;
+}
+
+.tc-onboard__sheet.is-checkout {
+    width: min(1540px, calc(100vw - 48px));
+    height: min(1040px, calc(100vh - 48px));
+    max-width: calc(100vw - 48px);
+    max-height: calc(100vh - 48px);
+    padding: 0;
+    overflow-y: auto;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 28px;
+    background: #ffffff;
+    box-shadow: 0 30px 90px rgba(18, 24, 33, 0.22);
+}
+
+.tc-onboard__sheet.is-checkout .tc-onboard__back,
+.tc-onboard__stage.is-checkout .tc-onboard__step,
+.tc-onboard__stage.is-checkout .tc-onboard__orb,
+.tc-onboard__stage.is-checkout .tc-onboard__question {
+    display: none;
+}
+
+.tc-onboard__sheet.is-checkout .tc-onboard__close {
+    display: inline-flex;
+    top: 16px;
+    right: 16px;
+    width: 34px;
+    height: 34px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: #ffffff;
+    color: #111111;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    z-index: 6;
+}
+
+.tc-onboard__sheet.is-checkout .tc-onboard__close svg {
+    width: 18px;
+    height: 18px;
+}
+
+.tc-onboard__stage.is-checkout,
+.tc-onboard__stage.is-checkout .tc-onboard__options,
+.tc-onboard__stage.is-checkout .tc-onboard__options--wide {
+    width: 100%;
+    max-width: none;
+    max-height: none;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+}
+
+.tc-checkout {
+    display: grid;
+    grid-template-columns: minmax(420px, 1fr) minmax(460px, 1fr);
+    min-height: 100%;
+    color: #303030;
+    background: #ffffff;
+    font-family: "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
+}
+
+.tc-checkout__summary {
+    display: flex;
+    flex-direction: column;
+    padding: 58px 92px 80px 106px;
+    border-right: 1px solid #f2f2f2;
+    background: #ffffff;
+}
+
+.tc-checkout__brand {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 96px;
+    height: 34px;
+}
+
+.tc-checkout__brand img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.tc-checkout__price-block {
+    margin-top: 60px;
+}
+
+.tc-checkout__eyebrow,
+.tc-checkout__billing,
+.tc-checkout__exchange,
+.tc-checkout__terms,
+.tc-checkout__footer {
+    color: #6f6f6f;
+}
+
+.tc-checkout__eyebrow {
+    margin: 0 0 12px;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.1;
+}
+
+.tc-checkout__price {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.tc-checkout__price strong {
+    color: #303030;
+    font-family: "SofiaProBold", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: clamp(54px, 4.7vw, 70px);
+    font-weight: 700;
+    line-height: .98;
+    letter-spacing: 0;
+}
+
+.tc-checkout__price span {
+    color: #676767;
+    font-family: "SofiaProBold", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.22;
+}
+
+.tc-checkout__billing {
+    margin: 12px 0 0;
+    font-size: 27px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.tc-checkout__currency {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 52px;
+}
+
+.tc-checkout__currency-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    min-height: 78px;
+    border: 1px solid #e4e4e4;
+    border-radius: 999px;
+    color: #111111;
+    background: #ffffff;
+    font-family: "SofiaProBold", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.tc-checkout__currency-btn.is-selected {
+    border-color: #111111;
+    background: #f7f7f7;
+}
+
+.tc-checkout__currency-btn span {
+    font-size: 24px;
+}
+
+.tc-checkout__exchange {
+    max-width: 690px;
+    margin: 12px 0 0;
+    font-size: 23px;
+    font-weight: 500;
+    line-height: 1.55;
+}
+
+.tc-checkout__totals {
+    display: grid;
+    gap: 0;
+    margin: 94px 0 0;
+}
+
+.tc-checkout__line {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 15px 0;
+}
+
+.tc-checkout__line--border {
+    margin-top: 18px;
+    padding-top: 30px;
+    border-top: 1px solid #ededed;
+}
+
+.tc-checkout__line--total {
+    margin-top: 18px;
+    padding-top: 30px;
+    border-top: 1px solid #ededed;
+}
+
+.tc-checkout__line dt,
+.tc-checkout__line dd {
+    margin: 0;
+    color: #303030;
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.tc-checkout__line dt {
+    display: grid;
+    gap: 10px;
+}
+
+.tc-checkout__line dt strong {
+    font-family: "SofiaProBold", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 25px;
+    line-height: 1;
+}
+
+.tc-checkout__line dt span {
+    color: #747474;
+    font-size: 22px;
+    font-weight: 500;
+}
+
+.tc-checkout__line dd {
+    white-space: nowrap;
+}
+
+.tc-checkout__line .tc-checkout__muted {
+    color: #777777;
+}
+
+.tc-checkout__line--total dt,
+.tc-checkout__line--total dd {
+    font-family: "SofiaProBold", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.tc-checkout__info {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    margin-left: 8px;
+    border: 1.5px solid #111111;
+    border-radius: 999px;
+    color: #111111;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.tc-checkout__payment {
+    display: flex;
+    justify-content: center;
+    padding: 60px 64px 28px;
+    background: #ffffff;
+}
+
+.tc-checkout__payment-inner {
+    width: min(100%, 688px);
+}
+
+.tc-checkout__payment h2 {
+    margin: 0 0 28px;
+    color: #303030;
+    font-family: "SofiaProBold", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 29px;
+    font-weight: 700;
+    line-height: 1.16;
+}
+
+.tc-checkout__payment h2 + .tc-checkout__card,
+.tc-checkout__contact + h2 {
+    margin-top: 50px;
+}
+
+.tc-checkout__payment h2 + .tc-checkout__card {
+    margin-top: 24px;
+}
+
+.tc-checkout__contact {
+    display: grid;
+    grid-template-columns: 160px minmax(0, 1fr);
+    align-items: center;
+    min-height: 96px;
+    padding: 0 30px;
+    border: 1px solid #dfdfdf;
+    border-radius: 34px;
+    background: #f8f8f8;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.tc-checkout__contact span {
+    color: #636363;
+    font-size: 25px;
+    font-weight: 700;
+}
+
+.tc-checkout__contact input {
+    min-width: 0;
+    width: 100%;
+    border: 0;
+    outline: 0;
+    overflow: hidden;
+    color: #303030;
+    background: transparent;
+    font-family: "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 26px;
+    font-weight: 500;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tc-checkout__contact input:focus::placeholder {
+    color: transparent;
+}
+
+.tc-checkout__card {
+    padding: 34px 28px 26px;
+    border: 1px solid #dedede;
+    border-radius: 30px;
+    background: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.tc-checkout__method {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin-bottom: 34px;
+}
+
+.tc-checkout__method strong {
+    color: #141414;
+    font-family: "SofiaProBold", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 27px;
+    font-weight: 700;
+}
+
+.tc-checkout__card-icon {
+    position: relative;
+    width: 30px;
+    height: 22px;
+    border-radius: 3px;
+    background: #050505;
+}
+
+.tc-checkout__card-icon::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 5px;
+    height: 4px;
+    background: #ffffff;
+}
+
+.tc-checkout__card-icon::after {
+    content: "";
+    position: absolute;
+    left: 6px;
+    bottom: 4px;
+    width: 8px;
+    height: 2px;
+    background: #ffffff;
+}
+
+.tc-checkout__field-group {
+    display: grid;
+    gap: 9px;
+    margin-top: 32px;
+}
+
+.tc-checkout__field-group--card {
+    margin-top: 0;
+}
+
+.tc-checkout__field-group .tc-onboard__field-label {
+    margin: 0;
+    color: #676767;
+    font-family: "SofiaProBold", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.15;
+    text-align: left;
+}
+
+.tc-checkout .tc-onboard__name-input {
+    width: 100%;
+    height: 68px;
+    padding: 0 22px;
+    border: 1px solid #dddddd;
+    border-radius: 32px;
+    color: #303030;
+    background: #ffffff;
+    font-family: "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 26px;
+    font-weight: 500;
+    line-height: 1;
+    text-align: left;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.tc-checkout .tc-onboard__name-input::placeholder {
+    color: #777777;
+    opacity: 1;
+}
+
+.tc-checkout__card-fields {
+    overflow: hidden;
+    border: 1px solid #dddddd;
+    border-radius: 30px;
+    background: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.tc-stripe-element {
+    min-height: 130px;
+    padding: 10px;
+    border: 1px solid #dddddd;
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.tc-stripe-message {
+    min-height: 16px;
+    margin: 7px 0 0;
+    color: #6f6f6f;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.25;
+}
+
+.tc-stripe-message.is-error {
+    color: #c24141;
+}
+
+.tc-checkout__card-fields .tc-onboard__name-input {
+    height: 64px;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.tc-checkout__card-number-wrap {
+    position: relative;
+    border-bottom: 1px solid #dddddd;
+}
+
+.tc-checkout__card-number {
+    padding-right: 222px;
+}
+
+.tc-checkout__card-brands {
+    position: absolute;
+    top: 50%;
+    right: 24px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    transform: translateY(-50%);
+}
+
+.tc-checkout__card-brands b {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 27px;
+    padding: 0 5px;
+    border-radius: 3px;
+    color: #ffffff;
+    background: #1d4fd8;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.tc-checkout__card-brands b:nth-child(2) { background: #111111; color: #ff5f24; }
+.tc-checkout__card-brands b:nth-child(3) { background: #0f766e; font-size: 7px; }
+.tc-checkout__card-brands b:nth-child(4) { background: #009f6b; }
+
+.tc-checkout__card-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.tc-checkout__card-row > .tc-onboard__name-input:first-child {
+    border-right: 1px solid #dddddd;
+}
+
+.tc-checkout__cvc-wrap {
+    position: relative;
+}
+
+.tc-checkout__cvc-wrap input {
+    padding-right: 86px;
+}
+
+.tc-checkout__cvc-wrap span {
+    position: absolute;
+    top: 50%;
+    right: 29px;
+    display: inline-flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    width: 40px;
+    height: 28px;
+    padding: 0 3px 1px;
+    border: 2px solid #3a3a3a;
+    border-radius: 4px;
+    color: #111111;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1;
+    transform: translateY(-50%);
+}
+
+.tc-checkout__select {
+    appearance: none;
+    -webkit-appearance: none;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #f5f3f0;
-    border-radius: 14px;
-    padding: 14px 18px;
-    margin-bottom: 22px;
+    min-height: 68px;
+    width: 100%;
+    padding: 0 24px;
+    border: 1px solid #dddddd;
+    border-radius: 32px;
+    color: #303030;
+    background: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+    font-family: "SofiaProRegular", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-size: 26px;
+    font-weight: 500;
+    cursor: pointer;
+    background-image: linear-gradient(45deg, transparent 50%, #111111 50%), linear-gradient(135deg, #111111 50%, transparent 50%);
+    background-position: calc(100% - 29px) 50%, calc(100% - 20px) 50%;
+    background-size: 10px 10px, 10px 10px;
+    background-repeat: no-repeat;
 }
 
-.tc-onboard__checkout-plan-name {
+.tc-checkout__select i {
+    width: 14px;
+    height: 14px;
+    border-right: 3px solid #111111;
+    border-bottom: 3px solid #111111;
+    transform: rotate(45deg) translateY(-3px);
+}
+
+.tc-checkout__pay {
+    width: 100%;
+    min-height: 98px;
+    margin-top: 42px;
+    border: 0;
+    border-radius: 999px;
+    color: #8b8b8b;
+    background: #000000;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.16);
     font-family: "SofiaProBold", SofiaProWeb, Helvetica, Arial, sans-serif;
-    font-size: 15px;
+    font-size: 28px;
     font-weight: 700;
-    color: #241f1b;
+    cursor: pointer;
 }
 
-.tc-onboard__checkout-plan-price {
-    font-family: "SofiaProBold", SofiaProWeb, Helvetica, Arial, sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    color: #3a7a57;
+.tc-checkout__terms {
+    max-width: 650px;
+    margin: 24px auto 0;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.28;
+    text-align: center;
 }
 
-.tc-onboard__checkout-fields {
+.tc-checkout__footer {
     display: flex;
-    flex-direction: column;
-    gap: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 27px;
+    margin-top: 34px;
+    font-size: 22px;
+    font-weight: 500;
 }
 
-.tc-onboard__checkout-fields .tc-onboard__field-group {
+.tc-checkout__footer strong {
+    font-family: "SofiaProBold", SofiaProWeb, Helvetica, Arial, sans-serif;
+    font-weight: 700;
+}
+
+.tc-checkout__footer i {
+    width: 1px;
+    height: 28px;
+    background: #d7d7d7;
+}
+
+.tc-onboard__sheet.is-checkout {
+    width: min(1540px, calc(100vw - 16px));
+    height: min(876px, calc(100vh - 16px));
+    max-width: calc(100vw - 16px);
+    max-height: calc(100vh - 16px);
+}
+
+.tc-checkout__summary {
+    padding: 36px 72px 36px 84px;
+}
+
+.tc-checkout__brand {
+    width: 92px;
+    height: 30px;
+}
+
+.tc-checkout__price-block {
+    margin-top: 34px;
+}
+
+.tc-checkout__eyebrow {
+    margin-bottom: 8px;
+    font-size: 24px;
+}
+
+.tc-checkout__price {
+    gap: 12px;
+}
+
+.tc-checkout__price strong {
+    font-size: clamp(48px, 4.2vw, 58px);
+}
+
+.tc-checkout__price span {
+    font-size: 19px;
+}
+
+.tc-checkout__billing {
+    margin-top: 8px;
+    font-size: 22px;
+}
+
+.tc-checkout__currency {
+    gap: 12px;
+    margin-top: 34px;
+}
+
+.tc-checkout__currency-btn {
+    min-height: 58px;
+    font-size: 23px;
+}
+
+.tc-checkout__exchange {
+    margin-top: 10px;
+    font-size: 19px;
+    line-height: 1.36;
+}
+
+.tc-checkout__totals {
+    margin-top: 54px;
+}
+
+.tc-checkout__line {
+    padding: 9px 0;
+}
+
+.tc-checkout__line--border,
+.tc-checkout__line--total {
+    margin-top: 10px;
+    padding-top: 17px;
+}
+
+.tc-checkout__line dt,
+.tc-checkout__line dd {
+    font-size: 21px;
+}
+
+.tc-checkout__line dt {
+    gap: 6px;
+}
+
+.tc-checkout__line dt strong {
+    font-size: 21px;
+}
+
+.tc-checkout__line dt span {
+    font-size: 18px;
+}
+
+.tc-checkout__line--total dt,
+.tc-checkout__line--total dd {
+    font-size: 23px;
+}
+
+.tc-checkout__payment {
+    padding: 28px 56px 18px;
+}
+
+.tc-checkout__payment-inner {
+    width: min(100%, 568px);
+}
+
+.tc-checkout__payment h2 {
+    margin-bottom: 12px;
+    font-size: 22px;
+}
+
+.tc-checkout__contact + h2 {
+    margin-top: 22px;
+}
+
+.tc-checkout__payment h2 + .tc-checkout__card {
+    margin-top: 12px;
+}
+
+.tc-checkout__contact {
+    grid-template-columns: 130px minmax(0, 1fr);
+    min-height: 58px;
+    padding: 0 22px;
+    border-radius: 24px;
+}
+
+.tc-checkout__contact span {
+    font-size: 19px;
+}
+
+.tc-checkout__contact input {
+    font-size: 20px;
+}
+
+.tc-checkout__card {
+    padding: 18px 22px 16px;
+    border-radius: 24px;
+}
+
+.tc-checkout__method {
+    gap: 16px;
     margin-bottom: 16px;
 }
 
-.tc-onboard__checkout-fields .tc-onboard__fields-row {
-    margin-bottom: 0;
+.tc-checkout__method strong {
+    font-size: 21px;
 }
 
-.tc-onboard__checkout-fields .tc-onboard__fields-row .tc-onboard__field-group {
-    margin-bottom: 16px;
+.tc-checkout__field-group {
+    gap: 6px;
+    margin-top: 12px;
+}
+
+.tc-checkout__field-group .tc-onboard__field-label {
+    font-size: 18px;
+}
+
+.tc-checkout .tc-onboard__name-input {
+    height: 46px;
+    font-size: 19px;
+}
+
+.tc-checkout__card-fields .tc-onboard__name-input {
+    height: 44px;
+}
+
+.tc-checkout__card-brands b {
+    min-width: 31px;
+    height: 23px;
+    font-size: 8px;
+}
+
+.tc-checkout__select {
+    min-height: 46px;
+    font-size: 19px;
+}
+
+.tc-checkout__pay {
+    min-height: 58px;
+    margin-top: 16px;
+    font-size: 21px;
+}
+
+.tc-checkout__terms {
+    margin-top: 12px;
+    font-size: 15px;
+    line-height: 1.18;
+}
+
+.tc-checkout__footer {
+    gap: 18px;
+    margin-top: 12px;
+    font-size: 15px;
+}
+
+.tc-checkout__footer i {
+    height: 18px;
+}
+
+/* Checkout compacto: container menor, controles reduzidos e mais respiro interno. */
+.tc-onboard__sheet.is-checkout {
+    width: min(1120px, calc(100vw - 64px));
+    height: min(640px, calc(100vh - 64px));
+    max-width: calc(100vw - 64px);
+    max-height: calc(100vh - 64px);
+    overflow: hidden;
+    border-radius: 24px;
+}
+
+.tc-checkout {
+    grid-template-columns: minmax(410px, .94fr) minmax(430px, 1.06fr);
+    min-height: 100%;
+}
+
+.tc-checkout__summary {
+    padding: 30px 46px 34px 54px;
+}
+
+.tc-checkout__brand {
+    width: 160px;
+    height: 48px;
+}
+
+.tc-checkout__price-block {
+    margin-top: 26px;
+}
+
+.tc-checkout__eyebrow {
+    margin-bottom: 5px;
+    font-size: 17px;
+}
+
+.tc-checkout__price strong {
+    font-size: 42px;
+}
+
+.tc-checkout__price span {
+    font-size: 13px;
+}
+
+.tc-checkout__billing {
+    margin-top: 5px;
+    font-size: 16px;
+}
+
+.tc-checkout__currency {
+    gap: 10px;
+    margin-top: 28px;
+}
+
+.tc-checkout__currency-btn {
+    min-height: 38px;
+    font-size: 16px;
+}
+
+.tc-checkout__currency-btn span {
+    font-size: 15px;
+}
+
+.tc-checkout__exchange {
+    margin-top: 8px;
+    font-size: 13px;
+    line-height: 1.35;
+}
+
+.tc-checkout__totals {
+    margin-top: 44px;
+}
+
+.tc-checkout__line {
+    padding: 6px 0;
+}
+
+.tc-checkout__line--border,
+.tc-checkout__line--total {
+    margin-top: 8px;
+    padding-top: 12px;
+}
+
+.tc-checkout__line dt,
+.tc-checkout__line dd {
+    font-size: 15px;
+}
+
+.tc-checkout__line dt {
+    gap: 3px;
+}
+
+.tc-checkout__line dt strong {
+    font-size: 15px;
+}
+
+.tc-checkout__line dt span {
+    font-size: 13px;
+}
+
+.tc-checkout__line--total dt,
+.tc-checkout__line--total dd {
+    font-size: 16px;
+}
+
+.tc-checkout__info {
+    width: 15px;
+    height: 15px;
+    font-size: 10px;
+}
+
+.tc-checkout__payment {
+    justify-content: flex-start;
+    padding: 30px 46px 28px 54px;
+}
+
+.tc-checkout__payment-inner {
+    width: min(100%, 440px);
+}
+
+.tc-checkout__payment h2 {
+    margin-bottom: 10px;
+    font-size: 17px;
+}
+
+.tc-checkout__contact + h2 {
+    margin-top: 24px;
+}
+
+.tc-checkout__payment h2 + .tc-checkout__card {
+    margin-top: 10px;
+}
+
+.tc-checkout__contact {
+    grid-template-columns: 86px minmax(0, 1fr);
+    min-height: 42px;
+    padding: 0 16px;
+    border-radius: 20px;
+}
+
+.tc-checkout__contact span,
+.tc-checkout__contact input {
+    font-size: 14px;
+}
+
+.tc-checkout__card {
+    padding: 14px 16px 14px;
+    border-radius: 18px;
+}
+
+.tc-checkout__method {
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.tc-checkout__method strong {
+    font-size: 16px;
+}
+
+.tc-checkout__card-icon {
+    width: 22px;
+    height: 16px;
+}
+
+.tc-checkout__field-group {
+    gap: 4px;
+    margin-top: 10px;
+}
+
+.tc-checkout__field-group .tc-onboard__field-label {
+    font-size: 13px;
+}
+
+.tc-checkout .tc-onboard__name-input {
+    height: 34px;
+    padding: 0 14px;
+    border-radius: 17px;
+    font-size: 14px;
+}
+
+.tc-checkout__card-fields {
+    border-radius: 18px;
+}
+
+.tc-stripe-element {
+    min-height: 112px;
+    padding: 8px;
+    border-radius: 14px;
+}
+
+.tc-checkout__card-fields .tc-onboard__name-input {
+    height: 32px;
+}
+
+.tc-checkout__card-number {
+    padding-right: 150px;
+}
+
+.tc-checkout__card-brands {
+    right: 13px;
+    gap: 4px;
+}
+
+.tc-checkout__card-brands b {
+    min-width: 24px;
+    height: 17px;
+    padding: 0 3px;
+    font-size: 6.5px;
+}
+
+.tc-checkout__cvc-wrap input {
+    padding-right: 54px;
+}
+
+.tc-checkout__cvc-wrap span {
+    right: 16px;
+    width: 28px;
+    height: 18px;
+    border-width: 1.5px;
+    font-size: 8px;
+}
+
+.tc-checkout__select {
+    min-height: 34px;
+    padding: 0 14px;
+    border-radius: 17px;
+    font-size: 14px;
+    background-position: calc(100% - 21px) 50%, calc(100% - 15px) 50%;
+    background-size: 7px 7px, 7px 7px;
+}
+
+.tc-checkout__pay {
+    min-height: 42px;
+    margin-top: 14px;
+    font-size: 16px;
+}
+
+.tc-checkout__terms {
+    max-width: 390px;
+    margin-top: 10px;
+    font-size: 12px;
+    line-height: 1.25;
+}
+
+.tc-checkout__footer {
+    gap: 12px;
+    margin-top: 10px;
+    font-size: 12px;
+}
+
+.tc-checkout__footer i {
+    height: 14px;
+}
+
+.tc-checkout,
+.tc-checkout *,
+.tc-checkout input,
+.tc-checkout button,
+.tc-checkout select {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+.tc-checkout__eyebrow,
+.tc-checkout__price span,
+.tc-checkout__exchange,
+.tc-checkout__contact span,
+.tc-checkout__field-group .tc-onboard__field-label,
+.tc-checkout .tc-onboard__name-input::placeholder,
+.tc-checkout__line dt span,
+.tc-checkout__muted,
+.tc-checkout__terms,
+.tc-checkout__footer,
+.tc-checkout__footer strong {
+    font-weight: 500 !important;
+}
+
+.tc-checkout__billing {
+    font-size: 12px;
+    font-weight: 500 !important;
+}
+
+@media (max-width: 980px) {
+    .tc-checkout {
+        grid-template-columns: 1fr;
+    }
+
+    .tc-checkout__summary {
+        padding: 32px 24px 36px;
+        border-right: 0;
+        border-bottom: 1px solid #f2f2f2;
+    }
+
+    .tc-checkout__price-block {
+        margin-top: 34px;
+    }
+
+    .tc-checkout__currency {
+        margin-top: 34px;
+    }
+
+    .tc-checkout__totals {
+        margin-top: 34px;
+    }
+
+    .tc-checkout__payment {
+        padding: 34px 18px 28px;
+    }
+}
+
+@media (max-width: 620px) {
+    .tc-checkout__eyebrow,
+    .tc-checkout__payment h2 {
+        font-size: 24px;
+    }
+
+    .tc-checkout__price strong {
+        font-size: 48px;
+    }
+
+    .tc-checkout__billing,
+    .tc-checkout__line dt,
+    .tc-checkout__line dd,
+    .tc-checkout__line--total dt,
+    .tc-checkout__line--total dd,
+    .tc-checkout__contact input,
+    .tc-checkout .tc-onboard__name-input,
+    .tc-checkout__select {
+        font-size: 20px;
+    }
+
+    .tc-checkout__currency {
+        grid-template-columns: 1fr;
+    }
+
+    .tc-checkout__currency-btn {
+        min-height: 62px;
+        font-size: 22px;
+    }
+
+    .tc-checkout__exchange,
+    .tc-checkout__terms {
+        font-size: 18px;
+    }
+
+    .tc-checkout__contact {
+        grid-template-columns: 1fr;
+        gap: 6px;
+        min-height: 86px;
+        padding: 16px 22px;
+    }
+
+    .tc-checkout__contact span,
+    .tc-checkout__field-group .tc-onboard__field-label {
+        font-size: 18px;
+    }
+
+    .tc-checkout__card {
+        padding: 26px 18px 20px;
+    }
+
+    .tc-checkout__card-number {
+        padding-right: 16px;
+    }
+
+    .tc-checkout__card-brands {
+        display: none;
+    }
+
+    .tc-checkout__card-row {
+        grid-template-columns: 1fr;
+    }
+
+    .tc-checkout__card-row > .tc-onboard__name-input:first-child {
+        border-right: 0;
+        border-bottom: 1px solid #dddddd;
+    }
+
+    .tc-checkout__pay {
+        min-height: 72px;
+        margin-top: 30px;
+        font-size: 24px;
+    }
+
+    .tc-checkout__footer {
+        flex-wrap: wrap;
+        gap: 16px;
+        font-size: 18px;
+    }
 }

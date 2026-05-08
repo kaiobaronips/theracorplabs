@@ -25,6 +25,10 @@
   pointer-events: auto !important;
 }
 
+.tc-onboard.is-checkout {
+  align-items: center !important;
+}
+
 .tc-onboard__scrim {
   pointer-events: none !important;
   cursor: default !important;
