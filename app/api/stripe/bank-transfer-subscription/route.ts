@@ -9,6 +9,18 @@ const PLAN_PRICES_BRL: Record<string, number> = {
   Signature: 119700,
 };
 
+function normalisePlanName(value: unknown) {
+  return String(value || '').replace(/^THERACORP\s+/i, '').trim();
+}
+
+function normaliseEmail(value: unknown) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function isValidEmail(value: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
 async function getUsdBrlRate() {
   try {
     const response = await fetch('https://api.frankfurter.dev/v1/latest?base=USD&symbols=BRL', {
@@ -21,18 +33,6 @@ async function getUsdBrlRate() {
   } catch {
     return FALLBACK_USD_BRL_RATE;
   }
-}
-
-function normalisePlanName(value: unknown) {
-  return String(value || '').replace(/^THERACORP\s+/i, '').trim();
-}
-
-function normaliseEmail(value: unknown) {
-  return String(value || '').trim().toLowerCase();
-}
-
-function isValidEmail(value: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
 async function stripePost(path: string, secretKey: string, params: URLSearchParams) {
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json().catch(() => null);
   const planName = normalisePlanName(body?.planName);
-  const currency = String(body?.currency || 'BRL').toLowerCase() === 'usd' ? 'usd' : 'brl';
+  const currency = String(body?.currency || 'USD').toLowerCase() === 'usd' ? 'usd' : 'brl';
   const email = normaliseEmail(body?.email);
   const amountBrl = PLAN_PRICES_BRL[planName];
 
@@ -69,32 +69,40 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         error: 'contact_email_required',
-        message: 'Informe um e-mail válido para finalizar o pagamento e receber o recibo.',
+        message: 'Informe um e-mail válido para receber a fatura bancária.',
       },
       { status: 400 }
     );
   }
 
-  const rate = currency === 'usd' ? await getUsdBrlRate() : FALLBACK_USD_BRL_RATE;
-  const amount = currency === 'usd'
-    ? Math.max(50, Math.round(amountBrl / rate))
-    : amountBrl;
+  if (currency !== 'usd') {
+    return NextResponse.json(
+      {
+        error: 'bank_transfer_currency_unsupported',
+        message: 'Transferências bancárias nativas da Stripe não estão disponíveis em BRL. Para bancos brasileiros, use boleto.',
+      },
+      { status: 400 }
+    );
+  }
+
+  const rate = await getUsdBrlRate();
+  const amountUsd = Math.max(50, Math.round(amountBrl / rate));
 
   const customerParams = new URLSearchParams();
   customerParams.set('email', email);
-  customerParams.set('metadata[source]', 'theracorp_checkout_modal');
+  customerParams.set('metadata[source]', 'theracorp_bank_transfer_subscription');
   customerParams.set('metadata[contact_email]', email);
 
   const customerResult = await stripePost('/customers', secretKey, customerParams);
 
   if (!customerResult.response.ok) {
-    console.error('[stripe/customer]', customerResult.data);
+    console.error('[stripe/bank-transfer/customer]', customerResult.data);
     const stripeError = customerResult.data?.error;
     return NextResponse.json(
       {
         error: 'customer_failed',
         code: stripeError?.code || stripeError?.type || 'stripe_error',
-        message: stripeError?.message || 'Falha ao criar o cliente para assinatura.',
+        message: stripeError?.message || 'Falha ao criar o cliente para transferência bancária.',
       },
       { status: 502 }
     );
@@ -103,12 +111,12 @@ export async function POST(req: NextRequest) {
   const productParams = new URLSearchParams();
   productParams.set('name', `THERACORP ${planName}`);
   productParams.set('metadata[plan]', planName);
-  productParams.set('metadata[source]', 'theracorp_checkout_modal');
+  productParams.set('metadata[source]', 'theracorp_bank_transfer_subscription');
 
   const productResult = await stripePost('/products', secretKey, productParams);
 
   if (!productResult.response.ok) {
-    console.error('[stripe/product]', productResult.data);
+    console.error('[stripe/bank-transfer/product]', productResult.data);
     const stripeError = productResult.data?.error;
     return NextResponse.json(
       {
@@ -122,58 +130,54 @@ export async function POST(req: NextRequest) {
 
   const subscriptionParams = new URLSearchParams();
   subscriptionParams.set('customer', customerResult.data.id);
-  subscriptionParams.set('collection_method', 'charge_automatically');
-  subscriptionParams.set('payment_behavior', 'default_incomplete');
-  subscriptionParams.set('billing_mode[type]', 'flexible');
-  subscriptionParams.set('payment_settings[save_default_payment_method]', 'on_subscription');
-  subscriptionParams.set('items[0][price_data][currency]', currency);
-  subscriptionParams.set('items[0][price_data][unit_amount]', String(amount));
+  subscriptionParams.set('collection_method', 'send_invoice');
+  subscriptionParams.set('days_until_due', '30');
+  subscriptionParams.set('payment_settings[payment_method_types][0]', 'customer_balance');
+  subscriptionParams.set('items[0][price_data][currency]', 'usd');
+  subscriptionParams.set('items[0][price_data][unit_amount]', String(amountUsd));
   subscriptionParams.set('items[0][price_data][recurring][interval]', 'month');
   subscriptionParams.set('items[0][price_data][product]', productResult.data.id);
   subscriptionParams.set('items[0][quantity]', '1');
   subscriptionParams.set('metadata[plan]', planName);
-  subscriptionParams.set('metadata[source]', 'theracorp_checkout_modal');
+  subscriptionParams.set('metadata[source]', 'theracorp_bank_transfer_subscription');
   subscriptionParams.set('metadata[contact_email]', email);
-  subscriptionParams.set('expand[]', 'latest_invoice.confirmation_secret');
+  subscriptionParams.set('expand[]', 'latest_invoice');
 
   const subscriptionResult = await stripePost('/subscriptions', secretKey, subscriptionParams);
 
   if (!subscriptionResult.response.ok) {
-    console.error('[stripe/subscription]', subscriptionResult.data);
+    console.error('[stripe/bank-transfer/subscription]', subscriptionResult.data);
     const stripeError = subscriptionResult.data?.error;
     return NextResponse.json(
       {
-        error: 'subscription_failed',
+        error: 'bank_transfer_subscription_failed',
         code: stripeError?.code || stripeError?.type || 'stripe_error',
-        message: stripeError?.message || 'Falha ao criar a assinatura mensal.',
+        message: stripeError?.message || 'Falha ao criar a assinatura por transferência bancária.',
       },
       { status: 502 }
     );
   }
 
   const subscription = subscriptionResult.data;
-  const confirmationSecret = subscription?.latest_invoice?.confirmation_secret;
-  const clientSecret = confirmationSecret?.client_secret;
+  const hostedInvoiceUrl = subscription?.latest_invoice?.hosted_invoice_url;
 
-  if (!clientSecret) {
-    console.error('[stripe/subscription] missing latest invoice confirmation secret', subscription);
+  if (!hostedInvoiceUrl) {
+    console.error('[stripe/bank-transfer/subscription] missing hosted invoice url', subscription);
     return NextResponse.json(
       {
-        error: 'subscription_confirmation_secret_missing',
-        message: 'Assinatura criada sem segredo de confirmação de pagamento.',
+        error: 'hosted_invoice_url_missing',
+        message: 'Assinatura criada sem link de fatura bancária.',
       },
       { status: 502 }
     );
   }
 
   return NextResponse.json({
-    clientSecret,
-    paymentIntentId: null,
     subscriptionId: subscription.id,
-    customerId: customerResult.data.id,
-    amount,
-    currency,
-    rate,
+    invoiceId: subscription.latest_invoice.id,
+    url: hostedInvoiceUrl,
+    amount: amountUsd,
+    currency: 'usd',
     interval: 'month',
   });
 }

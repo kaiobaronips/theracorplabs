@@ -28,13 +28,13 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              `script-src 'self' 'unsafe-inline' https://js.stripe.com${isDevelopment ? " 'unsafe-eval'" : ''}`,
+              `script-src 'self' 'unsafe-inline' https://js.stripe.com https://pay.google.com https://accounts.google.com https://applepay.cdn-apple.com${isDevelopment ? " 'unsafe-eval'" : ''}`,
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-              "img-src 'self' data: blob:",
+              "img-src 'self' data: blob: https://*.stripe.com https://www.gstatic.com https://www.google.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "connect-src 'self' https://api.stripe.com https://api.frankfurter.dev https://r.stripe.com https://m.stripe.network",
+              "connect-src 'self' https://api.stripe.com https://api.frankfurter.dev https://r.stripe.com https://m.stripe.network https://pay.google.com https://accounts.google.com https://apple-pay-gateway.apple.com",
               "media-src 'self'",
-              "frame-src https://js.stripe.com https://hooks.stripe.com https://m.stripe.network",
+              "frame-src https://js.stripe.com https://hooks.stripe.com https://m.stripe.network https://pay.google.com https://accounts.google.com",
               "worker-src 'self' blob:",
               "frame-ancestors 'none'"
             ].join('; ')

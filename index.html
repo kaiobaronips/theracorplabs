@@ -1270,9 +1270,15 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
   var stripeCardExpiry = null;
   var stripeCardCvc = null;
   var stripeClientSecret = '';
+  var stripeSubscriptionId = '';
+  var stripeCustomerId = '';
+  var stripeExpressElements = null;
+  var stripeExpressCheckout = null;
   var stripeIntentKey = '';
   var stripeInitPromise = null;
+  var stripeInitVersion = 0;
   var stripeCardReadyPromise = null;
+  var checkoutEmailInitTimer = null;
 
   function getCheckoutApiBase() {
     if (
@@ -1315,6 +1321,10 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     return emailEl ? emailEl.value.trim() : '';
   }
 
+  function isValidCheckoutEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
+  }
+
   function createStripePaymentIntent(plan, currency, email) {
     return fetch(getCheckoutApiBase() + '/api/stripe/payment-intent', {
       method: 'POST',
@@ -1328,6 +1338,47 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       return response.json().then(function (data) {
         if (!response.ok) {
           var err = new Error((data && (data.message || data.error)) || 'payment_intent_failed');
+          err.code = (data && data.code) || (data && data.error) || 'stripe_error';
+          throw err;
+        }
+        return data;
+      });
+    });
+  }
+
+  function createStripeBoletoCheckoutSession(plan, email) {
+    return fetch(getCheckoutApiBase() + '/api/stripe/boleto-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        planName: plan.displayName || plan.name,
+        email: email
+      })
+    }).then(function (response) {
+      return response.json().then(function (data) {
+        if (!response.ok) {
+          var err = new Error((data && (data.message || data.error)) || 'boleto_checkout_failed');
+          err.code = (data && data.code) || (data && data.error) || 'stripe_error';
+          throw err;
+        }
+        return data;
+      });
+    });
+  }
+
+  function createStripeBankTransferSubscription(plan, currency, email) {
+    return fetch(getCheckoutApiBase() + '/api/stripe/bank-transfer-subscription', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        planName: plan.displayName || plan.name,
+        currency: currency,
+        email: email
+      })
+    }).then(function (response) {
+      return response.json().then(function (data) {
+        if (!response.ok) {
+          var err = new Error((data && (data.message || data.error)) || 'bank_transfer_subscription_failed');
           err.code = (data && data.code) || (data && data.error) || 'stripe_error';
           throw err;
         }
@@ -1362,6 +1413,13 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     });
   }
 
+  function setStripeCardLoading(isLoading) {
+    var card = optionsEl.querySelector('#tc-stripe-payment-element');
+    if (!card) return;
+    card.classList.toggle('is-loading', !!isLoading);
+    card.setAttribute('aria-busy', isLoading ? 'true' : 'false');
+  }
+
   function buildStripeCardElements() {
     var number = stripeElements.create('cardNumber', {
       style: STRIPE_CARD_STYLE,
@@ -1389,9 +1447,15 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
 
   function mountStripeCardElements() {
     if (!stripeCardNumber) return;
+    setStripeCardLoading(true);
     stripeCardNumber.mount('#tc-stripe-card-number');
     stripeCardExpiry.mount('#tc-stripe-card-expiry');
     stripeCardCvc.mount('#tc-stripe-card-cvc');
+    if (stripeCardReadyPromise) {
+      stripeCardReadyPromise.then(function () {
+        setStripeCardLoading(false);
+      });
+    }
   }
 
   function unmountStripeCardElements() {
@@ -1415,6 +1479,122 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     stripeCardReadyPromise = null;
   }
 
+  function getCheckoutReturnUrl() {
+    return window.location.href.split('#')[0];
+  }
+
+  function destroyStripeExpressCheckout() {
+    if (stripeExpressCheckout) {
+      try { stripeExpressCheckout.destroy(); }
+      catch (e) {
+        try { stripeExpressCheckout.unmount(); } catch (e2) {}
+      }
+    }
+    stripeExpressCheckout = null;
+    stripeExpressElements = null;
+    var wrapper = optionsEl.querySelector('[data-stripe-express-wrapper]');
+    if (wrapper) wrapper.classList.add('is-unavailable');
+  }
+
+  function completeStripeCheckoutPayment(intent, emailValue, method) {
+    if (!intent || (intent.status !== 'succeeded' && intent.status !== 'processing')) {
+      setStripeMessage('Pagamento não foi confirmado. Verifique os dados e tente novamente.', true);
+      return false;
+    }
+    answers.cardPayment = {
+      provider: 'stripe',
+      paymentIntent: intent.id,
+      subscriptionId: stripeSubscriptionId,
+      customerId: stripeCustomerId,
+      status: intent.status,
+      billingInterval: 'month',
+      paymentMethod: method || 'card',
+      email: emailValue
+    };
+    return true;
+  }
+
+  function mountStripeExpressCheckout(email) {
+    var mountEl = optionsEl.querySelector('#tc-stripe-express-checkout');
+    var wrapper = optionsEl.querySelector('[data-stripe-express-wrapper]');
+    if (!mountEl || !wrapper || !stripeInstance || !stripeClientSecret) return;
+
+    destroyStripeExpressCheckout();
+    wrapper = optionsEl.querySelector('[data-stripe-express-wrapper]');
+    mountEl = optionsEl.querySelector('#tc-stripe-express-checkout');
+    if (!mountEl || !wrapper) return;
+
+    stripeExpressElements = stripeInstance.elements({
+      clientSecret: stripeClientSecret,
+      appearance: {
+        variables: {
+          borderRadius: '18px',
+          fontFamily: '"SofiaProBold", Helvetica, Arial, sans-serif'
+        }
+      }
+    });
+
+    stripeExpressCheckout = stripeExpressElements.create('expressCheckout', {
+      buttonHeight: 52,
+      buttonType: {
+        applePay: 'plain',
+        googlePay: 'plain'
+      },
+      buttonTheme: {
+        applePay: 'black',
+        googlePay: 'black'
+      },
+      layout: {
+        maxColumns: 2,
+        maxRows: 1,
+        overflow: 'never'
+      },
+      paymentMethods: {
+        applePay: 'always',
+        googlePay: 'always',
+        link: 'never'
+      }
+    });
+
+    stripeExpressCheckout.on('ready', function (event) {
+      var methods = event && event.availablePaymentMethods;
+      wrapper.classList.toggle('is-unavailable', !(methods && (methods.applePay || methods.googlePay)));
+    });
+
+    stripeExpressCheckout.on('confirm', function () {
+      setStripeMessage('Processando assinatura mensal...', false);
+      stripeInstance.confirmPayment({
+        elements: stripeExpressElements,
+        clientSecret: stripeClientSecret,
+        confirmParams: {
+          return_url: getCheckoutReturnUrl()
+        },
+        redirect: 'if_required'
+      }).then(function (result) {
+        if (result && result.error) {
+          setStripeMessage(result.error.message || 'Não foi possível confirmar o pagamento.', true);
+          return;
+        }
+        var intent = result && result.paymentIntent;
+        if (!completeStripeCheckoutPayment(intent, email, 'express_checkout')) return;
+        setStripeMessage('Pagamento confirmado.', false);
+        if (currentStep.next) {
+          window.setTimeout(function () { goTo(steps[currentStep.next]); }, 320);
+        }
+      }).catch(function (error) {
+        console.error('[stripe-express-confirm]', error);
+        setStripeMessage('Pagamento indisponível. Tente novamente em instantes.', true);
+      });
+    });
+
+    try {
+      stripeExpressCheckout.mount('#tc-stripe-express-checkout');
+    } catch (error) {
+      console.error('[stripe-express-mount]', error);
+      destroyStripeExpressCheckout();
+    }
+  }
+
   function initStripePayment(force) {
     var mountEl = optionsEl.querySelector('#tc-stripe-payment-element');
     if (!mountEl || !currentStep || currentStep.type !== 'checkout') return Promise.resolve();
@@ -1422,10 +1602,12 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     var plan = answers.plan || planCards[1];
     var currency = answers.checkoutCurrency === 'USD' ? 'USD' : 'BRL';
     var email = getCheckoutEmail();
-    var intentKey = (plan.displayName || plan.name) + '|' + currency;
+    var hasValidEmail = isValidCheckoutEmail(email);
+    var intentKey = (plan.displayName || plan.name) + '|' + currency + '|' + email.toLowerCase();
     var sameIntent = stripeIntentKey === intentKey && !!stripeClientSecret;
 
     if (!force && sameIntent && stripeCardNumber && isCardElementMounted(mountEl)) {
+      setStripeCardLoading(false);
       return Promise.resolve();
     }
 
@@ -1433,18 +1615,31 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       unmountStripeCardElements();
       mountStripeCardElements();
       setStripeMessage('', false);
-      return stripeCardReadyPromise || Promise.resolve();
+      return (stripeCardReadyPromise || Promise.resolve()).then(function () {
+        setStripeCardLoading(false);
+      });
     }
 
-    if (stripeInitPromise && !force) return stripeInitPromise;
+    if (stripeInitPromise) {
+      if (!force) return stripeInitPromise;
+      return stripeInitPromise.then(function () {
+        return initStripePayment(true);
+      });
+    }
 
-    setStripeMessage('Carregando pagamento seguro...', false);
+    setStripeMessage(hasValidEmail ? 'Carregando pagamento seguro...' : '', false);
+    var initVersion = stripeInitVersion + 1;
+    stripeInitVersion = initVersion;
     stripeIntentKey = intentKey;
     stripeClientSecret = '';
+    stripeSubscriptionId = '';
+    stripeCustomerId = '';
+    destroyStripeExpressCheckout();
     destroyStripeCardElements();
 
-    stripeInitPromise = loadStripeJs()
+    var initPromise = loadStripeJs()
       .then(function () {
+        if (initVersion !== stripeInitVersion) return null;
         if (stripeInstance) return null;
         return fetch(getCheckoutApiBase() + '/api/stripe/config').then(function (response) {
           return response.json().then(function (data) {
@@ -1454,39 +1649,55 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
         });
       })
       .then(function (publishableKey) {
+        if (initVersion !== stripeInitVersion) return null;
         if (publishableKey) stripeInstance = window.Stripe(publishableKey);
         if (!stripeInstance) throw new Error('stripe_instance_missing');
-        return createStripePaymentIntent(plan, currency, email);
-      })
-      .then(function (data) {
-        if (stripeIntentKey !== intentKey) return;
-        stripeClientSecret = data.clientSecret;
-        destroyStripeCardElements();
         if (!stripeElements) stripeElements = stripeInstance.elements();
         var built = buildStripeCardElements();
         stripeCardNumber = built.number;
         stripeCardExpiry = built.expiry;
         stripeCardCvc = built.cvc;
         mountStripeCardElements();
+        if (!hasValidEmail) {
+          stripeIntentKey = '';
+          return (stripeCardReadyPromise || Promise.resolve()).then(function () {
+            return null;
+          });
+        }
+        return createStripePaymentIntent(plan, currency, email);
+      })
+      .then(function (data) {
+        if (initVersion !== stripeInitVersion) return null;
+        if (!data) return stripeCardReadyPromise;
+        if (stripeIntentKey !== intentKey) return;
+        stripeClientSecret = data.clientSecret;
+        stripeSubscriptionId = data.subscriptionId || '';
+        stripeCustomerId = data.customerId || '';
+        mountStripeExpressCheckout(email);
         setStripeMessage('', false);
         return stripeCardReadyPromise;
       })
       .catch(function (error) {
+        if (initVersion !== stripeInitVersion) return;
         console.error('[stripe]', error);
+        setStripeCardLoading(false);
         var message = (error && error.message) || '';
         if (/secret_key_missing|publishable_key_missing|stripe_config_failed/.test(message)) {
           setStripeMessage('Pagamento indisponível. Verifique as chaves Stripe do ambiente.', true);
-        } else if (/payment_intent_failed/.test(message)) {
-          setStripeMessage('Não foi possível iniciar o pagamento. Tente novamente.', true);
+        } else if (/contact_email_required/.test(message)) {
+          setStripeMessage('Informe um e-mail válido para finalizar o pagamento.', true);
+        } else if (/subscription_failed|subscription_confirmation_secret_missing|subscription_payment_intent_missing|payment_intent_failed/.test(message)) {
+          setStripeMessage('Não foi possível iniciar a assinatura mensal. Tente novamente.', true);
         } else {
           setStripeMessage('Pagamento indisponível no momento. Tente novamente em instantes.', true);
         }
         stripeIntentKey = '';
       })
       .finally(function () {
-        stripeInitPromise = null;
+        if (stripeInitPromise === initPromise) stripeInitPromise = null;
       });
 
+    stripeInitPromise = initPromise;
     return stripeInitPromise;
   }
 
@@ -1546,6 +1757,26 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       termsEl.textContent = 'Ao assinar, você autoriza THERACORP HEALTHCARE a cobrar você em ' + selectedCurrency + ' de acordo com os termos, até que você cancele.';
     }
 
+    var boletoButton = optionsEl.querySelector('[data-checkout-boleto]');
+    if (boletoButton) {
+      var boletoEnabled = selectedCurrency === 'BRL';
+      boletoButton.disabled = !boletoEnabled;
+      boletoButton.classList.toggle('is-disabled', !boletoEnabled);
+      boletoButton.setAttribute('aria-disabled', boletoEnabled ? 'false' : 'true');
+      boletoButton.title = boletoEnabled ? 'Pagar assinatura mensal com boleto' : 'Boleto esta disponivel apenas em BRL';
+    }
+
+    var bankTransferButton = optionsEl.querySelector('[data-checkout-bank-transfer]');
+    if (bankTransferButton) {
+      var bankTransferEnabled = selectedCurrency === 'USD';
+      bankTransferButton.disabled = !bankTransferEnabled;
+      bankTransferButton.classList.toggle('is-disabled', !bankTransferEnabled);
+      bankTransferButton.setAttribute('aria-disabled', bankTransferEnabled ? 'false' : 'true');
+      bankTransferButton.title = bankTransferEnabled
+        ? 'Pagar assinatura mensal por transferencia bancaria'
+        : 'Transferencias bancarias nativas da Stripe nao estao disponiveis em BRL. Para bancos brasileiros, use boleto.';
+    }
+
     if (previousCurrency !== selectedCurrency || selectedCurrency === 'USD') {
       initStripePayment(true);
     } else {
@@ -1594,6 +1825,12 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     var email = lead.email || '';
     var brlSelected = currency === 'BRL';
     var usdSelected = currency === 'USD';
+    var bankTransferAttrs = brlSelected
+      ? ' disabled aria-disabled="true" title="Transferencias bancarias nativas da Stripe nao estao disponiveis em BRL. Para bancos brasileiros, use boleto."'
+      : ' aria-disabled="false" title="Pagar assinatura mensal por transferencia bancaria"';
+    var boletoAttrs = usdSelected
+      ? ' disabled aria-disabled="true" title="Boleto esta disponivel apenas em BRL"'
+      : ' aria-disabled="false" title="Pagar assinatura mensal com boleto"';
 
     return '' +
       '<div class="tc-checkout">' +
@@ -1631,13 +1868,13 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
         '<section class="tc-checkout__payment" aria-label="Pagamento">' +
           '<div class="tc-checkout__payment-inner">' +
             '<h2>Dados para contato</h2>' +
-            '<label class="tc-checkout__contact"><span>E-mail</span><input name="checkout-email" type="email" autocomplete="email" placeholder="hello@exemplo.com" value="' + escapeHtml(email) + '"></label>' +
+            '<label class="tc-checkout__contact"><span>E-mail</span><input name="checkout-email" type="email" autocomplete="email" placeholder="hello@exemplo.com" value="' + escapeHtml(email) + '" required></label>' +
             '<h2>Forma de pagamento</h2>' +
             '<div class="tc-checkout__card">' +
               '<div class="tc-checkout__method"><span class="tc-checkout__card-icon" aria-hidden="true"></span><strong>Cartão</strong></div>' +
               '<div class="tc-checkout__field-group tc-checkout__field-group--card">' +
                 '<p class="tc-onboard__field-label">Dados do cartão</p>' +
-                '<div class="tc-stripe-card" id="tc-stripe-payment-element">' +
+        '<div class="tc-stripe-card is-loading" id="tc-stripe-payment-element" aria-busy="true">' +
                   '<div class="tc-stripe-card__number" id="tc-stripe-card-number"></div>' +
                   '<div class="tc-stripe-card__row">' +
                     '<div class="tc-stripe-card__expiry" id="tc-stripe-card-expiry"></div>' +
@@ -1645,6 +1882,13 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
                   '</div>' +
                 '</div>' +
                 '<p class="tc-stripe-message" data-stripe-message></p>' +
+              '</div>' +
+              '<div class="tc-checkout__quick-pay">' +
+                '<div class="tc-checkout__express is-unavailable" data-stripe-express-wrapper>' +
+                  '<div id="tc-stripe-express-checkout"></div>' +
+                '</div>' +
+                '<button class="tc-checkout__bank-transfer' + (brlSelected ? ' is-disabled' : '') + '" type="button" data-action="stripe-bank-transfer" data-checkout-bank-transfer' + bankTransferAttrs + '>Transferências e débitos bancários</button>' +
+                '<button class="tc-checkout__boleto' + (usdSelected ? ' is-disabled' : '') + '" type="button" data-action="stripe-boleto" data-checkout-boleto' + boletoAttrs + '>Boleto</button>' +
               '</div>' +
               '<div class="tc-checkout__field-group">' +
                 '<p class="tc-onboard__field-label">Nome do titular do cartão</p>' +
@@ -1669,9 +1913,11 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
 
   function renderPlanConfirmed() {
     var selectedPlan = answers.plan || planCards[1];
+    var payment = answers.cardPayment || {};
+    var receiptEmail = payment.email || getCheckoutEmail();
     return '' +
       '<div class="tc-onboard__summary tc-onboard__summary--center">' +
-        '<p>Selecionamos ' + escapeHtml(selectedPlan.name) + ' para esta simulação. O checkout real será conectado em uma próxima etapa.</p>' +
+        '<p>Assinatura mensal confirmada. Enviamos o recibo da primeira cobrança para ' + escapeHtml(receiptEmail || 'o e-mail informado') + '.</p>' +
         '<dl><div><dt>Plano</dt><dd>' + escapeHtml(selectedPlan.name) + '</dd></div><div><dt>Valor</dt><dd>' + escapeHtml(selectedPlan.price) + '</dd></div></dl>' +
       '</div>' +
       '<button class="tc-onboard__primary" type="button" data-action="close">Concluir</button>';
@@ -2208,7 +2454,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
 
     isAnimating = true;
     stage.classList.add('is-fading');
-    window.setTimeout(render, 280);
+    window.setTimeout(render, 420);
   }
 
   function goTo(item, immediate) {
@@ -2564,6 +2810,93 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       return;
     }
 
+    if (event.target.closest('[data-action="stripe-bank-transfer"]') && currentStep && currentStep.type === 'checkout') {
+      var bankTransferBtn = event.target.closest('[data-action="stripe-bank-transfer"]');
+      var bankEmailEl = optionsEl.querySelector('input[name="checkout-email"]');
+      var bankEmail = bankEmailEl ? bankEmailEl.value.trim() : '';
+      var bankPlan = answers.plan || planCards[1];
+      var bankCurrency = answers.checkoutCurrency === 'USD' ? 'USD' : 'BRL';
+
+      setStripeMessage('', false);
+      if (bankEmailEl) bankEmailEl.classList.remove('is-invalid');
+
+      if (bankCurrency !== 'USD') {
+        setStripeMessage('Transferências bancárias nativas da Stripe não estão disponíveis em BRL. Para bancos brasileiros, use boleto.', true);
+        return;
+      }
+
+      if (!isValidCheckoutEmail(bankEmail)) {
+        if (bankEmailEl) { bankEmailEl.classList.add('is-invalid'); bankEmailEl.focus(); }
+        setStripeMessage('Informe um e-mail válido para receber a fatura bancária.', true);
+        return;
+      }
+
+      if (bankTransferBtn) {
+        bankTransferBtn.disabled = true;
+        bankTransferBtn.classList.add('is-loading');
+        bankTransferBtn.textContent = 'Gerando...';
+      }
+
+      createStripeBankTransferSubscription(bankPlan, bankCurrency, bankEmail)
+        .then(function (data) {
+          if (!data || !data.url) throw new Error('bank_transfer_invoice_url_missing');
+          window.location.href = data.url;
+        })
+        .catch(function (error) {
+          console.error('[stripe-bank-transfer]', error);
+          setStripeMessage(error.message || 'Não foi possível iniciar a transferência bancária. Tente novamente.', true);
+          if (bankTransferBtn) {
+            bankTransferBtn.disabled = false;
+            bankTransferBtn.classList.remove('is-loading');
+            bankTransferBtn.textContent = 'Transferências e débitos bancários';
+          }
+        });
+      return;
+    }
+
+    if (event.target.closest('[data-action="stripe-boleto"]') && currentStep && currentStep.type === 'checkout') {
+      var boletoBtn = event.target.closest('[data-action="stripe-boleto"]');
+      var boletoEmailEl = optionsEl.querySelector('input[name="checkout-email"]');
+      var boletoEmail = boletoEmailEl ? boletoEmailEl.value.trim() : '';
+      var boletoPlan = answers.plan || planCards[1];
+
+      setStripeMessage('', false);
+      if (boletoEmailEl) boletoEmailEl.classList.remove('is-invalid');
+
+      if ((answers.checkoutCurrency || 'BRL') !== 'BRL') {
+        setStripeMessage('Boleto esta disponivel apenas para cobranças em BRL.', true);
+        return;
+      }
+
+      if (!isValidCheckoutEmail(boletoEmail)) {
+        if (boletoEmailEl) { boletoEmailEl.classList.add('is-invalid'); boletoEmailEl.focus(); }
+        setStripeMessage('Informe um e-mail válido para gerar o boleto.', true);
+        return;
+      }
+
+      if (boletoBtn) {
+        boletoBtn.disabled = true;
+        boletoBtn.classList.add('is-loading');
+        boletoBtn.textContent = 'Gerando...';
+      }
+
+      createStripeBoletoCheckoutSession(boletoPlan, boletoEmail)
+        .then(function (data) {
+          if (!data || !data.url) throw new Error('boleto_checkout_url_missing');
+          window.location.href = data.url;
+        })
+        .catch(function (error) {
+          console.error('[stripe-boleto]', error);
+          setStripeMessage('Não foi possível iniciar o pagamento por boleto. Tente novamente.', true);
+          if (boletoBtn) {
+            boletoBtn.disabled = false;
+            boletoBtn.classList.remove('is-loading');
+            boletoBtn.textContent = 'Boleto';
+          }
+        });
+      return;
+    }
+
     if (event.target.closest('[data-action="checkout-pay"]') && currentStep && currentStep.type === 'checkout') {
       var checkoutBtn = event.target.closest('[data-action="checkout-pay"]');
       var cardNameEl = optionsEl.querySelector('input[name="card-name"]');
@@ -2588,6 +2921,8 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
 
       if (checkoutBtn) {
         checkoutBtn.disabled = true;
+        checkoutBtn.classList.add('is-processing');
+        checkoutBtn.classList.remove('is-confirmed');
         checkoutBtn.textContent = 'Processando...';
       }
 
@@ -2617,6 +2952,8 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
               stripeError.code === 'payment_intent_unexpected_state') {
             stripeIntentKey = '';
             stripeClientSecret = '';
+            stripeSubscriptionId = '';
+            stripeCustomerId = '';
           }
           return;
         }
@@ -2626,12 +2963,12 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
           return;
         }
         paymentSucceeded = true;
-        answers.cardPayment = {
-          provider: 'stripe',
-          paymentIntent: intent.id,
-          status: intent.status
-        };
-        if (checkoutBtn) checkoutBtn.textContent = 'Pagamento confirmado';
+        if (!completeStripeCheckoutPayment(intent, emailValue, 'card')) return;
+        if (checkoutBtn) {
+          checkoutBtn.classList.remove('is-processing');
+          checkoutBtn.classList.add('is-confirmed');
+          checkoutBtn.textContent = 'Pagamento confirmado';
+        }
         if (currentStep.next) {
           window.setTimeout(function () { goTo(steps[currentStep.next]); }, 320);
         }
@@ -2646,6 +2983,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       }).finally(function () {
         if (checkoutBtn && !paymentSucceeded) {
           checkoutBtn.disabled = false;
+          checkoutBtn.classList.remove('is-processing', 'is-confirmed');
           checkoutBtn.textContent = 'Assinar';
         }
       });
@@ -2680,6 +3018,13 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
   });
 
   form.addEventListener('input', function (event) {
+    if (currentStep && currentStep.type === 'checkout' && event.target && event.target.name === 'checkout-email') {
+      window.clearTimeout(checkoutEmailInitTimer);
+      checkoutEmailInitTimer = window.setTimeout(function () {
+        if (isValidCheckoutEmail(getCheckoutEmail())) initStripePayment(true);
+      }, 350);
+    }
+
     var yesNoDetail = event.target.closest('[data-yesno-detail]');
     if (yesNoDetail && currentStep && currentStep.id === 'formularioBloco5') {
       answers[yesNoDetail.getAttribute('data-yesno-detail') + 'Descricao'] = yesNoDetail.value;
