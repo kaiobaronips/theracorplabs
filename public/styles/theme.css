@@ -6267,14 +6267,14 @@ img[alt] { color: transparent; font-size: 0; }
 
 .tc-checkout__quick-pay {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(150px, 0.58fr) minmax(120px, 0.36fr);
+    grid-template-columns: minmax(0, 1.2fr) minmax(116px, 0.8fr) minmax(108px, 0.62fr) minmax(86px, 0.42fr);
     gap: 12px;
     align-items: stretch;
     margin: 18px 0 26px;
 }
 
 .tc-checkout__quick-pay:has(.tc-checkout__express.is-unavailable) {
-    grid-template-columns: minmax(150px, 1fr) minmax(120px, 0.64fr);
+    grid-template-columns: minmax(116px, 1fr) minmax(108px, 0.8fr) minmax(86px, 0.58fr);
 }
 
 .tc-checkout__express {
@@ -6289,10 +6289,12 @@ img[alt] { color: transparent; font-size: 0; }
     width: 100%;
 }
 
+.tc-checkout__pix-auto,
 .tc-checkout__bank-transfer,
 .tc-checkout__boleto {
     min-height: 52px;
     width: 100%;
+    padding: 0 8px;
     border: 0;
     border-radius: 18px;
     color: #111111;
@@ -6301,10 +6303,18 @@ img[alt] { color: transparent; font-size: 0; }
     font-family: "SofiaProBold", SofiaProWeb, Helvetica, Arial, sans-serif;
     font-size: 16px;
     font-weight: 700;
+    line-height: 1.05;
+    text-align: center;
+    overflow-wrap: anywhere;
     cursor: pointer;
     transition: background-color 180ms ease, color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
 }
 
+.tc-checkout__bank-transfer {
+    font-size: 15px;
+}
+
+.tc-checkout__pix-auto:hover:not(:disabled),
 .tc-checkout__bank-transfer:hover:not(:disabled),
 .tc-checkout__boleto:hover:not(:disabled) {
     color: #031f19;
@@ -6313,6 +6323,8 @@ img[alt] { color: transparent; font-size: 0; }
     transform: translateY(-1px);
 }
 
+.tc-checkout__pix-auto:active:not(:disabled),
+.tc-checkout__pix-auto.is-loading,
 .tc-checkout__bank-transfer:active:not(:disabled),
 .tc-checkout__bank-transfer.is-loading,
 .tc-checkout__boleto:active:not(:disabled),
@@ -6322,6 +6334,7 @@ img[alt] { color: transparent; font-size: 0; }
     transform: translateY(0);
 }
 
+.tc-checkout__pix-auto:disabled,
 .tc-checkout__bank-transfer:disabled,
 .tc-checkout__boleto:disabled {
     cursor: not-allowed;

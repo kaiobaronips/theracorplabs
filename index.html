@@ -1366,6 +1366,26 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     });
   }
 
+  function createStripePixAutomaticoCheckoutSession(plan, email) {
+    return fetch(getCheckoutApiBase() + '/api/stripe/pix-automatico-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        planName: plan.displayName || plan.name,
+        email: email
+      })
+    }).then(function (response) {
+      return response.json().then(function (data) {
+        if (!response.ok) {
+          var err = new Error((data && (data.message || data.error)) || 'pix_automatico_checkout_failed');
+          err.code = (data && data.code) || (data && data.error) || 'stripe_error';
+          throw err;
+        }
+        return data;
+      });
+    });
+  }
+
   function createStripeBankTransferSubscription(plan, currency, email) {
     return fetch(getCheckoutApiBase() + '/api/stripe/bank-transfer-subscription', {
       method: 'POST',
@@ -1777,6 +1797,17 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
         : 'Transferencias bancarias nativas da Stripe nao estao disponiveis em BRL. Para bancos brasileiros, use boleto.';
     }
 
+    var pixAutomaticoButton = optionsEl.querySelector('[data-checkout-pix-automatico]');
+    if (pixAutomaticoButton) {
+      var pixAutomaticoEnabled = selectedCurrency === 'BRL';
+      pixAutomaticoButton.disabled = !pixAutomaticoEnabled;
+      pixAutomaticoButton.classList.toggle('is-disabled', !pixAutomaticoEnabled);
+      pixAutomaticoButton.setAttribute('aria-disabled', pixAutomaticoEnabled ? 'false' : 'true');
+      pixAutomaticoButton.title = pixAutomaticoEnabled
+        ? 'Ativar débito automático mensal via Pix Automático'
+        : 'Débito automático Pix está disponível apenas em BRL';
+    }
+
     if (previousCurrency !== selectedCurrency || selectedCurrency === 'USD') {
       initStripePayment(true);
     } else {
@@ -1831,6 +1862,9 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     var boletoAttrs = usdSelected
       ? ' disabled aria-disabled="true" title="Boleto esta disponivel apenas em BRL"'
       : ' aria-disabled="false" title="Pagar assinatura mensal com boleto"';
+    var pixAutomaticoAttrs = usdSelected
+      ? ' disabled aria-disabled="true" title="Débito automático Pix está disponível apenas em BRL"'
+      : ' aria-disabled="false" title="Ativar débito automático mensal via Pix Automático"';
 
     return '' +
       '<div class="tc-checkout">' +
@@ -1887,7 +1921,8 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
                 '<div class="tc-checkout__express is-unavailable" data-stripe-express-wrapper>' +
                   '<div id="tc-stripe-express-checkout"></div>' +
                 '</div>' +
-                '<button class="tc-checkout__bank-transfer' + (brlSelected ? ' is-disabled' : '') + '" type="button" data-action="stripe-bank-transfer" data-checkout-bank-transfer' + bankTransferAttrs + '>Transferências e débitos bancários</button>' +
+                '<button class="tc-checkout__pix-auto' + (usdSelected ? ' is-disabled' : '') + '" type="button" data-action="stripe-pix-automatico" data-checkout-pix-automatico' + pixAutomaticoAttrs + '>Débito Automático</button>' +
+                '<button class="tc-checkout__bank-transfer' + (brlSelected ? ' is-disabled' : '') + '" type="button" data-action="stripe-bank-transfer" data-checkout-bank-transfer' + bankTransferAttrs + '>Transfer Bank</button>' +
                 '<button class="tc-checkout__boleto' + (usdSelected ? ' is-disabled' : '') + '" type="button" data-action="stripe-boleto" data-checkout-boleto' + boletoAttrs + '>Boleto</button>' +
               '</div>' +
               '<div class="tc-checkout__field-group">' +
@@ -2848,7 +2883,50 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
           if (bankTransferBtn) {
             bankTransferBtn.disabled = false;
             bankTransferBtn.classList.remove('is-loading');
-            bankTransferBtn.textContent = 'Transferências e débitos bancários';
+            bankTransferBtn.textContent = 'Transfer Bank';
+          }
+        });
+      return;
+    }
+
+    if (event.target.closest('[data-action="stripe-pix-automatico"]') && currentStep && currentStep.type === 'checkout') {
+      var pixAutomaticoBtn = event.target.closest('[data-action="stripe-pix-automatico"]');
+      var pixAutomaticoEmailEl = optionsEl.querySelector('input[name="checkout-email"]');
+      var pixAutomaticoEmail = pixAutomaticoEmailEl ? pixAutomaticoEmailEl.value.trim() : '';
+      var pixAutomaticoPlan = answers.plan || planCards[1];
+
+      setStripeMessage('', false);
+      if (pixAutomaticoEmailEl) pixAutomaticoEmailEl.classList.remove('is-invalid');
+
+      if ((answers.checkoutCurrency || 'BRL') !== 'BRL') {
+        setStripeMessage('Débito automático Pix está disponível apenas para cobranças em BRL.', true);
+        return;
+      }
+
+      if (!isValidCheckoutEmail(pixAutomaticoEmail)) {
+        if (pixAutomaticoEmailEl) { pixAutomaticoEmailEl.classList.add('is-invalid'); pixAutomaticoEmailEl.focus(); }
+        setStripeMessage('Informe um e-mail válido para ativar o débito automático.', true);
+        return;
+      }
+
+      if (pixAutomaticoBtn) {
+        pixAutomaticoBtn.disabled = true;
+        pixAutomaticoBtn.classList.add('is-loading');
+        pixAutomaticoBtn.textContent = 'Gerando...';
+      }
+
+      createStripePixAutomaticoCheckoutSession(pixAutomaticoPlan, pixAutomaticoEmail)
+        .then(function (data) {
+          if (!data || !data.url) throw new Error('pix_automatico_checkout_url_missing');
+          window.location.href = data.url;
+        })
+        .catch(function (error) {
+          console.error('[stripe-pix-automatico]', error);
+          setStripeMessage(error.message || 'Não foi possível iniciar o débito automático Pix. Tente novamente.', true);
+          if (pixAutomaticoBtn) {
+            pixAutomaticoBtn.disabled = false;
+            pixAutomaticoBtn.classList.remove('is-loading');
+            pixAutomaticoBtn.textContent = 'Débito Automático';
           }
         });
       return;
