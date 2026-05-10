@@ -1130,7 +1130,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
         '<p class="tc-stripe-message" data-stripe-message></p>' +
       '</div>' +
       '<style>' +
-        '.tc-plan-lead{display:flex;flex-direction:column;gap:14px;width:100%;max-width:480px;margin:0 auto;padding:8px 4px}' +
+        '.tc-plan-lead{display:flex;flex-direction:column;gap:14px;width:100%;max-width:380px;margin:0 auto;padding:8px 4px}' +
         '.tc-plan-lead__row{display:flex;gap:12px}' +
         '.tc-plan-lead__row .tc-plan-lead__field{flex:1;min-width:0}' +
         '.tc-plan-lead__field{display:flex;flex-direction:column;gap:4px}' +
@@ -1940,7 +1940,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       })
       .then(function (data) {
         if (!data || !data.url) throw new Error('missing_checkout_url');
-        window.location.assign(data.url);
+        window.setTimeout(function () { window.location.assign(data.url); }, 2500);
       })
       .catch(function (error) {
         console.error('[stripe-hosted-checkout]', error);
