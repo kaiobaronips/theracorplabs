@@ -1,0 +1,6 @@
+PLACEHOLDER_REPLACE_ME
+
+Substituir este arquivo pelo conteudo baixado em:
+Stripe Dashboard -> Settings -> Payment methods -> Apple Pay -> Add a new domain -> theracorp.org -> Download verification file.
+
+O arquivo precisa ser servido em https://theracorp.org/.well-known/apple-developer-merchantid-domain-association sem extensao e sem alteracoes.

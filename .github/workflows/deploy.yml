@@ -1,8 +1,9 @@
-name: Deploy to Hostinger
+name: Deploy to Hostinger (legacy, manual only)
 
+# Migramos para Vercel em 2026-05-10. Vercel faz deploy automatico em push para main.
+# Este workflow ficou como manual fallback caso precise voltar para o Hostinger.
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -54,7 +55,7 @@ jobs:
             "$HOSTINGER_USER@$HOSTINGER_HOST:theracorp-website.zip"
           echo "✅ Upload complete"
 
-      - name: Extract and build on server
+      - name: Extract, build and restart Node app on server
         env:
           SSH_PASS: ${{ secrets.HOSTINGER_SSH_PASSWORD }}
         run: |
@@ -72,5 +73,7 @@ jobs:
           cd "$APP_DIR"
           npm ci --omit=dev
           npm run build
-          echo "✅ Build complete"
+          mkdir -p tmp
+          touch tmp/restart.txt
+          echo "✅ Build + restart trigger complete"
           ENDSSH
