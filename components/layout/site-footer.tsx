@@ -7,7 +7,6 @@ const footerLinks = [
   { href: '#', label: 'Privacy Practices' },
   { href: '#', label: 'Refund Policy' },
   { href: '#', label: 'Medical Consent' },
-  { href: '#', label: 'For California Residents' },
   { href: '#', label: 'Bill of Rights' },
 ] as const;
 
@@ -18,7 +17,7 @@ export function SiteFooter() {
         {/* Top row: copyright + links */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <p className="text-sm font-semibold text-tc-gray-900 whitespace-nowrap">
-            &copy; 2026 Theracorp. All rights reserved
+            &copy; 2026 Theracorp Inc. All rights reserved
           </p>
 
           <nav aria-label="Navegação do rodapé">
