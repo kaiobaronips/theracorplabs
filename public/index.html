@@ -753,8 +753,8 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       id: 'planLeadForm',
       type: 'leadForm',
       label: 'Cadastro',
-      question: 'Complete seu cadastro\npara continuar.',
-      actionLabel: 'Continuar',
+      question: 'Precisamos apenas de algumas informações para continuar.',
+      actionLabel: 'Assinar Plano',
       next: 'planCheckout'
     },
     planCheckout: {
@@ -1104,6 +1104,49 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       '</div>' +
       '<p class="tc-onboard__privacy">Usaremos esses dados apenas para manter seu atendimento organizado, conforme a LGPD.</p>' +
       '<button class="tc-onboard__primary" type="submit">' + escapeHtml(item && item.actionLabel ? item.actionLabel : 'Ver horários disponíveis') + '</button>';
+  }
+
+  function renderPlanLeadForm(item) {
+    var label = (item && item.actionLabel) || 'Assinar Plano';
+    return '' +
+      '<div class="tc-plan-lead">' +
+        '<div class="tc-plan-lead__row">' +
+          '<label class="tc-plan-lead__field"><span>Nome</span><input name="firstName" autocomplete="given-name" required class="tc-onboard__capitalize-input"></label>' +
+          '<label class="tc-plan-lead__field"><span>Sobrenome</span><input name="lastName" autocomplete="family-name" required class="tc-onboard__capitalize-input"></label>' +
+        '</div>' +
+        '<label class="tc-plan-lead__field"><span>Email</span><input name="email" type="email" autocomplete="email" placeholder="exemplo@email.com" required></label>' +
+        '<label class="tc-plan-lead__terms">' +
+          '<input type="checkbox" name="acceptTerms" required>' +
+          '<span>Li e concordo com os <a href="/termos" target="_blank" rel="noopener">Termos de Uso</a> e a <a href="/privacidade" target="_blank" rel="noopener">Política de Privacidade</a> da Theracorp.</span>' +
+        '</label>' +
+        '<button class="tc-onboard__primary tc-plan-lead__submit" type="submit">' +
+          '<span class="tc-plan-lead__submit-label">' + escapeHtml(label) + '</span>' +
+          '<span class="tc-plan-lead__submit-spinner" aria-hidden="true"></span>' +
+        '</button>' +
+        '<p class="tc-plan-lead__loading" data-plan-lead-loading hidden>' +
+          'Você está sendo direcionado para o checkout...<br>' +
+          'Preparando pagamento seguro...' +
+        '</p>' +
+        '<p class="tc-stripe-message" data-stripe-message></p>' +
+      '</div>' +
+      '<style>' +
+        '.tc-plan-lead{display:flex;flex-direction:column;gap:14px;width:100%;max-width:480px;margin:0 auto;padding:8px 4px}' +
+        '.tc-plan-lead__row{display:flex;gap:12px}' +
+        '.tc-plan-lead__row .tc-plan-lead__field{flex:1;min-width:0}' +
+        '.tc-plan-lead__field{display:flex;flex-direction:column;gap:4px}' +
+        '.tc-plan-lead__field>span{font-size:13px;font-weight:500;color:#444}' +
+        '.tc-plan-lead__field input{width:100%;padding:12px 14px;border:1px solid #d4d4d4;border-radius:10px;font-size:15px;background:#fff;box-sizing:border-box}' +
+        '.tc-plan-lead__field input:focus{outline:none;border-color:#000}' +
+        '.tc-plan-lead__terms{display:flex;align-items:flex-start;gap:8px;margin-top:6px;font-size:13px;line-height:1.4;color:#555}' +
+        '.tc-plan-lead__terms input[type="checkbox"]{margin-top:3px;flex-shrink:0}' +
+        '.tc-plan-lead__terms a{color:#000;text-decoration:underline}' +
+        '.tc-plan-lead__submit{margin-top:8px;position:relative}' +
+        '.tc-plan-lead__submit.is-loading .tc-plan-lead__submit-label{visibility:hidden}' +
+        '.tc-plan-lead__submit-spinner{display:none;position:absolute;left:50%;top:50%;width:20px;height:20px;margin:-10px 0 0 -10px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:tc-spin .8s linear infinite}' +
+        '.tc-plan-lead__submit.is-loading .tc-plan-lead__submit-spinner{display:block}' +
+        '.tc-plan-lead__loading{margin-top:8px;font-size:13px;color:#666;text-align:center;line-height:1.5}' +
+        '@media (max-width:520px){.tc-plan-lead__row{flex-direction:column;gap:14px}}' +
+      '</style>';
   }
 
   function renderConfirmation(item) {
@@ -2318,7 +2361,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
 
       if (item.type === 'leadForm') {
         optionsEl.classList.add('tc-onboard__options--wide');
-        optionsEl.innerHTML = renderLeadForm(item);
+        optionsEl.innerHTML = (item.id === 'planLeadForm') ? renderPlanLeadForm(item) : renderLeadForm(item);
       }
 
       if (item.type === 'leadForm') {
@@ -3186,6 +3229,26 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     }
 
     var submitBtn = form.querySelector('button[type="submit"]');
+
+    if (currentStep.id === 'planLeadForm') {
+      var firstInput = optionsEl.querySelector('input[name="firstName"]');
+      var lastInput  = optionsEl.querySelector('input[name="lastName"]');
+      var emailInput2 = optionsEl.querySelector('input[name="email"]');
+      var firstName = (firstInput ? firstInput.value : '').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+      var lastName  = (lastInput  ? lastInput.value  : '').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+      answers.lead = {
+        name:  (firstName + ' ' + lastName).trim(),
+        firstName: firstName,
+        lastName:  lastName,
+        email: emailInput2 ? emailInput2.value : ''
+      };
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.classList.add('is-loading'); }
+      var loadingEl = optionsEl.querySelector('[data-plan-lead-loading]');
+      if (loadingEl) loadingEl.hidden = false;
+      startStripeHostedCheckout();
+      return;
+    }
+
     var loadingLabel = (currentStep.next === 'planCheckout') ? 'Indo para pagamento...' : 'Buscando horários...';
     if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = loadingLabel; }
 
