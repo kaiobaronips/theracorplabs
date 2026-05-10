@@ -21,7 +21,7 @@ export default function TermosPage() {
           <div className="tc-card">
             <h2 className="content-1 text-xl font-semibold text-tc-gray-900">1. Aceitação dos Termos</h2>
             <p className="content-2 mt-3 text-sm text-tc-gray-500">
-              Ao acessar ou utilizar os serviços da Theracorp Inc. ("Theracorp", "nós"), você concorda com estes Termos de
+              Ao acessar ou utilizar os serviços da Theracorp Inc. (&ldquo;Theracorp&rdquo;, &ldquo;nós&rdquo;), você concorda com estes Termos de
               Uso. Se não concordar com qualquer disposição, não utilize nossos serviços.
             </p>
           </div>

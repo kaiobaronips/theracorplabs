@@ -21,7 +21,7 @@ export default function PrivacidadePage() {
           <div className="tc-card">
             <h2 className="content-1 text-xl font-semibold text-tc-gray-900">1. Introdução</h2>
             <p className="content-2 mt-3 text-sm text-tc-gray-500">
-              A Theracorp Inc. ("Theracorp", "nós") está comprometida com a proteção dos seus dados pessoais. Esta
+              A Theracorp Inc. (&ldquo;Theracorp&rdquo;, &ldquo;nós&rdquo;) está comprometida com a proteção dos seus dados pessoais. Esta
               Política descreve como coletamos, usamos, armazenamos e protegemos suas informações, em conformidade com a
               Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018).
             </p>
