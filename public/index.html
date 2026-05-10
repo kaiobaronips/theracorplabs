@@ -1123,10 +1123,10 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
           '<span class="tc-plan-lead__submit-label">' + escapeHtml(label) + '</span>' +
           '<span class="tc-plan-lead__submit-spinner" aria-hidden="true"></span>' +
         '</button>' +
-        '<p class="tc-plan-lead__loading" data-plan-lead-loading hidden>' +
-          'Você está sendo direcionado para o checkout...<br>' +
-          'Preparando pagamento seguro...' +
-        '</p>' +
+        '<div class="tc-plan-lead__loading-wrap" data-plan-lead-loading hidden aria-live="polite" aria-atomic="true">' +
+          '<p class="tc-plan-lead__loading-msg is-active"><span class="tc-plan-lead__loading-text">Você está sendo direcionado para o checkout</span><span class="tc-plan-lead__dots" aria-hidden="true"></span></p>' +
+          '<p class="tc-plan-lead__loading-msg"><span class="tc-plan-lead__loading-text">Preparando pagamento seguro</span><span class="tc-plan-lead__dots" aria-hidden="true"></span></p>' +
+        '</div>' +
         '<p class="tc-stripe-message" data-stripe-message></p>' +
       '</div>' +
       '<style>' +
@@ -1148,7 +1148,13 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
         '.tc-plan-lead__submit-spinner{display:none;position:absolute;left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;border:2.5px solid rgba(255,255,255,0.35);border-top-color:#fff;border-radius:50%;animation:tc-plan-spin .7s linear infinite}' +
         '.tc-plan-lead__submit.is-loading .tc-plan-lead__submit-spinner{display:block}' +
         '@keyframes tc-plan-spin{to{transform:rotate(360deg)}}' +
-        '.tc-plan-lead__loading{margin-top:8px;font-size:13px;color:#666;text-align:center;line-height:1.5}' +
+        '.tc-plan-lead__loading-wrap{position:relative;height:32px;margin-top:14px}' +
+        '.tc-plan-lead__loading-msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#a8acb1;font-weight:300;font-size:13px;letter-spacing:.01em;opacity:0;transform:translateY(8px) rotateX(40deg);transition:opacity .45s ease,transform .55s ease;pointer-events:none;margin:0}' +
+        '.tc-plan-lead__loading-msg.is-active{opacity:1;transform:translateY(0) rotateX(0)}' +
+        '.tc-plan-lead__loading-msg.is-done{opacity:0;transform:translateY(-8px) rotateX(-30deg);transition:opacity .35s ease,transform .45s ease}' +
+        '.tc-plan-lead__dots{display:inline-block;width:1.6em;text-align:left}' +
+        '.tc-plan-lead__dots::after{content:"...";letter-spacing:.05em;color:transparent;text-shadow:.25em 0 0 transparent,.5em 0 0 transparent;animation:tc-plan-dots 1.4s linear infinite}' +
+        '@keyframes tc-plan-dots{0%,20%{color:transparent;text-shadow:.25em 0 0 transparent,.5em 0 0 transparent}40%{color:#a8acb1;text-shadow:.25em 0 0 transparent,.5em 0 0 transparent}60%{color:#a8acb1;text-shadow:.25em 0 0 #a8acb1,.5em 0 0 transparent}80%,100%{color:#a8acb1;text-shadow:.25em 0 0 #a8acb1,.5em 0 0 #a8acb1}}' +
         '@media (max-width:520px){.tc-plan-lead__row{flex-direction:column;gap:14px}}' +
       '</style>';
   }
@@ -1944,7 +1950,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       })
       .then(function (data) {
         if (!data || !data.url) throw new Error('missing_checkout_url');
-        window.setTimeout(function () { window.location.assign(data.url); }, 2500);
+        window.setTimeout(function () { window.location.assign(data.url); }, 4200);
       })
       .catch(function (error) {
         console.error('[stripe-hosted-checkout]', error);
@@ -3248,7 +3254,22 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       };
       if (submitBtn) { submitBtn.disabled = true; submitBtn.classList.add('is-loading'); }
       var loadingEl = optionsEl.querySelector('[data-plan-lead-loading]');
-      if (loadingEl) loadingEl.hidden = false;
+      if (loadingEl) {
+        loadingEl.hidden = false;
+        var msgs = loadingEl.querySelectorAll('.tc-plan-lead__loading-msg');
+        var idx = 0;
+        window.setInterval(function () {
+          if (msgs.length < 2) return;
+          msgs[idx].classList.remove('is-active');
+          msgs[idx].classList.add('is-done');
+          idx = (idx + 1) % msgs.length;
+          window.setTimeout(function () {
+            msgs.forEach(function (m, i) { if (i !== idx) m.classList.remove('is-active'); });
+            msgs[idx].classList.remove('is-done');
+            msgs[idx].classList.add('is-active');
+          }, 100);
+        }, 1300);
+      }
       startStripeHostedCheckout();
       return;
     }
