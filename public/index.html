@@ -3140,7 +3140,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       answers.plan = planCards[Number(planButton.getAttribute('data-plan-index'))] || planCards[1];
       planButton.classList.add('is-selected');
       window.setTimeout(function () {
-        goTo(steps.planCheckout);
+        goTo(steps.planLeadForm);
       }, 180);
       return;
     }
@@ -3185,7 +3185,8 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     }
 
     var submitBtn = form.querySelector('button[type="submit"]');
-    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Buscando horários...'; }
+    var loadingLabel = (currentStep.next === 'planCheckout') ? 'Indo para pagamento...' : 'Buscando horários...';
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = loadingLabel; }
 
     var nameInput  = optionsEl.querySelector('input[name="name"]');
     var emailInput = optionsEl.querySelector('input[name="email"]');
