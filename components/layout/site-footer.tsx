@@ -12,20 +12,30 @@ const footerLinks = [
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-tc-gray-100 bg-white py-6">
+    <footer className="border-t border-tc-gray-100 bg-white py-4">
       <div className="mx-auto w-full max-w-[1200px] px-4 md:px-8">
-        {/* Top row: copyright + links */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <p className="text-sm font-semibold text-tc-gray-900 whitespace-nowrap">
-            &copy; 2026 Theracorp Inc. Todos os direitos reservados
-          </p>
+          {/* Left group: badge + copyright */}
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <Image
+              src="/legit-script.avif"
+              alt="Certificado LegitScript"
+              width={80}
+              height={80}
+              className="h-12 w-auto"
+            />
+            <p className="font-red-hat text-xs font-semibold text-tc-gray-900 whitespace-nowrap">
+              &copy; 2026 Theracorp Inc. Todos os direitos reservados
+            </p>
+          </div>
 
+          {/* Right group: links */}
           <nav aria-label="Navegação do rodapé">
-            <ul className="flex flex-wrap items-center gap-x-1 text-sm text-tc-gray-500">
+            <ul className="flex flex-nowrap items-center text-xs text-tc-gray-500">
               {footerLinks.map((link, index) => (
                 <li key={link.label} className="flex items-center">
                   {index > 0 && (
-                    <span className="mx-2 text-tc-gray-200" aria-hidden="true">|</span>
+                    <span className="mx-1.5 text-tc-gray-200" aria-hidden="true">|</span>
                   )}
                   <Link
                     href={link.href}
@@ -37,17 +47,6 @@ export function SiteFooter() {
               ))}
             </ul>
           </nav>
-        </div>
-
-        {/* Bottom row: LegitScript badge */}
-        <div className="mt-5">
-          <Image
-            src="/legit-script.avif"
-            alt="Certificado LegitScript"
-            width={100}
-            height={100}
-            className="h-20 w-auto"
-          />
         </div>
       </div>
     </footer>
