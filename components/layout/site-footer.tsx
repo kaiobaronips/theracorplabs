@@ -14,6 +14,7 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-tc-gray-100 bg-white py-4">
       <div className="mx-auto w-full max-w-[1200px] px-4 md:px-8">
+        {/* Main row: badge + copyright + links */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           {/* Left group: badge + copyright */}
           <div className="flex items-center gap-3 flex-shrink-0">
@@ -47,6 +48,31 @@ export function SiteFooter() {
               ))}
             </ul>
           </nav>
+        </div>
+
+        {/* Bottom row: LGPD seals — aligned right */}
+        <div className="mt-3 flex justify-end items-center gap-3">
+          <Image
+            src="/seal-lgpd-2.avif"
+            alt="Selo LGPD"
+            width={80}
+            height={80}
+            className="h-14 w-auto"
+          />
+          <Image
+            src="/lgpd-seal.png"
+            alt="Selo de Conformidade LGPD"
+            width={80}
+            height={80}
+            className="h-14 w-auto"
+          />
+          <Image
+            src="/LGPD-brasil.png"
+            alt="LGPD Brasil"
+            width={200}
+            height={100}
+            className="h-14 w-auto"
+          />
         </div>
       </div>
     </footer>
