@@ -14,123 +14,194 @@ export default function PrivacidadePage() {
         <h1 className="header-1 text-4xl font-bold leading-tight tracking-[-0.02em] text-tc-gray-900 md:text-5xl">
           Política de Privacidade
         </h1>
-        <p className="content-2 mt-3 text-sm text-tc-gray-500">Última atualização: maio de 2026</p>
+        <p className="content-2 mt-3 text-sm text-tc-gray-500">Última atualização: 10 de maio de 2026</p>
 
         <div className="mt-10 space-y-8">
 
+          {/* Preambulo */}
           <div className="tc-card">
-            <h2 className="content-1 text-xl font-semibold text-tc-gray-900">1. Introdução</h2>
+            <p className="content-2 text-sm text-tc-gray-500">
+              <strong className="text-tc-gray-900">LEIA ESTA POLÍTICA DE PRIVACIDADE COM ATENÇÃO ANTES DE USAR NOSSOS SERVIÇOS OU SITE.</strong>
+            </p>
             <p className="content-2 mt-3 text-sm text-tc-gray-500">
-              A Theracorp Inc. (&ldquo;Theracorp&rdquo;, &ldquo;nós&rdquo;) está comprometida com a proteção dos seus dados pessoais. Esta
-              Política descreve como coletamos, usamos, armazenamos e protegemos suas informações, em conformidade com a
-              Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018).
+              <strong className="text-tc-gray-900">NOTA IMPORTANTE</strong> — Nosso Aviso de Práticas de Privacidade é um documento separado que rege como as informações de saúde protegidas ("PHI") sobre você podem ser usadas e divulgadas em conexão com os serviços de saúde, de acordo com a Lei de Portabilidade e Responsabilidade de Seguro de Saúde (HIPAA).
             </p>
           </div>
 
+          {/* I. Introdução */}
           <div className="tc-card">
-            <h2 className="content-1 text-xl font-semibold text-tc-gray-900">2. Dados que Coletamos</h2>
-            <p className="content-2 mt-3 text-sm text-tc-gray-500">Coletamos as seguintes categorias de dados:</p>
+            <h2 className="content-1 text-xl font-semibold text-tc-gray-900">I. Introdução</h2>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500">
+              Esta Política de Privacidade (a "Política de Privacidade") descreve como a Theracorp Inc. coleta e utiliza Dados Pessoais sobre você por meio do uso do nosso site e através de e-mail, mensagens de texto e outras comunicações eletrônicas entre você e a Theracorp. Os termos "nós", "nosso(a)" e "Theracorp" referem-se à Theracorp Inc., uma empresa de Delaware localizada em 131 Continental Dr, Ste 305, Newark, DE 19713.
+            </p>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500">
+              A Theracorp respeita sua privacidade e está comprometida em protegê-la por meio do cumprimento desta política. Esta Política de Privacidade descreve os tipos de informações que nós e nossos afiliados, incluindo certas entidades profissionais afiliadas (coletivamente, "Theracorp", "nós", "nosso(a)"), podemos coletar de você ou que você pode fornecer ao usar o site da Theracorp ("site" ou "Plataforma").
+            </p>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500">
+              Esta Política de Privacidade também descreve nossas práticas de coleta, uso, manutenção, proteção e divulgação dessas informações. O uso da Plataforma é regido por esta Política de Privacidade e por nossos Termos de Serviço. Esta Política de Privacidade está incorporada aos nossos Termos de Serviço. Todos os termos em maiúsculas usados nesta Política de Privacidade, mas não definidos aqui, têm o significado atribuído a eles nos Termos de Serviço. Ao acessar ou usar a Plataforma, você reconhece que leu, entendeu e concorda em estar legalmente vinculado e em cumprir esta Política de Privacidade e nossos Termos de Serviço. Se algum termo desta Política de Privacidade for inaceitável para você, não use a Plataforma nem forneça informações pessoais. Esta Política de Privacidade pode ser alterada periodicamente, e seu uso da Plataforma após tais alterações será considerado como aceitação dessas mudanças, portanto, verifique esta Política de Privacidade periodicamente.
+            </p>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500">
+              Esta Política de Privacidade não se aplica a informações coletadas por terceiros, incluindo por meio de qualquer aplicativo ou conteúdo (incluindo publicidade) que possa ter link, estar incorporado ou acessível na Plataforma. Além disso, você pode estar sujeito a políticas de privacidade ou termos de serviço diferentes em outros sites ou aplicativos.
+            </p>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500">
+              A Theracorp está comprometida em proteger sua privacidade. Fornecemos esta Política de Privacidade para explicar o tipo de informação que coletamos e para informá-lo sobre as práticas e diretrizes que protegem a segurança e a confidencialidade das informações pessoais.
+            </p>
+          </div>
+
+          {/* II. Informações Que Coletamos */}
+          <div className="tc-card">
+            <h2 className="content-1 text-xl font-semibold text-tc-gray-900">II. Informações Que Coletamos Sobre Você e Como São Coletadas</h2>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500"><strong className="text-tc-gray-900">Informações Sobre Você e Seu Tratamento e Pagamento de Saúde</strong></p>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500">Coletamos vários tipos de informações de e sobre os usuários da nossa Plataforma, incluindo:</p>
             <ul className="content-2 mt-3 list-disc space-y-2 pl-5 text-sm text-tc-gray-500">
-              <li><strong className="text-tc-gray-900">Dados de cadastro:</strong> nome, e-mail, telefone, data de nascimento e sexo;</li>
-              <li><strong className="text-tc-gray-900">Dados de saúde:</strong> histórico médico, medicamentos em uso, resultados de exames e informações fornecidas nas consultas;</li>
-              <li><strong className="text-tc-gray-900">Dados de pagamento:</strong> informações de cartão processadas de forma segura pela Stripe (não armazenamos dados de cartão diretamente);</li>
-              <li><strong className="text-tc-gray-900">Dados de uso:</strong> endereço IP, tipo de navegador, páginas visitadas e interações com a plataforma.</li>
+              <li>Informações pelas quais você pode ser pessoalmente identificado, como nome, endereço, e-mail, telefone e informações de conta, endereço postal, gênero, ocupação, dados de cobrança e pagamento que você nos fornecer, informações relacionadas à sua elegibilidade, ou qualquer outra informação coletada na Plataforma definida como informação pessoal sob a lei aplicável ("Informações Pessoais").</li>
+              <li>Informações relacionadas à saúde, como histórico clínico e condições, e quaisquer outras informações trocadas em e-mails, mensagens, chats ou chamadas entre você e a Theracorp.</li>
+              <li>Informações sobre sua conexão com a Internet, o equipamento que você usa para acessar nossa Plataforma e detalhes de uso.</li>
+              <li>Informações sobre você, como se é um usuário atual, seus interesses em produtos, localização ou dados demográficos, ou informações relacionadas à sua solicitação.</li>
+              <li>Qualquer outra informação que solicitarmos especificamente.</li>
             </ul>
-          </div>
-
-          <div className="tc-card">
-            <h2 className="content-1 text-xl font-semibold text-tc-gray-900">3. Como Usamos seus Dados</h2>
-            <p className="content-2 mt-3 text-sm text-tc-gray-500">Utilizamos seus dados para:</p>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500">Coletamos essas informações:</p>
             <ul className="content-2 mt-3 list-disc space-y-2 pl-5 text-sm text-tc-gray-500">
-              <li>Prestar os serviços de telemedicina e acompanhamento de saúde contratados;</li>
-              <li>Processar pagamentos e gerenciar assinaturas;</li>
-              <li>Comunicar resultados de exames e orientações clínicas;</li>
-              <li>Enviar comunicações sobre seu plano, quando necessário;</li>
-              <li>Melhorar continuamente a plataforma e a experiência do usuário;</li>
-              <li>Cumprir obrigações legais e regulatórias.</li>
+              <li>Diretamente de você quando você as fornece.</li>
+              <li>Automaticamente enquanto você navega na Plataforma (por exemplo, detalhes de uso, endereço IP e informações coletadas por cookies, web beacons e outras tecnologias de rastreamento).</li>
+              <li>De terceiros com os quais trabalhamos para fornecer serviços, como médicos, profissionais de saúde e farmácias.</li>
             </ul>
-          </div>
 
-          <div className="tc-card">
-            <h2 className="content-1 text-xl font-semibold text-tc-gray-900">4. Base Legal para o Tratamento</h2>
-            <p className="content-2 mt-3 text-sm text-tc-gray-500">
-              O tratamento dos seus dados é realizado com base nas seguintes hipóteses legais previstas na LGPD:
-            </p>
+            <p className="content-2 mt-5 text-sm text-tc-gray-500"><strong className="text-tc-gray-900">Informações Que Você Nos Fornece</strong></p>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500">As informações que coletamos na ou por meio da nossa Plataforma podem incluir:</p>
             <ul className="content-2 mt-3 list-disc space-y-2 pl-5 text-sm text-tc-gray-500">
-              <li><strong className="text-tc-gray-900">Execução de contrato:</strong> para prestar os serviços contratados;</li>
-              <li><strong className="text-tc-gray-900">Consentimento:</strong> para comunicações de marketing e uso de dados de saúde;</li>
-              <li><strong className="text-tc-gray-900">Obrigação legal:</strong> para cumprimento de exigências regulatórias de saúde;</li>
-              <li><strong className="text-tc-gray-900">Legítimo interesse:</strong> para segurança da plataforma e melhoria dos serviços.</li>
+              <li>Informações coletadas quando você navega no site. Mesmo sem criar uma conta, podemos coletar algumas dessas informações.</li>
+              <li>Informações fornecidas ao se registrar ou fazer login, ou ao solicitar serviços fornecidos por nossos afiliados, ou através de comunicações decorrentes de serviços de saúde.</li>
+              <li>Informações para processar ou responder solicitações, incluindo dados de pagamento. Processamos pagamentos via conexão criptografada a um processador terceirizado. A Theracorp não coleta nem armazena detalhes completos do cartão.</li>
+              <li>Registros e cópias de suas correspondências (incluindo e-mails) se você nos contatar.</li>
+              <li>Informações que você fornece para exibição pública ou depoimentos, lembrando que aparecerão em áreas públicas.</li>
+              <li>Suas consultas de busca na Plataforma.</li>
+              <li>Também coletamos automaticamente dados estatísticos, que podem incluir Informações Pessoais, para melhorar a Plataforma, personalizar serviços, estimar usos, armazenar preferências, acelerar pesquisas e reconhecê-lo em visitas futuras.</li>
             </ul>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500">
+              A Plataforma pode usar "cookies" para melhorar funcionalidades. Visitantes que não desejam cookies devem configurar seus navegadores para recusá-los, cientes de que algumas áreas podem ficar inacessíveis.
+            </p>
+
+            <p className="content-2 mt-5 text-sm text-tc-gray-500"><strong className="text-tc-gray-900">Ferramentas de Terceiros</strong></p>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500">
+              Usamos Quickbooks e/ou Stripe como processadores de pagamento, que instalam cookies de sessão para prevenção de fraude (duram geralmente 24 horas). Consulte suas políticas de privacidade:
+            </p>
+            <ul className="content-2 mt-3 list-disc space-y-1 pl-5 text-sm text-tc-gray-500">
+              <li><a href="https://quickbooks.intuit.com/hk/privacy/" target="_blank" rel="noopener noreferrer" className="text-tc-teal hover:underline">https://quickbooks.intuit.com/hk/privacy/</a></li>
+              <li><a href="https://stripe.com/au/privacy" target="_blank" rel="noopener noreferrer" className="text-tc-teal hover:underline">https://stripe.com/au/privacy</a></li>
+            </ul>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500">
+              Também usamos ferramentas de terceiros para monitorar desempenho, erros e detalhes técnicos.
+            </p>
+
+            <p className="content-2 mt-5 text-sm text-tc-gray-500"><strong className="text-tc-gray-900">Informações Recebidas de Outras Fontes</strong></p>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500">
+              Podemos receber informações de terceiros, como subcontratados, provedores de análise, publicidade ou provedores de busca, bem como de prestadores de serviços de saúde.
+            </p>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500">
+              Podemos combinar essas informações com as que você nos fornece.
+            </p>
           </div>
 
+          {/* III. Como Usamos Suas Informações */}
           <div className="tc-card">
-            <h2 className="content-1 text-xl font-semibold text-tc-gray-900">5. Compartilhamento de Dados</h2>
-            <p className="content-2 mt-3 text-sm text-tc-gray-500">
-              Suas informações nunca são vendidas. Compartilhamos dados apenas com:
-            </p>
+            <h2 className="content-1 text-xl font-semibold text-tc-gray-900">III. Como Usamos Suas Informações</h2>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500">Podemos usar suas informações, incluindo Informações Pessoais, para:</p>
             <ul className="content-2 mt-3 list-disc space-y-2 pl-5 text-sm text-tc-gray-500">
-              <li><strong className="text-tc-gray-900">Parceiros médicos:</strong> profissionais de saúde habilitados que prestam atendimento na plataforma;</li>
-              <li><strong className="text-tc-gray-900">Processadores de pagamento:</strong> Stripe, para processar transações com segurança;</li>
-              <li><strong className="text-tc-gray-900">Laboratórios parceiros:</strong> para coleta e análise de exames, quando aplicável;</li>
-              <li><strong className="text-tc-gray-900">Autoridades competentes:</strong> quando exigido por lei ou ordem judicial.</li>
+              <li>Concluir registros e transações, incluindo pagamentos.</li>
+              <li>Finalidades de tratamento, pagamento ou operações de saúde.</li>
+              <li>Comunicar sobre serviços, produtos e informações que você solicita.</li>
+              <li>Administrar sua conta, processar pagamentos e pedidos.</li>
+              <li>Operar a Plataforma, fornecer suporte técnico, melhorar produtos e serviços.</li>
+              <li>Criar informações desidentificadas para estatísticas agregadas.</li>
+              <li>Medir a eficácia de comunicações e publicidade.</li>
+              <li>Melhorar segurança, prevenir fraudes e atividades ilegais.</li>
+              <li>Notificar sobre mudanças nos serviços.</li>
+              <li>Cumprir leis aplicáveis.</li>
             </ul>
           </div>
 
+          {/* IV. Divulgação de Suas Informações */}
           <div className="tc-card">
-            <h2 className="content-1 text-xl font-semibold text-tc-gray-900">6. Segurança dos Dados</h2>
-            <p className="content-2 mt-3 text-sm text-tc-gray-500">
-              Adotamos medidas técnicas e organizacionais para proteger seus dados contra acesso não autorizado, perda ou
-              divulgação indevida, incluindo criptografia em trânsito (TLS) e em repouso, controles de acesso baseados em
-              função e auditorias periódicas de segurança.
-            </p>
-          </div>
-
-          <div className="tc-card">
-            <h2 className="content-1 text-xl font-semibold text-tc-gray-900">7. Seus Direitos (LGPD)</h2>
-            <p className="content-2 mt-3 text-sm text-tc-gray-500">
-              Você tem os seguintes direitos em relação aos seus dados pessoais:
-            </p>
+            <h2 className="content-1 text-xl font-semibold text-tc-gray-900">IV. Divulgação de Suas Informações</h2>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500">Podemos divulgar Informações Pessoais:</p>
             <ul className="content-2 mt-3 list-disc space-y-2 pl-5 text-sm text-tc-gray-500">
-              <li>Confirmar a existência de tratamento de seus dados;</li>
-              <li>Acessar os dados que mantemos sobre você;</li>
-              <li>Corrigir dados incompletos, inexatos ou desatualizados;</li>
-              <li>Solicitar a anonimização, bloqueio ou eliminação de dados desnecessários;</li>
-              <li>Revogar o consentimento a qualquer momento;</li>
-              <li>Solicitar a portabilidade dos seus dados.</li>
+              <li>Para fins de saúde, pagamento ou operações.</li>
+              <li>A prestadores de serviço que mantêm e otimizam a Plataforma.</li>
+              <li>A médicos, farmácias, laboratórios e afiliados.</li>
+              <li>A processadores de cartão para pagamentos.</li>
+              <li>Conforme exigido por lei ou com seu consentimento.</li>
+              <li>Em caso de fusão, venda ou reorganização da empresa.</li>
             </ul>
-            <p className="content-2 mt-3 text-sm text-tc-gray-500">
-              Para exercer qualquer direito, entre em contato pelo e-mail <strong className="text-tc-gray-900">privacidade@theracorp.org</strong>.
-            </p>
           </div>
 
+          {/* V. Suas Opções */}
           <div className="tc-card">
-            <h2 className="content-1 text-xl font-semibold text-tc-gray-900">8. Retenção de Dados</h2>
-            <p className="content-2 mt-3 text-sm text-tc-gray-500">
-              Mantemos seus dados pelo período necessário para cumprir as finalidades descritas nesta Política ou conforme
-              exigido por lei. Dados de saúde seguem o prazo mínimo de guarda de prontuários definido pelo CFM (20 anos).
-              Após o período de retenção, os dados são excluídos ou anonimizados.
-            </p>
-          </div>
-
-          <div className="tc-card">
-            <h2 className="content-1 text-xl font-semibold text-tc-gray-900">9. Cookies</h2>
-            <p className="content-2 mt-3 text-sm text-tc-gray-500">
-              Utilizamos cookies essenciais para o funcionamento da plataforma e cookies analíticos para entender como os
-              usuários interagem com nossos serviços. Você pode gerenciar suas preferências de cookies nas configurações
-              do seu navegador.
-            </p>
-          </div>
-
-          <div className="tc-card">
-            <h2 className="content-1 text-xl font-semibold text-tc-gray-900">10. Contato — Encarregado de Dados (DPO)</h2>
-            <p className="content-2 mt-3 text-sm text-tc-gray-500">
-              Para questões relacionadas à privacidade e proteção de dados:
-            </p>
-            <ul className="content-2 mt-3 space-y-1 text-sm text-tc-gray-500">
-              <li><strong className="text-tc-gray-900">E-mail:</strong> privacidade@theracorp.org</li>
-              <li><strong className="text-tc-gray-900">Empresa:</strong> Theracorp Inc.</li>
+            <h2 className="content-1 text-xl font-semibold text-tc-gray-900">V. Suas Opções</h2>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500">Você pode:</p>
+            <ul className="content-2 mt-3 list-disc space-y-2 pl-5 text-sm text-tc-gray-500">
+              <li>Configurar seu navegador para recusar cookies (com risco de funcionalidades limitadas).</li>
+              <li>Atualmente não respondemos a sinais "Do Not Track".</li>
             </ul>
+          </div>
+
+          {/* VI. Segurança dos Dados */}
+          <div className="tc-card">
+            <h2 className="content-1 text-xl font-semibold text-tc-gray-900">VI. Segurança dos Dados</h2>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500">
+              Implementamos medidas para proteger suas Informações Pessoais contra perdas e acessos não autorizados. Senhas são de sua responsabilidade.
+            </p>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500">
+              A transmissão pela Internet não é totalmente segura e o uso da Plataforma é por sua conta e risco.
+            </p>
+          </div>
+
+          {/* VII. Plataformas de Terceiros */}
+          <div className="tc-card">
+            <h2 className="content-1 text-xl font-semibold text-tc-gray-900">VII. Plataformas de Terceiros</h2>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500">
+              Nosso site pode conter links para sites de terceiros, aos quais esta Política não se aplica. Leia as políticas desses sites.
+            </p>
+          </div>
+
+          {/* VIII. Serviços Para Maiores de 18 Anos */}
+          <div className="tc-card">
+            <h2 className="content-1 text-xl font-semibold text-tc-gray-900">VIII. Serviços Para Maiores de 18 Anos</h2>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500">
+              A Theracorp não presta serviços a menores de 18 anos.
+            </p>
+          </div>
+
+          {/* IX. Direitos de Privacidade de Residentes da Califórnia */}
+          <div className="tc-card">
+            <h2 className="content-1 text-xl font-semibold text-tc-gray-900">IX. Direitos de Privacidade de Residentes da Califórnia</h2>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500">
+              Se você é residente da Califórnia, a CCPA lhe concede direitos adicionais sobre suas informações pessoais, incluindo direito de saber, deletar, optar pela não venda e não sofrer discriminação. Nem todas as informações estão cobertas, como PHI regida pela HIPAA.
+            </p>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500">
+              Para exercer direitos, envie solicitação ao Compliance Officer pelo e-mail <a href="mailto:help@theracorp.org" className="text-tc-teal hover:underline">help@theracorp.org</a>.
+            </p>
+          </div>
+
+          {/* X. Revisões da Política de Privacidade */}
+          <div className="tc-card">
+            <h2 className="content-1 text-xl font-semibold text-tc-gray-900">X. Revisões da Política de Privacidade</h2>
+            <ul className="content-2 mt-3 list-disc space-y-2 pl-5 text-sm text-tc-gray-500">
+              <li>Reservamo-nos o direito de alterar esta Política a qualquer momento. Publicaremos quaisquer alterações nesta página.</li>
+              <li>Reservamo-nos o direito de alterar esta Política a qualquer momento. Publicaremos quaisquer alterações nesta página.</li>
+            </ul>
+          </div>
+
+          {/* XI. Contato */}
+          <div className="tc-card">
+            <h2 className="content-1 text-xl font-semibold text-tc-gray-900">XI. Contato</h2>
+            <p className="content-2 mt-3 text-sm text-tc-gray-500">Dúvidas ou comentários:</p>
+            <p className="content-2 mt-2 text-sm text-tc-gray-500">
+              <strong className="text-tc-gray-900">Theracorp Inc.</strong><br />
+              131 Continental Dr, Ste 305<br />
+              Newark, DE 19713<br />
+              <a href="mailto:help@theracorp.org" className="text-tc-teal hover:underline">help@theracorp.org</a>
+            </p>
           </div>
 
         </div>
