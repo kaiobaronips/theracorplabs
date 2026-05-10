@@ -939,7 +939,8 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
   var orbFrame = null;
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  function openModal() {
+  function openModal(opts) {
+    var startStep = (opts && opts.startStep) || welcomeStep;
     lastFocus = document.activeElement;
     answers = {};
     modal.hidden = false;
@@ -950,7 +951,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       sheet.focus({ preventScroll: true });
     });
     history = [];
-    renderStep(welcomeStep, true);
+    renderStep(startStep, true);
     initOnboardOrb();
   }
 
@@ -3232,6 +3233,21 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
   }, true);
 
   modal.hidden = true;
+
+  (function handleReopenParam() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var reopen = params.get('reopen');
+      if (!reopen) return;
+      var stepMap = { plans: steps.plans };
+      var target = stepMap[reopen];
+      if (!target) return;
+      params.delete('reopen');
+      var clean = window.location.pathname + (params.toString() ? '?' + params.toString() : '') + window.location.hash;
+      window.history.replaceState(null, '', clean);
+      window.requestAnimationFrame(function () { openModal({ startStep: target }); });
+    } catch (e) { /* noop */ }
+  })();
 })();
 </script>
 </body>

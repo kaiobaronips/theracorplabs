@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
   sessionParams.set('customer_email', email);
   sessionParams.set('locale', 'auto');
   sessionParams.set('success_url', `${origin}/checkout-sucesso?session_id={CHECKOUT_SESSION_ID}`);
-  sessionParams.set('cancel_url', `${origin}/checkout-cancelado`);
+  sessionParams.set('cancel_url', `${origin}/?reopen=plans`);
   sessionParams.set('billing_address_collection', 'auto');
   sessionParams.set('allow_promotion_codes', 'true');
 
