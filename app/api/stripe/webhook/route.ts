@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'node:crypto';
+import { alreadyProcessed, dispatch } from './handlers';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -60,18 +61,33 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: reason }, { status: 400 });
   }
 
-  let event: { id?: string; type?: string; data?: { object?: { id?: string } } };
+  let event;
   try {
     event = JSON.parse(payload);
   } catch {
     return NextResponse.json({ error: 'invalid_json' }, { status: 400 });
   }
 
-  console.log('[stripe/webhook]', {
-    id: event.id,
-    type: event.type,
-    objectId: event.data?.object?.id,
-  });
+  if (!event?.id || !event?.type) {
+    return NextResponse.json({ error: 'malformed_event' }, { status: 400 });
+  }
+
+  if (alreadyProcessed(event.id)) {
+    console.log('[stripe/webhook] duplicate', event.id);
+    return NextResponse.json({ received: true, duplicate: true });
+  }
+
+  try {
+    await dispatch(event);
+  } catch (err) {
+    // Sempre 200 quando assinatura valida — evita Stripe retentar handler errors.
+    // Logs ja capturam o erro pra investigacao posterior.
+    console.error('[stripe/webhook] handler error', {
+      id: event.id,
+      type: event.type,
+      err: err instanceof Error ? err.message : err,
+    });
+  }
 
   return NextResponse.json({ received: true, type: event.type });
 }
