@@ -1,32 +1,30 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
-import { navLinks } from '@/lib/site';
+import { usePathname } from 'next/navigation';
 
 export function SiteHeader() {
+  const pathname = usePathname();
+  const isTermos = pathname === '/termos';
+
   return (
-    <header className="sticky top-0 z-50 bg-tc-teal pt-2">
+    <header
+      className={`sticky top-0 z-50 pt-2 ${
+        isTermos
+          ? 'bg-[#00d4aa]/[0.92] backdrop-blur-[14px]'
+          : 'bg-tc-teal'
+      }`}
+    >
       <div className="rounded-tl-2xl rounded-tr-2xl bg-white">
-        <div className="mx-auto flex min-h-20 w-full max-w-[1200px] flex-col items-start justify-between gap-4 px-4 py-3 md:flex-row md:items-center md:px-8">
+        <div className="mx-auto flex min-h-20 w-full max-w-[1200px] items-center justify-center px-4 py-3 md:px-8">
           <Link
             href="/"
             aria-label="Theracorp, página inicial"
-            className="content-1 inline-flex items-center gap-3 text-base font-semibold text-tc-gray-900"
+            className="inline-flex items-center"
           >
-            <Image src="/logo-theracorp-header-transparent.png" alt="Logo Theracorp" width={843} height={596} className="h-11 w-auto" priority />
-            <span>Theracorp</span>
+            <Image src="/logo-theracorp-header-transparent.png" alt="Logo Theracorp" width={843} height={596} className="h-20 w-auto" priority />
           </Link>
-
-          <nav aria-label="Navegação principal" className="w-full md:w-auto">
-            <ul className="flex flex-wrap items-center gap-4 text-sm text-tc-gray-500">
-              {navLinks.map((item) => (
-                <li key={item.href}>
-                  <Link className="content-2 underline-offset-2 hover:text-tc-gray-900 hover:underline" href={item.href}>
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
         </div>
       </div>
     </header>

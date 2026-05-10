@@ -2,6 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Branding Typography — Red Hat Text (Legal pages) ─────── */
+@font-face {
+  font-family: 'RedHatText';
+  src: url('/css/fonts/red-hat-text/RedHatText-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'RedHatText';
+  src: url('/css/fonts/red-hat-text/RedHatText-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'RedHatText';
+  src: url('/css/fonts/red-hat-text/RedHatText-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'RedHatText';
+  src: url('/css/fonts/red-hat-text/RedHatText-MediumItalic.ttf') format('truetype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'RedHatText';
+  src: url('/css/fonts/red-hat-text/RedHatText-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'RedHatText';
+  src: url('/css/fonts/red-hat-text/RedHatText-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
 /* ── Branding Typography — Sofia Pro ───────────────────────── */
 @font-face {
   font-family: 'SofiaProBold';
@@ -201,6 +250,17 @@ body {
 .content-2 {
   font-family: 'SofiaProRegular', "Open Sans", Helvetica, Arial, sans-serif;
   font-weight: 400;
+}
+
+/* ── Red Hat Text (Legal pages) ───────────────────────────── */
+.font-red-hat {
+  font-family: 'RedHatText', "Open Sans", Helvetica, Arial, sans-serif;
+}
+
+.font-red-hat .header-1,
+.font-red-hat .content-1,
+.font-red-hat .content-2 {
+  font-family: 'RedHatText', "Open Sans", Helvetica, Arial, sans-serif;
 }
 
 /* ── Global focus styles ────────────────────────────────── */

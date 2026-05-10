@@ -9,7 +9,7 @@ export const metadata: Metadata = buildMetadata({
 
 export default function PrivacidadePage() {
   return (
-    <section className="tc-section-wrapper py-16 md:py-20">
+    <section className="bg-white py-16 md:py-20 font-red-hat">
       <div className="mx-auto w-full max-w-[900px] px-4 md:px-8">
         <h1 className="header-1 text-4xl font-bold leading-tight tracking-[-0.02em] text-tc-gray-900 md:text-5xl">
           Política de Privacidade
