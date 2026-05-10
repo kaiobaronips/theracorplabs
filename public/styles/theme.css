@@ -6527,6 +6527,13 @@ img[alt] { color: transparent; font-size: 0; }
     font-weight: 700;
 }
 
+.tc-checkout__terms-link {
+    color: #000000;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
 .tc-checkout__footer {
     display: flex;
     align-items: center;
