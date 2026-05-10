@@ -6,7 +6,7 @@ test.describe('Página de Termos', () => {
   });
 
   test('deve exibir o título correto', async ({ page }) => {
-    await expect(page).toHaveTitle(/Termos e Condições \| MEDVi/i);
+    await expect(page).toHaveTitle(/Termos e Condições \| Theracorp/i);
   });
 
   test('deve ter fundo branco na página', async ({ page }) => {
@@ -20,7 +20,7 @@ test.describe('Página de Termos', () => {
   test('deve exibir seções dos termos', async ({ page }) => {
     await expect(page.locator('text=I. Introdução')).toBeVisible();
     await expect(page.locator('text=II. Modificação dos Termos')).toBeVisible();
-    await expect(page.locator('text=III. Descrição do MEDVi')).toBeVisible();
+    await expect(page.locator('text=III. Descrição do Theracorp')).toBeVisible();
     await expect(page.locator('text=IV. Elegibilidade')).toBeVisible();
     await expect(page.locator('text=V. Disponibilidade')).toBeVisible();
     await expect(page.locator('text=VI. Cadastro, Contas de Usuário e Dados do Usuário')).toBeVisible();
@@ -46,7 +46,7 @@ test.describe('Página de Termos', () => {
 
   test('deve exibir o preâmbulo corretamente', async ({ page }) => {
     await expect(page.locator('text=Última atualização: 10 de maio de 2026')).toBeVisible();
-    await expect(page.locator('text=O MEDVi é destinado a condições e preocupações médicas não emergenciais específicas.')).toBeVisible();
+    await expect(page.locator('text=O Theracorp é destinado a condições e preocupações médicas não emergenciais específicas.')).toBeVisible();
   });
 
   test('header deve ter apenas a logo centralizada', async ({ page }) => {
