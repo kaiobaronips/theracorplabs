@@ -42,23 +42,29 @@ jobs:
             --exclude "checkout-success.png"
           echo "Zip size: $(du -sh theracorp-website.zip)"
 
-      - name: Upload zip via SFTP
-        run: |
-          sudo apt-get install -y sshpass
-          sshpass -p "$HOSTINGER_PASSWORD" sftp \
-            -o StrictHostKeyChecking=no \
-            -P "$HOSTINGER_PORT" \
-            "$HOSTINGER_USER@$HOSTINGER_HOST" <<EOF
-          put theracorp-website.zip theracorp-website.zip
-          bye
-          EOF
-          echo "✅ Upload complete"
+      - name: Configure SSH key
         env:
-          HOSTINGER_PASSWORD: ${{ secrets.HOSTINGER_PASSWORD }}
+          SSH_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/hostinger_key
+          chmod 600 ~/.ssh/hostinger_key
+          ssh-keyscan -p "$HOSTINGER_PORT" -H "$HOSTINGER_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Upload zip via SCP
+        run: |
+          scp -i ~/.ssh/hostinger_key \
+            -P "$HOSTINGER_PORT" \
+            -o StrictHostKeyChecking=no \
+            theracorp-website.zip \
+            "$HOSTINGER_USER@$HOSTINGER_HOST:theracorp-website.zip"
+          echo "✅ Upload complete"
 
       - name: Trigger Hostinger build via hPanel API
+        env:
+          HOSTINGER_EMAIL: ${{ secrets.HOSTINGER_EMAIL }}
+          HOSTINGER_PASSWORD: ${{ secrets.HOSTINGER_PASSWORD }}
         run: |
-          # Login to hPanel
           curl -s -c /tmp/cookies.txt -X POST \
             "https://hpanel.hostinger.com/api/auth/login" \
             -H 'Content-Type: application/json' \
@@ -68,7 +74,6 @@ jobs:
             -d "{\"email\":\"${HOSTINGER_EMAIL}\",\"password\":\"${HOSTINGER_PASSWORD}\"}" \
             -L --max-redirs 5 -o /tmp/login.json
 
-          # Trigger build
           BUILD_RESP=$(curl -s -b /tmp/cookies.txt \
             -X POST \
             -H 'Content-Type: application/json' \
@@ -104,6 +109,3 @@ jobs:
 
           echo "✅ Build triggered: $BUILD_ID"
           echo "Monitor: https://hpanel.hostinger.com/websites/${HOSTINGER_VHOST}/deployments"
-        env:
-          HOSTINGER_EMAIL: ${{ secrets.HOSTINGER_EMAIL }}
-          HOSTINGER_PASSWORD: ${{ secrets.HOSTINGER_PASSWORD }}
