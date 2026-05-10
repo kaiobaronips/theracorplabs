@@ -32,7 +32,7 @@ export default function PrivacidadePage() {
           <div className="tc-card">
             <h2 className="content-1 text-xl font-semibold text-tc-gray-900">I. Introdução</h2>
             <p className="content-2 mt-3 text-sm text-tc-gray-500">
-              Esta Política de Privacidade (a "Política de Privacidade") descreve como a Theracorp Inc. coleta e utiliza Dados Pessoais sobre você por meio do uso do nosso site e através de e-mail, mensagens de texto e outras comunicações eletrônicas entre você e a Theracorp. Os termos "nós", "nosso(a)" e "Theracorp" referem-se à Theracorp Inc., uma empresa de Delaware localizada em 131 Continental Dr, Ste 305, Newark, DE 19713.
+              Esta Política de Privacidade (a "Política de Privacidade") descreve como a Theracorp Inc. coleta e utiliza Dados Pessoais sobre você por meio do uso do nosso site e através de e-mail, mensagens de texto e outras comunicações eletrônicas entre você e a Theracorp. Os termos "nós", "nosso(a)" e "Theracorp" referem-se à Theracorp Inc., localizada em Av. Ayrton Senna da Silva, 1055 - Guanabara, Londrina - PR.
             </p>
             <p className="content-2 mt-3 text-sm text-tc-gray-500">
               A Theracorp respeita sua privacidade e está comprometida em protegê-la por meio do cumprimento desta política. Esta Política de Privacidade descreve os tipos de informações que nós e nossos afiliados, incluindo certas entidades profissionais afiliadas (coletivamente, "Theracorp", "nós", "nosso(a)"), podemos coletar de você ou que você pode fornecer ao usar o site da Theracorp ("site" ou "Plataforma").
@@ -198,8 +198,8 @@ export default function PrivacidadePage() {
             <p className="content-2 mt-3 text-sm text-tc-gray-500">Dúvidas ou comentários:</p>
             <p className="content-2 mt-2 text-sm text-tc-gray-500">
               <strong className="text-tc-gray-900">Theracorp Inc.</strong><br />
-              131 Continental Dr, Ste 305<br />
-              Newark, DE 19713<br />
+              Av. Ayrton Senna da Silva, 1055 - Guanabara<br />
+              Londrina - PR<br />
               <a href="mailto:help@theracorp.org" className="text-tc-teal hover:underline">help@theracorp.org</a>
             </p>
           </div>
