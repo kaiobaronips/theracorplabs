@@ -9,9 +9,11 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      HOSTINGER_HOST: 45.132.157.152
+      HOSTINGER_PORT: 65002
+      HOSTINGER_USER: u750146381
       HOSTINGER_ACCOUNT: u750146381
       HOSTINGER_VHOST: theracorp.org
-      HOSTINGER_FB_BASE: https://srv811-files.hstgr.io/ac92e391ab302d58
 
     steps:
       - name: Checkout
@@ -40,102 +42,34 @@ jobs:
             --exclude "checkout-success.png"
           echo "Zip size: $(du -sh theracorp-website.zip)"
 
-      - name: Login to Hostinger hPanel
+      - name: Upload zip via SFTP
         run: |
-          curl -s -c /tmp/hpanel_cookies.txt -X POST \
-            'https://hpanel.hostinger.com/api/auth/login' \
-            -H 'Content-Type: application/json' \
-            -H 'X-Requested-With: XMLHttpRequest' \
-            -d "{\"email\":\"${HOSTINGER_EMAIL}\",\"password\":\"${HOSTINGER_PASSWORD}\"}" \
-            -L --max-redirs 5 -o /tmp/login_resp.json
-
-          cat /tmp/login_resp.json | python3 -c "
-          import sys, json
-          try:
-              d = json.load(sys.stdin)
-              if d.get('success') or d.get('data'):
-                  print('✅ Login OK')
-              else:
-                  print('⚠️  Login response:', json.dumps(d)[:200])
-          except Exception as e:
-              print('Login parse error:', e)
-          "
+          sudo apt-get install -y sshpass
+          sshpass -p "$HOSTINGER_PASSWORD" sftp \
+            -o StrictHostKeyChecking=no \
+            -P "$HOSTINGER_PORT" \
+            "$HOSTINGER_USER@$HOSTINGER_HOST" <<EOF
+          put theracorp-website.zip theracorp-website.zip
+          bye
+          EOF
+          echo "✅ Upload complete"
         env:
-          HOSTINGER_EMAIL: ${{ secrets.HOSTINGER_EMAIL }}
           HOSTINGER_PASSWORD: ${{ secrets.HOSTINGER_PASSWORD }}
 
-      - name: Get file browser token and upload zip
+      - name: Trigger Hostinger build via hPanel API
         run: |
-          # Get file-browser-link token
-          FB_LINK=$(curl -s -b /tmp/hpanel_cookies.txt \
-            "https://hpanel.hostinger.com/api/wh-api/api/hapi/v1/accounts/${HOSTINGER_ACCOUNT}/file-browser-link?vhost=${HOSTINGER_VHOST}" \
-            -H 'X-Requested-With: XMLHttpRequest')
+          # Login to hPanel
+          curl -s -c /tmp/cookies.txt -X POST \
+            "https://hpanel.hostinger.com/api/auth/login" \
+            -H 'Content-Type: application/json' \
+            -H 'X-Requested-With: XMLHttpRequest' \
+            -H 'Origin: https://hpanel.hostinger.com' \
+            -H 'Referer: https://hpanel.hostinger.com/' \
+            -d "{\"email\":\"${HOSTINGER_EMAIL}\",\"password\":\"${HOSTINGER_PASSWORD}\"}" \
+            -L --max-redirs 5 -o /tmp/login.json
 
-          FB_TOKEN=$(echo "$FB_LINK" | python3 -c "
-          import sys, json
-          d = json.load(sys.stdin)
-          link = d.get('data', {}).get('link', '')
-          print(link.split('token=')[-1] if 'token=' in link else '')
-          " 2>/dev/null)
-
-          if [ -z "$FB_TOKEN" ]; then
-            echo "❌ Failed to get file browser token"
-            echo "$FB_LINK"
-            exit 1
-          fi
-
-          # Auth with file browser
-          curl -s -c /tmp/fb_cookies.txt \
-            "https://srv811-files.hstgr.io/auth?token=${FB_TOKEN}" \
-            -L -o /dev/null
-
-          FB_SESSION=$(grep 'authsession' /tmp/fb_cookies.txt | awk '{print $NF}')
-          echo "FB_SESSION=${FB_SESSION}" >> $GITHUB_ENV
-
-          if [ -z "$FB_SESSION" ]; then
-            echo "❌ Failed to get file browser session"
-            exit 1
-          fi
-
-          # Upload zip via TUS
-          FILE_SIZE=$(stat -c%s theracorp-website.zip)
-
-          CREATE_RESP=$(curl -si -X POST \
-            -H "Cookie: authsession=${FB_SESSION}" \
-            -H "Tus-Resumable: 1.0.0" \
-            -H "Upload-Length: ${FILE_SIZE}" \
-            -H "Upload-Metadata: filename $(echo -n 'theracorp-website.zip' | base64 -w0),override dHJ1ZQ==" \
-            -H "X-File-Path: /theracorp-website.zip" \
-            "${HOSTINGER_FB_BASE}/api/tus/" 2>/dev/null)
-
-          UPLOAD_URL=$(echo "$CREATE_RESP" | grep -i "^location:" | tr -d '\r\n' | sed 's/location: *//')
-
-          if [ -z "$UPLOAD_URL" ]; then
-            echo "❌ Failed to create TUS upload"
-            echo "$CREATE_RESP"
-            exit 1
-          fi
-
-          # Convert relative URL to absolute if needed
-          if [[ "$UPLOAD_URL" != http* ]]; then
-            UPLOAD_URL="https://srv811-files.hstgr.io${UPLOAD_URL}"
-          fi
-
-          echo "Uploading to: $UPLOAD_URL"
-
-          curl -s -X PATCH \
-            -H "Cookie: authsession=${FB_SESSION}" \
-            -H "Tus-Resumable: 1.0.0" \
-            -H "Content-Type: application/offset+octet-stream" \
-            -H "Upload-Offset: 0" \
-            --data-binary @theracorp-website.zip \
-            "$UPLOAD_URL" -o /tmp/upload_resp.txt
-
-          echo "✅ Upload complete"
-
-      - name: Trigger Hostinger build
-        run: |
-          BUILD_RESP=$(curl -s -b /tmp/hpanel_cookies.txt \
+          # Trigger build
+          BUILD_RESP=$(curl -s -b /tmp/cookies.txt \
             -X POST \
             -H 'Content-Type: application/json' \
             -H 'X-Requested-With: XMLHttpRequest' \
@@ -155,6 +89,8 @@ jobs:
               }
             }')
 
+          echo "Build response: $BUILD_RESP"
+
           BUILD_ID=$(echo "$BUILD_RESP" | python3 -c "
           import sys, json
           d = json.load(sys.stdin)
@@ -162,10 +98,12 @@ jobs:
           " 2>/dev/null)
 
           if [ -z "$BUILD_ID" ]; then
-            echo "❌ Failed to trigger build"
-            echo "$BUILD_RESP"
+            echo "❌ Failed to trigger build — check hPanel login"
             exit 1
           fi
 
           echo "✅ Build triggered: $BUILD_ID"
-          echo "Monitor at: https://hpanel.hostinger.com/websites/${HOSTINGER_VHOST}/deployments"
+          echo "Monitor: https://hpanel.hostinger.com/websites/${HOSTINGER_VHOST}/deployments"
+        env:
+          HOSTINGER_EMAIL: ${{ secrets.HOSTINGER_EMAIL }}
+          HOSTINGER_PASSWORD: ${{ secrets.HOSTINGER_PASSWORD }}
