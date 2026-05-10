@@ -1807,7 +1807,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       pixAutomaticoButton.setAttribute('aria-disabled', pixAutomaticoEnabled ? 'false' : 'true');
       pixAutomaticoButton.title = pixAutomaticoEnabled
         ? 'Ativar débito automático mensal via Pix Automático'
-        : 'Débito automático Pix está disponível apenas em BRL';
+        : 'Pix está disponível apenas em BRL';
     }
 
     if (previousCurrency !== selectedCurrency || selectedCurrency === 'USD') {
@@ -1865,7 +1865,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       ? ' disabled aria-disabled="true" title="Boleto esta disponivel apenas em BRL"'
       : ' aria-disabled="false" title="Pagar assinatura mensal com boleto"';
     var pixAutomaticoAttrs = usdSelected
-      ? ' disabled aria-disabled="true" title="Débito automático Pix está disponível apenas em BRL"'
+      ? ' disabled aria-disabled="true" title="Pix está disponível apenas em BRL"'
       : ' aria-disabled="false" title="Ativar débito automático mensal via Pix Automático"';
 
     return '' +
@@ -1923,7 +1923,7 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
                 '<div class="tc-checkout__express is-unavailable" data-stripe-express-wrapper>' +
                   '<div id="tc-stripe-express-checkout"></div>' +
                 '</div>' +
-                '<button class="tc-checkout__pix-auto' + (usdSelected ? ' is-disabled' : '') + '" type="button" data-action="stripe-pix-automatico" data-checkout-pix-automatico' + pixAutomaticoAttrs + '><img class="tc-checkout__pix-icon" src="./pix-icon.png" alt="" aria-hidden="true">Débito Automático</button>' +
+                '<button class="tc-checkout__pix-auto' + (usdSelected ? ' is-disabled' : '') + '" type="button" data-action="stripe-pix-automatico" data-checkout-pix-automatico' + pixAutomaticoAttrs + '><img class="tc-checkout__pix-icon" src="./pix-icon.png" alt="" aria-hidden="true">Pix</button>' +
                 '<button class="tc-checkout__bank-transfer' + (brlSelected ? ' is-disabled' : '') + '" type="button" data-action="stripe-bank-transfer" data-checkout-bank-transfer' + bankTransferAttrs + '>Transfer Bank</button>' +
                 '<button class="tc-checkout__boleto' + (usdSelected ? ' is-disabled' : '') + '" type="button" data-action="stripe-boleto" data-checkout-boleto' + boletoAttrs + '>Boleto</button>' +
               '</div>' +
@@ -2901,13 +2901,13 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
       if (pixAutomaticoEmailEl) pixAutomaticoEmailEl.classList.remove('is-invalid');
 
       if ((answers.checkoutCurrency || 'BRL') !== 'BRL') {
-        setStripeMessage('Débito automático Pix está disponível apenas para cobranças em BRL.', true);
+        setStripeMessage('Pix está disponível apenas para cobranças em BRL.', true);
         return;
       }
 
       if (!isValidCheckoutEmail(pixAutomaticoEmail)) {
         if (pixAutomaticoEmailEl) { pixAutomaticoEmailEl.classList.add('is-invalid'); pixAutomaticoEmailEl.focus(); }
-        setStripeMessage('Informe um e-mail válido para ativar o débito automático.', true);
+        setStripeMessage('Informe um e-mail válido para gerar o QR Code Pix.', true);
         return;
       }
 
@@ -2924,11 +2924,11 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
         })
         .catch(function (error) {
           console.error('[stripe-pix-automatico]', error);
-          setStripeMessage(error.message || 'Não foi possível iniciar o débito automático Pix. Tente novamente.', true);
+          setStripeMessage(error.message || 'Não foi possível gerar o QR Code Pix. Tente novamente.', true);
           if (pixAutomaticoBtn) {
             pixAutomaticoBtn.disabled = false;
             pixAutomaticoBtn.classList.remove('is-loading');
-            pixAutomaticoBtn.innerHTML = '<img class="tc-checkout__pix-icon" src="./pix-icon.png" alt="" aria-hidden="true">Débito Automático';
+            pixAutomaticoBtn.innerHTML = '<img class="tc-checkout__pix-icon" src="./pix-icon.png" alt="" aria-hidden="true">Pix';
           }
         });
       return;

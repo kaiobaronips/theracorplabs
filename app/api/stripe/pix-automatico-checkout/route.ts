@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         error: 'contact_email_required',
-        message: 'Informe um e-mail válido para ativar o débito automático.',
+        message: 'Informe um e-mail válido para gerar o QR Code Pix.',
       },
       { status: 400 }
     );
@@ -48,24 +48,17 @@ export async function POST(req: NextRequest) {
 
   const origin = req.nextUrl.origin;
   const params = new URLSearchParams();
-  params.set('mode', 'subscription');
+  params.set('mode', 'payment');
   params.set('customer_email', email);
-  params.set('payment_method_types[0]', 'pix');
-  params.set('payment_method_options[pix][mandate_options][amount]', String(amountBrl));
-  params.set('payment_method_options[pix][mandate_options][payment_schedule]', 'monthly');
   params.set('line_items[0][price_data][currency]', 'brl');
   params.set('line_items[0][price_data][unit_amount]', String(amountBrl));
-  params.set('line_items[0][price_data][recurring][interval]', 'month');
   params.set('line_items[0][price_data][product_data][name]', `THERACORP ${planName}`);
   params.set('line_items[0][quantity]', '1');
   params.set('metadata[plan]', planName);
-  params.set('metadata[source]', 'theracorp_pix_automatico_checkout');
+  params.set('metadata[source]', 'theracorp_pix_checkout');
   params.set('metadata[contact_email]', email);
-  params.set('subscription_data[metadata][plan]', planName);
-  params.set('subscription_data[metadata][source]', 'theracorp_pix_automatico_checkout');
-  params.set('subscription_data[metadata][contact_email]', email);
-  params.set('success_url', `${origin}/?checkout=pix-automatico-success`);
-  params.set('cancel_url', `${origin}/?checkout=pix-automatico-cancel`);
+  params.set('success_url', `${origin}/?checkout=pix-success`);
+  params.set('cancel_url', `${origin}/?checkout=pix-cancel`);
 
   const response = await fetch(`${STRIPE_API_BASE}/checkout/sessions`, {
     method: 'POST',
@@ -78,13 +71,13 @@ export async function POST(req: NextRequest) {
   const data = await response.json();
 
   if (!response.ok) {
-    console.error('[stripe/pix-automatico-checkout]', data);
+    console.error('[stripe/pix-checkout]', data);
     const stripeError = data?.error;
     return NextResponse.json(
       {
-        error: 'pix_automatico_checkout_failed',
+        error: 'pix_checkout_failed',
         code: stripeError?.code || stripeError?.type || 'stripe_error',
-        message: stripeError?.message || 'Falha ao criar o checkout de débito automático Pix.',
+        message: stripeError?.message || 'Falha ao criar o checkout Pix.',
       },
       { status: 502 }
     );
