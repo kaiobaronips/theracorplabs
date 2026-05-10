@@ -1855,6 +1855,58 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
     return checkoutRatePromise;
   }
 
+  function renderCheckoutRedirect() {
+    var plan = answers.plan || planCards[1];
+    var displayPlan = plan.displayName || plan.name.replace(/^THERACORP\s+/i, '');
+    return '' +
+      '<div class="tc-checkout-redirect" style="text-align:center;padding:32px 16px">' +
+        '<p class="tc-onboard__field-label" style="margin-bottom:8px">Preparando pagamento seguro</p>' +
+        '<p style="margin-bottom:24px;color:#666;font-size:14px">' + escapeHtml(displayPlan) + ' — voce sera redirecionado para a pagina de pagamento da Stripe.</p>' +
+        '<div class="tc-checkout-redirect__spinner" aria-hidden="true" style="display:inline-block;width:32px;height:32px;border:3px solid #eee;border-top-color:#000;border-radius:50%;animation:tc-spin 1s linear infinite"></div>' +
+        '<p class="tc-stripe-message" data-stripe-message style="margin-top:16px;font-size:14px;color:#c24141"></p>' +
+        '<button class="tc-onboard__primary" type="button" data-action="checkout-retry" hidden style="margin-top:16px">Tentar novamente</button>' +
+      '</div>' +
+      '<style>@keyframes tc-spin{to{transform:rotate(360deg)}}</style>';
+  }
+
+  function startStripeHostedCheckout() {
+    var plan = answers.plan || planCards[1];
+    var lead = answers.lead || {};
+    var email = (lead.email || '').trim();
+    var planName = plan.displayName || plan.name;
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      var msgEl = optionsEl.querySelector('[data-stripe-message]');
+      if (msgEl) msgEl.textContent = 'E-mail invalido. Volte e refaca o cadastro.';
+      var retryEl = optionsEl.querySelector('[data-action="checkout-retry"]');
+      if (retryEl) retryEl.hidden = false;
+      return;
+    }
+
+    fetch(getCheckoutApiBase() + '/api/stripe/create-checkout-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ planName: planName, email: email })
+    })
+      .then(function (response) {
+        return response.json().then(function (data) {
+          if (!response.ok) throw new Error((data && (data.message || data.error)) || 'checkout_session_failed');
+          return data;
+        });
+      })
+      .then(function (data) {
+        if (!data || !data.url) throw new Error('missing_checkout_url');
+        window.location.assign(data.url);
+      })
+      .catch(function (error) {
+        console.error('[stripe-hosted-checkout]', error);
+        var msgEl = optionsEl.querySelector('[data-stripe-message]');
+        if (msgEl) msgEl.textContent = 'Nao foi possivel iniciar o pagamento. Tente novamente em instantes.';
+        var retryEl = optionsEl.querySelector('[data-action="checkout-retry"]');
+        if (retryEl) retryEl.hidden = false;
+      });
+  }
+
   function renderCheckout() {
     var plan = answers.plan || planCards[1];
     var lead = answers.lead || {};
@@ -2310,12 +2362,10 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
 
       if (item.type === 'checkout') {
         optionsEl.classList.add('tc-onboard__options--wide');
-        modal.classList.add('is-checkout');
         stage.classList.add('is-checkout');
         sheet.classList.add('is-checkout');
-        optionsEl.innerHTML = renderCheckout();
-        loadCheckoutUsdRate();
-        initStripePayment(false);
+        optionsEl.innerHTML = renderCheckoutRedirect();
+        startStripeHostedCheckout();
       }
 
       if (item.type === 'formularioBloco1' || item.type === 'formularioBloco2' || item.type === 'formularioBloco3' || item.type === 'formularioBloco4' || item.type === 'formularioBloco5' || item.type === 'formularioBloco6' || item.type === 'formularioBloco7') {
@@ -2980,6 +3030,15 @@ em tempo real</h3><div class="screen-signals-component-style__IllustrationWrappe
             boletoBtn.textContent = 'Boleto';
           }
         });
+      return;
+    }
+
+    if (event.target.closest('[data-action="checkout-retry"]') && currentStep && currentStep.type === 'checkout') {
+      var msgEl = optionsEl.querySelector('[data-stripe-message]');
+      if (msgEl) msgEl.textContent = '';
+      var retryEl = event.target.closest('[data-action="checkout-retry"]');
+      if (retryEl) retryEl.hidden = true;
+      startStripeHostedCheckout();
       return;
     }
 
