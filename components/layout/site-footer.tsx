@@ -2,12 +2,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const footerLinks = [
-  { href: '/termos', label: 'Terms & Conditions' },
-  { href: '/privacidade', label: 'Privacy Policy' },
-  { href: '#', label: 'Privacy Practices' },
-  { href: '#', label: 'Refund Policy' },
-  { href: '#', label: 'Medical Consent' },
-  { href: '#', label: 'Bill of Rights' },
+  { href: '/termos', label: 'Termos e Condições' },
+  { href: '/privacidade', label: 'Política de Privacidade' },
+  { href: '#', label: 'Práticas de Privacidade' },
+  { href: '#', label: 'Política de Reembolso' },
+  { href: '#', label: 'Consentimento Médico' },
+  { href: '#', label: 'Carta de Direitos' },
 ] as const;
 
 export function SiteFooter() {
@@ -17,7 +17,7 @@ export function SiteFooter() {
         {/* Top row: copyright + links */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <p className="text-sm font-semibold text-tc-gray-900 whitespace-nowrap">
-            &copy; 2026 Theracorp Inc. All rights reserved
+            &copy; 2026 Theracorp Inc. Todos os direitos reservados
           </p>
 
           <nav aria-label="Navegação do rodapé">
@@ -43,7 +43,7 @@ export function SiteFooter() {
         <div className="mt-5">
           <Image
             src="/legit-script.avif"
-            alt="LegitScript Certified"
+            alt="Certificado LegitScript"
             width={100}
             height={100}
             className="h-20 w-auto"
