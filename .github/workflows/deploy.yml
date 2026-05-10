@@ -54,52 +54,23 @@ jobs:
             "$HOSTINGER_USER@$HOSTINGER_HOST:theracorp-website.zip"
           echo "✅ Upload complete"
 
-      - name: Trigger Hostinger build via hPanel API
+      - name: Extract and build on server
         env:
-          HOSTINGER_EMAIL: ${{ secrets.HOSTINGER_EMAIL }}
-          HOSTINGER_PASSWORD: ${{ secrets.HOSTINGER_PASSWORD }}
+          SSH_PASS: ${{ secrets.HOSTINGER_SSH_PASSWORD }}
         run: |
-          curl -s -c /tmp/cookies.txt -X POST \
-            "https://hpanel.hostinger.com/api/auth/login" \
-            -H 'Content-Type: application/json' \
-            -H 'X-Requested-With: XMLHttpRequest' \
-            -H 'Origin: https://hpanel.hostinger.com' \
-            -H 'Referer: https://hpanel.hostinger.com/' \
-            -d "{\"email\":\"${HOSTINGER_EMAIL}\",\"password\":\"${HOSTINGER_PASSWORD}\"}" \
-            -L --max-redirs 5 -o /tmp/login.json
-
-          BUILD_RESP=$(curl -s -b /tmp/cookies.txt \
-            -X POST \
-            -H 'Content-Type: application/json' \
-            -H 'X-Requested-With: XMLHttpRequest' \
-            "https://hpanel.hostinger.com/api/wh-api/api/hapi/v1/accounts/${HOSTINGER_ACCOUNT}/vhosts/${HOSTINGER_VHOST}/nodejs/builds" \
-            -d '{
-              "options": {
-                "nodeVersion": 22,
-                "appType": "next",
-                "rootDirectory": "website",
-                "outputDirectory": ".next",
-                "buildScript": "build",
-                "packageManager": "npm",
-                "sourceType": "archive",
-                "sourceOptions": {
-                  "archivePath": "theracorp-website.zip"
-                }
-              }
-            }')
-
-          echo "Build response: $BUILD_RESP"
-
-          BUILD_ID=$(echo "$BUILD_RESP" | python3 -c "
-          import sys, json
-          d = json.load(sys.stdin)
-          print(d.get('data', {}).get('uuid', ''))
-          " 2>/dev/null)
-
-          if [ -z "$BUILD_ID" ]; then
-            echo "❌ Failed to trigger build — check hPanel login"
-            exit 1
-          fi
-
-          echo "✅ Build triggered: $BUILD_ID"
-          echo "Monitor: https://hpanel.hostinger.com/websites/${HOSTINGER_VHOST}/deployments"
+          sshpass -p "$SSH_PASS" ssh \
+            -p "$HOSTINGER_PORT" \
+            -o StrictHostKeyChecking=no \
+            "$HOSTINGER_USER@$HOSTINGER_HOST" bash << 'ENDSSH'
+          set -e
+          APP_DIR=~/domains/theracorp.org/public_html
+          mkdir -p "$APP_DIR"
+          cd ~
+          unzip -o theracorp-website.zip -d theracorp-website-extracted
+          cp -r theracorp-website-extracted/. "$APP_DIR/"
+          rm -rf theracorp-website.zip theracorp-website-extracted
+          cd "$APP_DIR"
+          npm ci --omit=dev
+          npm run build
+          echo "✅ Build complete"
+          ENDSSH
