@@ -42,18 +42,12 @@ jobs:
             --exclude "checkout-success.png"
           echo "Zip size: $(du -sh theracorp-website.zip)"
 
-      - name: Configure SSH key
-        env:
-          SSH_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
-        run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_KEY" > ~/.ssh/hostinger_key
-          chmod 600 ~/.ssh/hostinger_key
-          ssh-keyscan -p "$HOSTINGER_PORT" -H "$HOSTINGER_HOST" >> ~/.ssh/known_hosts 2>/dev/null
-
       - name: Upload zip via SCP
+        env:
+          SSH_PASS: ${{ secrets.HOSTINGER_SSH_PASSWORD }}
         run: |
-          scp -i ~/.ssh/hostinger_key \
+          sudo apt-get install -y sshpass
+          sshpass -p "$SSH_PASS" scp \
             -P "$HOSTINGER_PORT" \
             -o StrictHostKeyChecking=no \
             theracorp-website.zip \
