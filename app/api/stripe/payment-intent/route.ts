@@ -124,7 +124,6 @@ export async function POST(req: NextRequest) {
   subscriptionParams.set('customer', customerResult.data.id);
   subscriptionParams.set('collection_method', 'charge_automatically');
   subscriptionParams.set('payment_behavior', 'default_incomplete');
-  subscriptionParams.set('billing_mode[type]', 'flexible');
   subscriptionParams.set('payment_settings[save_default_payment_method]', 'on_subscription');
   subscriptionParams.set('items[0][price_data][currency]', currency);
   subscriptionParams.set('items[0][price_data][unit_amount]', String(amount));
@@ -134,7 +133,8 @@ export async function POST(req: NextRequest) {
   subscriptionParams.set('metadata[plan]', planName);
   subscriptionParams.set('metadata[source]', 'theracorp_checkout_modal');
   subscriptionParams.set('metadata[contact_email]', email);
-  subscriptionParams.set('expand[]', 'latest_invoice.confirmation_secret');
+  subscriptionParams.append('expand[]', 'latest_invoice.confirmation_secret');
+  subscriptionParams.append('expand[]', 'latest_invoice.payment_intent');
 
   const subscriptionResult = await stripePost('/subscriptions', secretKey, subscriptionParams);
 
@@ -152,11 +152,13 @@ export async function POST(req: NextRequest) {
   }
 
   const subscription = subscriptionResult.data;
-  const confirmationSecret = subscription?.latest_invoice?.confirmation_secret;
-  const clientSecret = confirmationSecret?.client_secret;
+  const clientSecret =
+    subscription?.latest_invoice?.confirmation_secret?.client_secret ||
+    subscription?.latest_invoice?.payment_intent?.client_secret ||
+    null;
 
   if (!clientSecret) {
-    console.error('[stripe/subscription] missing latest invoice confirmation secret', subscription);
+    console.error('[stripe/subscription] missing client secret', subscription);
     return NextResponse.json(
       {
         error: 'subscription_confirmation_secret_missing',
