@@ -31,6 +31,8 @@ export function SiteFooter() {
                   )}
                   <Link
                     href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="hover:text-tc-gray-900 hover:underline underline-offset-2 transition-colors whitespace-nowrap"
                   >
                     {link.label}

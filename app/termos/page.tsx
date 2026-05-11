@@ -171,59 +171,61 @@ export default function TermosPage() {
 
         </div>
 
-        {/* Barra de confiança */}
-        <div className="mt-16 border-t border-tc-gray-200">
-          <div className="mx-auto w-full max-w-[1200px] px-4 md:px-8 py-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 lg:divide-x divide-tc-gray-200">
-              <div className="flex items-center gap-3 py-4 lg:py-0 lg:px-6 lg:first:pl-0 lg:last:pr-0">
-                <ShieldCheck className="h-6 w-6 text-tc-gray-700 flex-shrink-0" strokeWidth={1.5} />
-                <span className="text-sm font-semibold text-tc-gray-900 whitespace-nowrap">Garantia Theracorp</span>
+      </div>
+
+      {/* Barra de confiança */}
+      <div className="mt-16 border-t border-tc-gray-200">
+        <div className="mx-auto w-full max-w-[1200px] px-4 md:px-8 py-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 lg:divide-x divide-tc-gray-200">
+            <div className="flex items-center gap-3 py-4 lg:py-0 lg:pl-0 lg:pr-6">
+              <ShieldCheck className="h-6 w-6 text-tc-gray-700 flex-shrink-0" strokeWidth={1.5} />
+              <span className="text-sm font-semibold text-tc-gray-900 whitespace-nowrap">Garantia Theracorp</span>
+            </div>
+            <div className="flex items-center gap-3 py-4 lg:py-0 lg:px-6">
+              <Truck className="h-6 w-6 text-tc-gray-700 flex-shrink-0" strokeWidth={1.5} />
+              <span className="text-sm font-semibold text-tc-gray-900 whitespace-nowrap">Entrega rápida e gratuita</span>
+            </div>
+            <div className="flex items-center gap-3 py-4 lg:py-0 lg:px-6">
+              <Stethoscope className="h-6 w-6 text-tc-gray-700 flex-shrink-0" strokeWidth={1.5} />
+              <span className="text-sm font-semibold text-tc-gray-900 whitespace-nowrap">Planos e acompanhamento médico</span>
+            </div>
+            <div className="flex items-center gap-3 py-4 lg:py-0 lg:pl-6 lg:pr-0">
+              <CircleDollarSign className="h-6 w-6 text-tc-gray-700 flex-shrink-0" strokeWidth={1.5} />
+              <span className="text-sm font-semibold text-tc-gray-900 whitespace-nowrap">Sem taxas ocultas</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Barra de contato */}
+      <div className="border-t border-tc-gray-200">
+        <div className="mx-auto w-full max-w-[1200px] px-4 md:px-8 py-5">
+          <div className="flex flex-row items-center justify-between gap-4 flex-nowrap">
+            <Link href="/" aria-label="Theracorp, página inicial">
+              <Image src="/logo-theracorp.png" alt="Logo Theracorp" width={804} height={169} className="h-8 w-auto" />
+            </Link>
+            <div className="flex items-center gap-x-6 whitespace-nowrap">
+              <div className="flex items-center gap-1.5 text-xs text-tc-gray-600 whitespace-nowrap">
+                <AtSign className="h-3.5 w-3.5 text-tc-gray-500" strokeWidth={1.5} />
+                <a href="mailto:help@theracorp.org" className="hover:text-tc-gray-900 hover:underline">help@theracorp.org</a>
               </div>
-              <div className="flex items-center gap-3 py-4 lg:py-0 lg:px-6">
-                <Truck className="h-6 w-6 text-tc-gray-700 flex-shrink-0" strokeWidth={1.5} />
-                <span className="text-sm font-semibold text-tc-gray-900 whitespace-nowrap">Entrega rápida e gratuita</span>
+              <div className="flex items-center gap-1.5 text-xs text-tc-gray-600 whitespace-nowrap">
+                <Phone className="h-3.5 w-3.5 text-tc-gray-500" strokeWidth={1.5} />
+                <a href="tel:+55449914808833" className="hover:text-tc-gray-900 hover:underline">(44) 9 9148-08833</a>
               </div>
-              <div className="flex items-center gap-3 py-4 lg:py-0 lg:px-6">
-                <Stethoscope className="h-6 w-6 text-tc-gray-700 flex-shrink-0" strokeWidth={1.5} />
-                <span className="text-sm font-semibold text-tc-gray-900 whitespace-nowrap">Planos e acompanhamento médico</span>
-              </div>
-              <div className="flex items-center gap-3 py-4 lg:py-0 lg:px-6 lg:first:pl-0 lg:last:pr-0">
-                <CircleDollarSign className="h-6 w-6 text-tc-gray-700 flex-shrink-0" strokeWidth={1.5} />
-                <span className="text-sm font-semibold text-tc-gray-900 whitespace-nowrap">Sem taxas ocultas</span>
+              <div className="flex items-center gap-1.5 text-xs text-tc-gray-600 whitespace-nowrap">
+                <Mail className="h-3.5 w-3.5 text-tc-gray-500" strokeWidth={1.5} />
+                <span>Av. Ayrton Senna da Silva, 1055 - Guanabara, Londrina - PR</span>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Barra de contato */}
-        <div className="border-t border-tc-gray-200">
-          <div className="mx-auto w-full max-w-[1200px] px-4 md:px-8 py-5">
-            <div className="flex flex-row items-center justify-between gap-4 flex-nowrap">
-              <Link href="/" aria-label="Theracorp, página inicial">
-                <Image src="/logo-theracorp.png" alt="Logo Theracorp" width={804} height={169} className="h-8 w-auto" />
-              </Link>
-              <div className="flex items-center gap-x-3 whitespace-nowrap">
-                <div className="flex items-center gap-1.5 text-xs text-tc-gray-600 whitespace-nowrap">
-                  <AtSign className="h-3.5 w-3.5 text-tc-gray-500" strokeWidth={1.5} />
-                  <a href="mailto:help@theracorp.org" className="hover:text-tc-gray-900 hover:underline">help@theracorp.org</a>
-                </div>
-                <div className="flex items-center gap-1.5 text-xs text-tc-gray-600 whitespace-nowrap">
-                  <Phone className="h-3.5 w-3.5 text-tc-gray-500" strokeWidth={1.5} />
-                  <a href="tel:+55449914808833" className="hover:text-tc-gray-900 hover:underline">(44) 9 9148-08833</a>
-                </div>
-                <div className="flex items-center gap-1.5 text-xs text-tc-gray-600 whitespace-nowrap">
-                  <Mail className="h-3.5 w-3.5 text-tc-gray-500" strokeWidth={1.5} />
-                  <span>Av. Ayrton Senna da Silva, 1055 - Guanabara, Londrina - PR</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Avisos e disclaimers */}
-        <div className="border-t border-tc-gray-200">
-          <div className="mx-auto w-full max-w-[1200px] px-4 md:px-8 py-8">
-            <div className="space-y-4 text-xs text-tc-gray-500 leading-relaxed">
+      {/* Avisos e disclaimers */}
+      <div className="border-t border-tc-gray-200">
+        <div className="mx-auto w-full max-w-[1200px] px-4 md:px-8 py-8">
+          <div className="space-y-4 text-xs text-tc-gray-500 leading-relaxed text-justify">
               <p>A avaliação disponibilizada no site da Theracorp não estabelece uma relação médico-paciente entre o indivíduo que a preenche e a Theracorp. Os médicos licenciados Theracorp seguem protocolos médicos rigorosos, concebidos para a segurança do paciente, estabelecemos critérios de exclusão para determinar se um indivíduo não se qualifica para o uso de GLP-1. As respostas fornecidas pelo indivíduo na avaliação da Theracorp determinam se ele é considerado inelegível para a medicação com GLP-1, e um profissional clínico da Theracorp se reunirá com o indivíduo após a finalização da compra para determinar se ele se qualifica para uma prescrição. Os profissionais clínicos da Theracorp têm a decisão de prescrever GLP-1 manipulado aos pacientes.</p>
 
               <p>Todas as alegações e benefícios neste site referem-se a dados autodeclarados de clientes de GLP-1 em um plano de tratamento que inclui medicamentos GLP-1 manipulados e consultas com profissionais médicos. Os clientes informaram seu peso no questionário médico inicial a cada 3-4 semanas subsequentes. Os resultados dos medicamentos manipulados encontrados na plataforma Theracorp podem variar e ser afetados pela adesão do indivíduo ao programa e às recomendações do seu médico. Os GLP-1 manipulados são produzidos em instalações regulamentadas pela ANVISA. Embora essas instalações sejam altamente regulamentadas, os medicamentos não são aprovados pela ANVISA nem avaliados quanto à segurança, eficácia ou qualidade. A decisão de usar medicamentos manipulados é orientada pelo julgamento médico do profissional licenciado, que é baseado em uma consulta de telemedicina e no histórico médico.</p>
@@ -245,7 +247,6 @@ export default function TermosPage() {
           </div>
         </div>
 
-      </div>
     </section>
   );
 }
