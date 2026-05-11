@@ -188,7 +188,6 @@ export default function PrivacidadePage() {
             <h2 className="content-1 text-xl font-semibold text-tc-gray-900">X. Revisões da Política de Privacidade</h2>
             <ul className="content-2 mt-3 list-disc space-y-2 pl-5 text-sm text-tc-gray-500">
               <li>Reservamo-nos o direito de alterar esta Política a qualquer momento. Publicaremos quaisquer alterações nesta página.</li>
-              <li>Reservamo-nos o direito de alterar esta Política a qualquer momento. Publicaremos quaisquer alterações nesta página.</li>
             </ul>
           </div>
 
