@@ -4,10 +4,10 @@ import Link from 'next/link';
 const footerLinks = [
   { href: '/termos', label: 'Termos e Condições' },
   { href: '/privacidade', label: 'Política de Privacidade' },
-  { href: '#', label: 'Práticas de Privacidade' },
-  { href: '#', label: 'Política de Reembolso' },
-  { href: '#', label: 'Consentimento Médico' },
-  { href: '#', label: 'Carta de Direitos' },
+  { href: '/praticas-privacidade', label: 'Práticas de Privacidade' },
+  { href: '/politica-reembolso', label: 'Política de Reembolso' },
+  { href: '/consentimento-medico', label: 'Consentimento Médico' },
+  { href: '/declaracao-direitos', label: 'Declaração de Direitos' },
 ] as const;
 
 export function SiteFooter() {
