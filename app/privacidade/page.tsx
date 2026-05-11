@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { buildMetadata } from '@/lib/metadata';
+import { ShieldCheck, Truck, Stethoscope, CircleDollarSign } from 'lucide-react';
 
 export const metadata: Metadata = buildMetadata({
   title: 'Política de Privacidade | Theracorp',
@@ -205,6 +206,31 @@ export default function PrivacidadePage() {
 
         </div>
       </div>
+
+      {/* Trust bar */}
+      <div className="mt-16 border-t border-tc-gray-200">
+        <div className="mx-auto w-full max-w-[1200px] px-4 md:px-8 py-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 lg:divide-x divide-tc-gray-200">
+            <div className="flex items-center gap-3 py-4 lg:py-0 lg:px-6">
+              <ShieldCheck className="h-6 w-6 text-tc-gray-700 flex-shrink-0" strokeWidth={1.5} />
+              <span className="text-sm font-semibold text-tc-gray-900 whitespace-nowrap">Garantia Theracorp</span>
+            </div>
+            <div className="flex items-center gap-3 py-4 lg:py-0 lg:px-6">
+              <Truck className="h-6 w-6 text-tc-gray-700 flex-shrink-0" strokeWidth={1.5} />
+              <span className="text-sm font-semibold text-tc-gray-900 whitespace-nowrap">Entrega rápida e gratuita</span>
+            </div>
+            <div className="flex items-center gap-3 py-4 lg:py-0 lg:px-6">
+              <Stethoscope className="h-6 w-6 text-tc-gray-700 flex-shrink-0" strokeWidth={1.5} />
+              <span className="text-sm font-semibold text-tc-gray-900 whitespace-nowrap">Planos e acompanhamento médico</span>
+            </div>
+            <div className="flex items-center gap-3 py-4 lg:py-0 lg:px-6">
+              <CircleDollarSign className="h-6 w-6 text-tc-gray-700 flex-shrink-0" strokeWidth={1.5} />
+              <span className="text-sm font-semibold text-tc-gray-900 whitespace-nowrap">Sem taxas ocultas</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </section>
   );
 }
