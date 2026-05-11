@@ -22,13 +22,13 @@ test.describe('Página de Privacidade', () => {
   });
 
   test('deve exibir seções da política', async ({ page }) => {
-    await expect(page.locator('text=1. Introdução')).toBeVisible();
-    await expect(page.locator('text=2. Dados que Coletamos')).toBeVisible();
-    await expect(page.locator('text=3. Como Usamos seus Dados')).toBeVisible();
+    await expect(page.locator('text=I. Introdução')).toBeVisible();
+    await expect(page.locator('text=II. Informações Que Coletamos')).toBeVisible();
+    await expect(page.locator('text=III. Como Usamos')).toBeVisible();
   });
 
-  test('deve exibir informações de contato do DPO', async ({ page }) => {
-    await expect(page.locator('text=privacidade@theracorp.org').first()).toBeVisible();
-    await expect(page.locator('text=Encarregado de Dados')).toBeVisible();
+  test('deve exibir informações de contato', async ({ page }) => {
+    await expect(page.locator('text=XI. Contato')).toBeVisible();
+    await expect(page.locator('text=help@theracorp.org').first()).toBeVisible();
   });
 });
