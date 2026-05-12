@@ -27,7 +27,7 @@ __mark("head:start");
         window.$AUTH0_AUTH_PARAM_AUDIENCE = "https://store-backend-api";
         window.$DEEP_LINK_EMAIL_ENCRYPTION_KEY = "Mg1PJNMTrJQKAKMf/Jdvw91xJtYDKZjMX/q701aF2Rg=";
         window.$DD_ENV = "prod";
-        window.$HIMS_URL = "https://www.THERACORP.com/";
+        window.$HIMS_URL = "https://www.theracorp.org/";
         window.$HERS_URL = "https://www.forhers.com/";
         window.$ADYEN_CLIENT_KEY = "live_AW26YXTA5NGUJAGW2BRF76PHBI27SNOJ";
         window.$ADYEN_JS_URL = "https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/5.64.0/adyen.js";
@@ -106,7 +106,7 @@ __mark("head:start");
               configurable: false,
             },
             HIMS_WEB_GROWTHBOOK_API_ENDPOINT: {
-              value: "https://www.THERACORP.com/integrations/growthbook/api/features/sdk-XP8rmd3vGii4t7Q1",
+              value: "https://www.theracorp.org/integrations/growthbook/api/features/sdk-XP8rmd3vGii4t7Q1",
               writable: false,
               configurable: false,
             },

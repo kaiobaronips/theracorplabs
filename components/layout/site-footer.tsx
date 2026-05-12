@@ -2,8 +2,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const footerLinks = [
-  { href: '/termos', label: 'Termos e Condições' },
-  { href: '/privacidade', label: 'Política de Privacidade' },
+  { href: '/termos-condicoes', label: 'Termos e Condições' },
+  { href: '/politica-privacidade', label: 'Política de Privacidade' },
   { href: '/praticas-privacidade', label: 'Práticas de Privacidade' },
   { href: '/politica-reembolso', label: 'Política de Reembolso' },
   { href: '/consentimento-medico', label: 'Consentimento Médico' },

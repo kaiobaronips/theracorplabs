@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Página de Privacidade', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/privacidade');
+    await page.goto('/politica-privacidade');
   });
 
   test('deve exibir o título correto', async ({ page }) => {

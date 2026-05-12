@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Página de Termos', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/termos');
+    await page.goto('/termos-condicoes');
   });
 
   test('deve exibir o título correto', async ({ page }) => {

@@ -46,20 +46,23 @@ export default function PoliticaReembolsoPage() {
 {/* Barra de confiança */}
         <div className="mt-16 border-t border-tc-gray-200">
           <div className="mx-auto w-full max-w-[1200px] px-4 md:px-8 py-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 lg:divide-x divide-tc-gray-200">
-              <div className="flex items-center gap-3 py-4 lg:py-0 lg:pl-0 lg:pr-6">
+            <div className="flex flex-col gap-4 sm:grid sm:grid-cols-2 sm:gap-x-8 sm:gap-y-5 lg:flex lg:flex-row lg:items-center lg:justify-between lg:gap-0">
+              <div className="flex items-center gap-3">
                 <ShieldCheck className="h-6 w-6 text-tc-gray-700 flex-shrink-0" strokeWidth={1.5} />
                 <span className="text-sm font-semibold text-tc-gray-900 whitespace-nowrap">Garantia Theracorp</span>
               </div>
-              <div className="flex items-center gap-3 py-4 lg:py-0 lg:px-6">
+              <span className="hidden lg:block h-8 w-px bg-tc-gray-200" aria-hidden="true" />
+              <div className="flex items-center gap-3">
                 <Truck className="h-6 w-6 text-tc-gray-700 flex-shrink-0" strokeWidth={1.5} />
                 <span className="text-sm font-semibold text-tc-gray-900 whitespace-nowrap">Entrega rápida e gratuita</span>
               </div>
-              <div className="flex items-center gap-3 py-4 lg:py-0 lg:px-6">
+              <span className="hidden lg:block h-8 w-px bg-tc-gray-200" aria-hidden="true" />
+              <div className="flex items-center gap-3">
                 <Stethoscope className="h-6 w-6 text-tc-gray-700 flex-shrink-0" strokeWidth={1.5} />
                 <span className="text-sm font-semibold text-tc-gray-900 whitespace-nowrap">Planos e acompanhamento médico</span>
               </div>
-              <div className="flex items-center gap-3 py-4 lg:py-0 lg:pl-6 lg:pr-0">
+              <span className="hidden lg:block h-8 w-px bg-tc-gray-200" aria-hidden="true" />
+              <div className="flex items-center gap-3">
                 <CircleDollarSign className="h-6 w-6 text-tc-gray-700 flex-shrink-0" strokeWidth={1.5} />
                 <span className="text-sm font-semibold text-tc-gray-900 whitespace-nowrap">Sem taxas ocultas</span>
               </div>

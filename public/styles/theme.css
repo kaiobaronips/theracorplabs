@@ -4785,6 +4785,77 @@ img[alt] { color: transparent; font-size: 0; }
     min-height: 44px;
     margin: 10px auto 0;
     padding: 0 24px;
+    background: #000 !important;
+    color: #fff !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.tc-onboard__plan-button:hover:not(:disabled) {
+    background: #1f1f1f !important;
+}
+
+.tc-onboard__plan-button.is-selected,
+.tc-onboard__plan-button.is-loading {
+    background: #00D4AA !important;
+    color: #fff !important;
+}
+
+.tc-onboard__plan-button:disabled {
+    opacity: 1;
+    cursor: default;
+}
+
+.tc-onboard__plan-spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.38);
+    border-top-color: #fff;
+    border-radius: 999px;
+    animation: tc-plan-button-spin 700ms linear infinite;
+}
+
+.tc-onboard__plan-loading {
+    width: 100%;
+    min-height: 38px;
+    margin: 18px auto 0;
+    text-align: center;
+    position: relative;
+}
+
+.tc-onboard__plan-loading-msg {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    color: #a7adb4;
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 0;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 350ms ease, transform 350ms ease;
+}
+
+.tc-onboard__plan-loading-msg.is-active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.tc-onboard__plan-loading .tc-stripe-message {
+    margin: 24px 0 0;
+    color: #c24141;
+    font-size: 13px;
+}
+
+@keyframes tc-plan-button-spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 @media (max-width: 767px) {

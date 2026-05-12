@@ -1,4 +1,4 @@
-export const siteUrl = 'https://www.theracorp.com.br';
+export const siteUrl = 'https://www.theracorp.org';
 
 export const clinicalDisclaimer =
   'Os resultados variam conforme adesão ao tratamento, contexto clínico e fatores individuais. O tratamento só pode ser iniciado após avaliação clínica individual realizada por médico credenciado via telemedicina regulamentada pela Resolução CFM 2.314/2022.';

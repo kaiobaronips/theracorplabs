@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 
 export function SiteHeader() {
   const pathname = usePathname();
-  const isTermos = pathname === '/termos';
+  const isTermos = pathname === '/termos-condicoes';
 
   return (
     <header
